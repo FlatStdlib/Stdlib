@@ -466,7 +466,7 @@ typedef struct {
 	#define SYS_PROCESS_MRELEASE        448
 	#define SYS_FUTEX_WAITV     		449
 	#define SET_MEMPOLICY_HOME_NOD		-1
-#elif defined(___x86_64___)
+#elif defined(__x86_64__)
     #define _SYS_READ                   0
     #define _SYS_WRITE                  1
     #define _SYS_OPEN                   2

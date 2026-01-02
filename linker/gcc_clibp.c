@@ -1,3 +1,6 @@
+/*
+    Compile and link with loader
+*/
 void _syscall(long, long, long, long);
 
 static int _str_len(const char *buffer)

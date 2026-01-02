@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: compile
+all: compile_asm_libs compile
 
 clean:
 	rm -rf build
@@ -23,6 +23,18 @@ count:
 	headers/*.h \
 	headers/stdlib/*.h
 
+#
+# Compile x86 and x86_64 ASM libs to object file
+#
+compile_asm_libs:
+	nasm -f elf64 asm/x86.asm -o build/x86.o
+	nasm -f elf64 asm/x86_64.asm -o build/x86_64.o
+
+#
+# Compile the current arch core ASM lib for clib+ built-in
+# Merge clibp+ built-in lib for the compiler and for the system to use clib+ with other compilers
+#
+
 compile:
 	nasm -f elf64 asm/x86_64/lib.asm -o build/lib.o
 
@@ -42,6 +54,12 @@ compile:
 #	build/lib.o \
 #	-ggdb
 
+#
+# Compile clib+ compiler-linker into a object file
+# Compile the loader into a object file
+# Compile the clib+ compiler-linker with the built-in lib obj file
+# clean-up
+#
 cloader:
 	gcc -c linker/gcc_clibp.c -o gcc_clibp.o -nostdlib
 	gcc -c loader/loader.c -o loader/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
