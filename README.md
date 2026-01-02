@@ -3,9 +3,10 @@
 	<p>The official minimal C backend alternative to GLIBC</p>
 </div>
 
-This library is still in development!
+# Some Info
 
-The library is a Architecture-targeted freestanding C compiler backend
+- The project is still in development!
+- The library is a Architecture-targeted freestanding C compiler backend
 
 ### What does it do?
 
