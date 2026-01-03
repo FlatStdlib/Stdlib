@@ -2,10 +2,16 @@
 *
 *	[ clib+ ]
 *
-*	- A minimal C backend without GLIBC ( -nostdlib )
-*	with only a heap allocator
+*	- An alternative minimal C backend ( -nostdlib )
+*
 */
 #pragma once
+
+#ifdef __CLIBP__
+	#define printf print
+	#define nullptr_t ((void *)0)
+	#define emptyptr_t ((void *)-1)
+#endif
 
 /*
     Auto Architecture Detection
@@ -13,17 +19,21 @@
     Disable by using DISABLE_AUTO_ARCH_DET
     followed by a specific architecture for compilation
 */
-#if !defined(DISABLE_AUTO_ARCH_DET)
-    #if defined(__i386__)
-            #define ___x86___ "x86"
-            #include "asm.h"
+#if defined(DISABLE_AUTO_ARCH_DET)
+    #if defined(CLIBP_x86)
+            #define ___x86___
+			#include "asm.h"
     #endif
-    #if defined(__x86_64__)
+    #if defined(CLIBP_x86_64)
             #define ___x86_64___
-            #include "asm.h"
+			#include "asm.h"
     #endif
+#else
+	#define ___x86_64___
+	#include "asm.h"
 #endif
 
+#define _STANDARD_MEM_SZ_
 #include "allocator.h"
 
 /* Some Built-in Types */
@@ -56,6 +66,7 @@ typedef void 			*heap_t;
 extern heap_t 			_HEAP_;
 
 /* Global Function Declaraction */
+long _syscall(long n, long a1, long a2, long a3, long a4, long a5, long a6);
 void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
 
 // Get Start-up App Cmdline Arguments

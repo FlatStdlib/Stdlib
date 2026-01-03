@@ -57,6 +57,6 @@ compile:
 #
 cloader:
 	gcc -c linker/gcc_clibp.c -o gcc_clibp.o -nostdlib
-	gcc -c loader/loader.c -o loader/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
+	gcc -c loader/loader.c -o loader/loader.o -nostdlib #-ffunction-sections -Wl,--gc-sections
 	ld -o gcc_clibp gcc_clibp.o build/clibp.o
 	rm gcc_clibp.o

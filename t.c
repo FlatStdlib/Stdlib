@@ -1,8 +1,7 @@
-#define DISABLE_AUTO_ARCH_DET	// Disable Arch Auto Detection
-#define KEEP_ID
-#define ___x86___				// Force to use x86
-#include "headers/clibp.h"		// Include clibp
-#include "headers/allocator.h"
+//#define DISABLE_AUTO_ARCH_DET	// Disable Arch Auto Detection
+#define _STANDARD_MEM_SZ_
+#include <clibp.h>				// Include clibp
+#include <allocator.h>
 
 /* Keep Types Stored */
 #define SERVER_APP				// Keep All TYPES stored in metadata

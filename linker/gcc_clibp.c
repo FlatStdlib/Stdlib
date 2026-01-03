@@ -2,6 +2,7 @@
     Compile and link with loader
 */
 void __syscall(long, long, long, long, long, long, long);
+void print(const char *buff);
 
 static int _str_len(const char *buffer)
 {
@@ -49,13 +50,6 @@ static void _mem_cpy(char *dest, const char *buffer, int len)
     }
 }
 
-int get_pid() {
-    __syscall(39, 0, 0, 0, -1, -1, -1);
-    volatile register long sys asm("rax");
-
-    return sys;
-}
-
 int get_cmd_info(char *buffer) {
     __syscall(2, (long)"/proc/self/cmdline", 0, 0, -1, -1, -1);
     register long open asm("rax");
@@ -98,11 +92,6 @@ static int _find_char(const char *buffer, const char ch, int sz, int match) {
     return -1;
 }
 
-void print(const char *buff)
-{
-	__syscall(1, 1, (unsigned long)buff, _str_len(buff), -1, -1, -1);
-}
-
 void execute(char *app, char **args)
 {
 	if(!app || !args)
@@ -123,10 +112,11 @@ void execute(char *app, char **args)
 	}
 }
 
-void _start() {
-    int __ARGC__ = 0;
-    char *__ARGV__[100] = {0};
+int __ARGC__ = 0;
+char *__ARGV__[100] = {0};
 
+void get_cmdline_args()
+{
     char BUFFER[1024] = {0};
     int count = get_cmd_info(BUFFER);
 
@@ -140,6 +130,26 @@ void _start() {
 
         __ARGV__[__ARGC__++] = (char *)(ptr + (pos + 1));
     }
+}
+
+void _start() {
+	get_cmdline_args();
+//    int __ARGC__ = 0;
+//    char *__ARGV__[100] = {0};
+//
+//    char BUFFER[1024] = {0};
+//    int count = get_cmd_info(BUFFER);
+//
+//    char *ptr = BUFFER;
+//    int test = _count_char(BUFFER, '\0', count);
+//
+//    for(int i = 0, match = 0, last = 0; i < test; i++) {
+//        int pos = _find_char(ptr, '\0', count, match++);
+//        if(pos == -1)
+//            break;
+//
+//        __ARGV__[__ARGC__++] = (char *)(ptr + (pos + 1));
+//    }
 
     char *SRC_CODE_FILE = __ARGV__[1];
     int src_len = _str_len(SRC_CODE_FILE);

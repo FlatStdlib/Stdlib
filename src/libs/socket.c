@@ -62,7 +62,11 @@ _sock_t listen_tcp(const str ip, int port, int concurrent)
 
 _sock_t sock_accept(_sock_t sock, len_t len)
 {
-	__syscall(_SYS_ACCEPT, sock.fd, 0, 0, 0, 0, 0);
+	#if defined(___x86___)
+		__syscall(_SYS_ACCEPT4, sock.fd, 0, 0, -1, -1, -1);
+	#elif defined(___x86_64___)
+		__syscall(_SYS_ACCEPT, sock.fd, 0, 0, -1, -1, -1);
+	#endif
 	register int client_fd asm("rax");
 	_sock_t s = {
 		.fd = client_fd,

@@ -19,13 +19,6 @@ void uninit_mem();
 /* Declare Function from build/syscall.o */
 void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
 
-int get_pid() {
-    __syscall(39, -1, -1, -1, -1, -1, -1);
-    volatile register long sys asm("rax");
-
-    return sys;
-}
-
 __attribute__((used, externally_visible)) void __execute(char *app, char **args)
 {
 	if(!app || !args)
