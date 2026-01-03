@@ -10,8 +10,8 @@
 
 # Things clib+ doesn't support yet
 
-- No argument syntax checking
-	``Expects: <input> -o <output>``
+- No argument syntax checking<br />
+	``Expects: <input> -o <output>``<br />
 	``Optional flags: --strip --nolink``
 - Multiple files
 - C flags
