@@ -6,7 +6,7 @@
 # Some Info
 
 - The project is still in development!
-- The library is a Architecture-targeted freestanding C compiler backend
+- The library is a C backend and aimming to cross-compile directly to machine code
 
 # Things clib+ doesn't support yet
 
