@@ -1,10 +1,9 @@
+#include <stdio.h>
 #include <clibp.h>
-
 #define STR_LEN 7
 #define _PRESTRING_ "Testing"
 
-int entry()
-{
+int entry() {
     int HEAP_DEBUG = 1;
     set_heap_sz(_LARGE_MEM_SZ_);
     init_mem();
@@ -14,8 +13,7 @@ int entry()
     for(int i = 0; i < 10; i++)
         n[i] = i;
 
-    for(int i = 0; i < 10; i++)
-       	_printi(n[i]), print("\n");
+    for(int i = 0; i < 10; i++) _printi(n[i]), print("\n");
 
     /* str array */
     string name = allocate(0, 10);
@@ -23,5 +21,12 @@ int entry()
         name[i] = _PRESTRING_[i];
 
     println((char *)name);
+    pfree(n);
+    pfree(name);
+    uninit_mem();
     return 0;
+}
+
+int main() {
+	printf("Hi from GCC with clib+\n");
 }

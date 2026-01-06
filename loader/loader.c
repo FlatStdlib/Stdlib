@@ -39,7 +39,7 @@ __attribute__((used, externally_visible)) void __execute(char *app, char **args)
 	}
 }
 
-static int get_cmd_info(char *buffer) {
+static int ___get_cmd_info(char *buffer) {
     __syscall(2, (long)"/proc/self/cmdline", 0, 0, -1, -1, -1);
     register long open asm("rax");
     if(open <= 0)
@@ -81,10 +81,10 @@ static int _find_char(const char *buffer, const char ch, int sz, int match) {
     return -1;
 }
 
-int get_args(char *argv[]) {
+static int ___get_args(char *argv[]) {
     int args = 0;
     char BUFFER[1024];
-    int count = get_cmd_info(BUFFER);
+    int count = ___get_cmd_info(BUFFER);
 
     char *ptr = BUFFER;
     int test = _count_char(BUFFER, '\0', count);
@@ -103,7 +103,7 @@ int get_args(char *argv[]) {
 void _start() {
     int __ARGC__;
     char *__ARGV__[80];
-    __ARGC__ = get_args(__ARGV__);
+    __ARGC__ = ___get_args(__ARGV__);
 
     int code = entry(__ARGC__, __ARGV__);
 //	init_mem();

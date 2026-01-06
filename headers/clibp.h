@@ -49,7 +49,7 @@ typedef unsigned int		u32;
 typedef unsigned long long 	u64;
 
 /* string */
-typedef u8					*string;
+typedef char				*string;
 
 /*
 	Temporary
@@ -64,7 +64,7 @@ typedef u32					*array;
 
 /* int array and char array */
 typedef i32					*iArr;
-typedef u8					**sArr;
+typedef char				**sArr;
 
 typedef void 				none;
 typedef void 				*any;

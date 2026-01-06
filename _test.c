@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#define class typedef struct
+#include <clibp.h>
 
 /* 8bit Pointer with auto clean up */
 static fn __clean_up__(ptr p)

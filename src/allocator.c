@@ -17,13 +17,12 @@ fn set_heap_sz(int n)
 
 fn req_memory()
 {
-    if(__syscall__((long)_HEAP_, _HEAP_PAGE_ + _HEAP_PAGE_SZ_, 0x1 | 0x2, 0, 0, 0, _SYS_MPROTECT) != 0)
+	if(!_HEAP_PAGE_) _HEAP_PAGE_ = _HEAP_PAGE_SZ_;
+    if(__syscall__((long)_HEAP_, _HEAP_PAGE_, 0x1 | 0x2, 0, 0, 0, _SYS_MPROTECT) != 0)
     {
         println("Segfault");
         return;
     }
-
-    _HEAP_PAGE_ += _HEAP_PAGE_SZ_;
 }
 
 fn init_mem() {
@@ -67,12 +66,13 @@ any allocate(int sz, int len) {
     if (space_left < mem_needed)
         return NULL;
 
+	println("HERE\n");
     int spot = find_space(mem_needed);
     if (spot == -1) {
         print("[ - ] Unable to find space!\n");
         return NULL;
     }
-
+	println("HERE\n");
     any ptr = (char *)_HEAP_ + spot;
 
     __meta__ c = { .size = sz, .length = len, .id = 0x7C };
@@ -81,6 +81,13 @@ any allocate(int sz, int len) {
     mem_set(ptr + HEAP_META_SZ, 0, mem_needed - HEAP_META_SZ);
 
     used_mem += mem_needed;
+
+	if(HEAP_DEBUG)
+	{
+		char buff[100];
+		ptr_to_str(ptr, buff);
+		print(buff);
+	}
 
     return (any)((char *)ptr + HEAP_META_SZ);
 }
@@ -107,4 +114,9 @@ fn pfree(any ptr)
 
     mem_set(m, 1, total);
     used_mem -= total;
+}
+
+void uninit_mem()
+{
+	__syscall__((long)_HEAP_, _HEAP_PAGE_, 0, 0, 0, 0, _SYS_MUNMAP);
 }

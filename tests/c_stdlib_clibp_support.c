@@ -1,5 +1,5 @@
 /*
-    clib+ - C supported script.
+	clib+ and C-stdlib supported test script
 
   2 entry point, 1 for each compiler support
 
@@ -20,7 +20,7 @@ int entry()
 {
     /* heap test */
 	println("Attempting to init heap...");
-    
+
 	HEAP_DEBUG = 1;
     set_heap_sz(_LARGE_MEM_SZ_);
 	init_mem();
