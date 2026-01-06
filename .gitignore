@@ -6,4 +6,3 @@ build/*
 *.save
 a.out
 *.a
-t.c
