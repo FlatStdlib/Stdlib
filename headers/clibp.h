@@ -109,6 +109,10 @@ long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg
 int 	get_args(char *argv[]);
 
 #ifdef _CLIBP_INTERNAL_H
+	#define clibp_panic(msg) 	\
+		println(msg);			\
+		__exit(1);
+
 	/* internal.c */
 	void 	ptr_to_str(void *p, char *out);
 	none 	__exit(int code);

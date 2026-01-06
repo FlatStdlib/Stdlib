@@ -4,6 +4,8 @@
 void __syscall(long, long, long, long, long, long, long);
 void print(const char *buff);
 int str_len(const char *buffer);
+int find_str(const char *buffer, const char *needle);
+int stra(char *src, const char *sub);
 
 static int _str_len(const char *buffer)
 {
@@ -134,31 +136,28 @@ void get_cmdline_args()
 }
 
 /* GCC with default flags */
-const int GCC_DEFAULT_FLAG_COUNT = 4;
-char *GCC_DEFAULT_FLAGS[] = {
-    "/usr/bin/gcc",
-    "-nostdlib",
-    // "-nostdinc",
-    "-ffreestanding",
-    "-c",
+#define COMPILER_TYPE_COUNT 3
+char *COMPILER_TYPES[] = {
+    "/usr/bin/gcc/ -nostdlib -ffreestanding -c",
+    "/usr/bin/tcc -nostdlib -ffreestanding -std=c99 -c",
     0
 };
 
-char *GCC_COMPILE_CMD[150];
-int GCC_ARGS = 0;
-void create_gcc_compile_cmd()
+void get_compiler_type_cmd(char *cmd_buffer, char *compiler)
 {
-    for(int i = 0; i < GCC_DEFAULT_FLAG_COUNT; i++, GCC_ARGS++)
+    for(int i = 0; i < COMPILER_TYPE_COUNT; i++)
     {
-        GCC_COMPILE_CMD[GCC_ARGS] = GCC_DEFAULT_FLAGS[GCC_ARGS];
+        if(find_str((char *)((char **)COMPILER_TYPES[i])[0], compiler))
+        {
+            // found compiler
+            char **cmd_args = ((char **)((char ***)COMPILER_TYPES)[i][1]);
+            for(int arg = 0; cmd_args[arg] != 0; arg++)
+            {
+                stra(cmd_buffer, cmd_args[arg]);
+                stra(cmd_buffer, " ");
+            }
+        }
     }
-}
-
-char *LINKER_COMPILE_CMD[150];
-int LINKER_ARGS = 0;
-void create_linker_compile_cmd()
-{
-    
 }
 
 void _start() {

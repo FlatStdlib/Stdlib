@@ -3,21 +3,53 @@
 sArr ARGV;
 int ARGC;
 
-void get_all_c_files()
-{
-
-}
-
-/* Allocated array with stack pointer */
-sArr get_all_object_files()
+/* Fetch all c files provided in cmdline */
+sArr get_all_c_files()
 {
 	int count = 0;
 	for(int i = 0; i < ARGC; i++)
 	{
 		int len = str_len(ARGV[i]);
-		if(ARGV[i][len - 1] == 'o') {
+		if(!len) continue;
+
+		if(ARGV[i][len - 1] == 'c' && ARGV[i][len - 2] == '.')
 			count++;
-		}
+	}
+
+	if(!count) return NULL;
+	sArr files = allocate(sizeof(str), count + 1);
+	if(!files) {
+		clibp_panic("error, unable to allocate memory");
+		return NULL;
+	}
+
+	int idx = 0;
+	for(int i = 0; i < ARGC; i++)
+	{
+		int len = str_len(ARGV[i]);
+		if(!len) continue;
+
+		if(ARGV[i][len - 1] == 'c' && ARGV[i][len - 2] == '.')
+			files[idx++] = ARGV[i];
+	}
+
+	files[idx] = NULL;
+	return files;
+}
+
+/* Fetch all object files provided in cmdline */
+sArr get_all_object_files()
+{
+	int count = 0;
+	for(int i = 0; i < ARGC; i++)
+	{
+		if(!ARGV[i]) break;
+
+		int len = str_len(ARGV[i]);
+		if(!len) continue;
+
+		if(ARGV[i][len - 1] == 'o')
+			count++;
 	}
 
 	if(count == 0) {

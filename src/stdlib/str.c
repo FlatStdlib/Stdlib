@@ -126,25 +126,21 @@ pos_t find_char(const str buff, const char ch, int match)
 // Find String (to find multiple, increament match each call until -1)
 pos_t find_str(const str buff, const str needle)
 {
-	if(!buff || !needle)
-		return -1;
+    int len = str_len(buff);
+    int slen = str_len(needle);
+    for(int i = 0; i < len; i++)
+    {
+        int chk = 0;
+        for(int c = 0; c < slen; c++) {
+            if(buff[i + c] != needle[c])
+                return 0;
+            else
+                chk = 1;
+        }
 
-	len_t len = str_len(buff);
-	len_t needle_len = str_len(needle);
-	for(int i = 0; i < len; i++)
-	{
-		if(buff[i] == '\0')
-			break;
+        if(chk)
+            return 1;
+    }
 
-		for(int c = 0; c < needle_len; c++)
-		{
-			if(buff[i + c] != needle[c])
-				break;
-
-			if(c == (needle_len - 1) && buff[i + c] == needle[c])
-				return i;
-		}
-	}
-
-	return -1;
+    return 0;
 }

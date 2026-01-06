@@ -105,7 +105,7 @@ static int ___get_args(char *argv[]) {
 
 void _start() {
     char *__ARGV__[80];
-    inti __ARGC__ = ___get_args(__ARGV__);
+    int __ARGC__ = ___get_args(__ARGV__);
 
 	set_heap_debug();
 	set_heap_sz(4096 * 3);
