@@ -51,7 +51,7 @@ str str_dup(const str buff)
 {
 	int len = str_len(buff);
 
-	str buffer = allocate(0, len);
+	str buffer = (str)allocate(0, len);
 	mem_cpy(buffer, buff, len);
 
 	return buffer;

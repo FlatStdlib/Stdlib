@@ -5,10 +5,12 @@
 #define class typedef struct
 
 /* 8bit Pointer with auto clean up */
-static void __clean_up__(void *ptr)
+static fn __clean_up__(ptr p)
 {
     printf("Freeing pointer...!\n");
+	free(*(void **)p);
 }
+
 #define auto_cast (__int64_t)
 #define auto_free_ptr __attribute__((cleanup(__clean_up__))) __int64_t
 #define str char *

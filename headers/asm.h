@@ -13,7 +13,7 @@ typedef struct {
 	#define MAX_REGISTER 6
 	#define SYSCALL_REG "eax"
 	#define EXECUTE_SYSCALL "int $0x80"
-	
+
     // C-ABIV Calling Conventions
     #define __EAX__ "eax"
     #define __EBX__ "ebx"

@@ -106,5 +106,6 @@ void _start() {
     __ARGC__ = get_args(__ARGV__);
 
     int code = entry(__ARGC__, __ARGV__);
+//	init_mem();
     __syscall(60, code, -1, -1, -1, -1, -1);
 }

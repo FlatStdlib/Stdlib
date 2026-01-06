@@ -24,7 +24,7 @@ int get_input(str dest, len_t count) {
 	return bytes_read;
 }
 
-void ptr_to_str(void *p, char *out)
+fn ptr_to_str(ptr p, char *out)
 {
     static const char hex[] = "0123456789abcdef";
     uintptr_t v = (uintptr_t)p;
@@ -38,6 +38,11 @@ void ptr_to_str(void *p, char *out)
     }
 
     out[2 + sizeof(uintptr_t) * 2] = '\0';
+}
+
+none print_sz(const str buffer, int sz)
+{
+	__syscall(_SYS_WRITE, 1, (long)buffer, sz, 0, 0, 0);
 }
 
 none printnum(int num)
@@ -62,6 +67,12 @@ none printi(int num)
 
 none _printi(int num)
 {
+	if(num == 0)
+	{
+		print("0");
+		return;
+	}
+
 	int temp = num, c = 0;
 	char BUFF[500] = {0};
 	while(temp)
@@ -88,6 +99,6 @@ none print(const str buff)
 none println(const str buff)
 {
 	__syscall(1, 1, (unsigned long)buff, str_len(buff), -1, -1, -1);
-	__syscall(1, 1, (unsigned long)"\n", 2, -1, -1, -1);
+	__syscall(1, 1, (unsigned long)"\n", 1, -1, -1, -1);
 }
 

@@ -10,30 +10,30 @@ int HEAP_META_SZ 		= sizeof(__meta__);
 int __get_total_mem_used__(void) { return used_mem; }
 int __is_heap_init__() { return (_HEAP_ ? 1 : 0); }
 
-void set_heap_sz(int n)
+fn set_heap_sz(int n)
 {
 	_HEAP_PAGE_ = n;
 }
 
-void req_memory()
+fn req_memory()
 {
     if(__syscall__((long)_HEAP_, _HEAP_PAGE_ + _HEAP_PAGE_SZ_, 0x1 | 0x2, 0, 0, 0, _SYS_MPROTECT) != 0)
     {
         println("Segfault");
         return;
     }
-    
+
     _HEAP_PAGE_ += _HEAP_PAGE_SZ_;
 }
 
-void init_mem() {
+fn init_mem() {
     long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
     if (ret < 0) {
         println("[ - ] Error, mmap failed!");
         return;
     }
 
-	_HEAP_ = (void *)ret;
+	_HEAP_ = (ptr)ret;
 
     // Clear the heap to mark all memory as free
     mem_set(_HEAP_, 1, _HEAP_PAGE_);
@@ -96,7 +96,7 @@ int __get_size__(any ptr)
 	return !info->size ? info->length : info->size * info->length;
 }
 
-void pfree(any ptr)
+fn pfree(any ptr)
 {
     if (!ptr) return;
 
