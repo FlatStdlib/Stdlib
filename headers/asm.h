@@ -1058,7 +1058,7 @@ typedef struct {
 	#define _KEYCTL					 	219
 	#define _CLONE					 	220
 	#define _EXECVE					 	221
-	#define _SYS_MMAP					 222
+//	#define _SYS_MMAP					 222
 	#define _FADVISE64_64				223
 	#define _SWAPON					 	224
 	#define _SWAPOFF					225

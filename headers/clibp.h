@@ -171,7 +171,8 @@ int 	get_args(char *argv[]);
 	extern int                  HEAP_DEBUG;
 	extern int                  used_mem;
 
-	void set_heap_sz(int n);
+	void 		set_heap_sz(int n);
+	void 		set_heap_debug();
 
 	void        init_mem();
 	void        uninit_mem();

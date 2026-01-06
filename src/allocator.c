@@ -33,7 +33,7 @@ fn req_memory()
 fn init_mem() {
     long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
     if (ret < 0) {
-        println("[ - ] Error, mmap failed!");
+        println("[ - ] Error, mmap failed:"), _printi(ret), print("\n");
         return;
     }
 

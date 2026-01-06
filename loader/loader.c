@@ -6,18 +6,9 @@
 *   @Reason: To debug on linux raw binaries used for making OS(s)
 */
 // Loader's Main Function Declaration
+#include <clibp.h>
 int entry();
-
 /* Declare Function from build/lib.o */
-int str_len();
-void mem_cpy();
-void mem_set();
-
-void init_mem();
-void uninit_mem();
-
-void set_heap_sz(int n);
-void set_heap_debug();
 
 /* Declare Function from build/syscall.o */
 void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
