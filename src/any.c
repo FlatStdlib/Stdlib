@@ -14,7 +14,7 @@ typedef enum
 typedef struct
 {
 	any_type type;
-	any p;
+	any pointer;
 } any_t;
 
 const int ANY_META_SZ = sizeof(any_t);
@@ -33,7 +33,27 @@ any any_allocate(len_t sz, len_t len)
 	return (any)((char *)p + ANY_META_SZ);
 }
 
+void *convert_to_type(any_t p)
+{
+//	switch(p->type)
+//	{
+//		case ANY_INT:
+//			int n = atoi(p->pointer);
+//			return n;
+//	}
+}
+
 int any_cmp(any p, any v, len_t len)
 {
-	
+	if(((char *)p - ANY_META_SZ - sizeof(int)) == 0x7C)
+	{
+		clibp_panic("[ x ] error, invalid memory provided...!\n");
+	}
+
+	any_t n = (any)((char *)p - ANY_META_SZ);
+//	switch(n->type)
+//	{
+//		case ANY_INT:
+//			int value = v
+//	}
 }
