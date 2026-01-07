@@ -5,7 +5,7 @@ int _HEAP_PAGE_SZ_ 		= 4096;
 heap_t _HEAP_ 			= NULL;
 int used_mem 			= 0;
 int HEAP_DEBUG 			= 0;
-int HEAP_META_SZ 		= sizeof(__meta__);
+const int HEAP_META_SZ 	= sizeof(__meta__);
 
 int __get_total_mem_used__(void) { return used_mem; }
 int __is_heap_init__() { return (_HEAP_ ? 1 : 0); }
