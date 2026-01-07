@@ -16,11 +16,11 @@ sArr get_all_c_files()
 			count++;
 	}
 
-	if(!count) return NULL;
-	sArr files = allocate(sizeof(str), count + 1);
+	if(!count) return nullptr_t;
+	sArr files = allocate(sizeof(string), count + 1);
 	if(!files) {
 		clibp_panic("error, unable to allocate memory");
-		return NULL;
+		return nullptr_t;
 	}
 
 	int idx = 0;
@@ -57,7 +57,7 @@ sArr get_all_object_files()
 		return NULL;
 	}
 
-	sArr n = allocate(sizeof(str), count + 1);
+	sArr n = allocate(sizeof(string), count + 1);
 	if(n == NULL) println("error");
 
 	int idx = 0;
