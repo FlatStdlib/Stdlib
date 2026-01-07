@@ -27,6 +27,8 @@ void get_compiler_type_cmd(char *cmd_buffer, char *compiler)
 
 int entry()
 {
+	set_heap_sz(_LARGE_MEM_SZ_);
+	req_memory();
     char *test = allocate(0, 1024);
     get_compiler_type_cmd(test, "gcc");
     println(test);

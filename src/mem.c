@@ -1,6 +1,6 @@
 #include "../headers/clibp.h"
 
-none memzero(any ptr, size_t size)
+fn memzero(any ptr, size_t size)
 {
 	mem_set(ptr, 0, size);
 }
@@ -16,7 +16,7 @@ int mem_cmp(any src, any ptr, size_t size)
 	return 1;
 }
 
-none mem_cpy(any dest, any src, size_t size)
+fn mem_cpy(any dest, any src, size_t size)
 {
 	for(int i = 0; i < size; i++)
 	{
@@ -24,7 +24,7 @@ none mem_cpy(any dest, any src, size_t size)
 	}
 }
 
-none mem_set(any ptr, char ch, size_t size)
+fn mem_set(any ptr, char ch, size_t size)
 {
 	for(int i = 0; i < size; i++)
 	{

@@ -7,6 +7,7 @@
 */
 #pragma once
 
+extern int __CLIBP_DEBUG__;
 #ifndef __CLIBP__
 	#define __CLIBP__
 	#define _CLIBP_STR_H
@@ -51,14 +52,6 @@ typedef unsigned long long 	u64;
 /* string */
 typedef char				*string;
 
-/*
-	Temporary
-	TODO; change str to string type
-	TODO; change fn_t to fn
-*/
-typedef char 				*str;
-typedef void 				fn_t;
-
 /* general array */
 typedef u32					*array;
 
@@ -66,10 +59,11 @@ typedef u32					*array;
 typedef i32					*iArr;
 typedef char				**sArr;
 
-typedef void 				none;
 typedef void 				*any;
 typedef void 				fn;
-typedef void 				*handler_t;
+typedef void 				*(*handler_t)();
+
+/* backend purposes only */
 typedef void 				*ptr;
 
 /* Counters */
@@ -102,7 +96,7 @@ typedef void                fn_t;
 
 /* Global Function Declaraction */
 long _syscall(long n, long a1, long a2, long a3, long a4, long a5, long a6);
-void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
+fn __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
 long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, long sys);
 
 // Get Start-up App Cmdline Arguments
@@ -114,17 +108,17 @@ int 	get_args(char *argv[]);
 		__exit(1);
 
 	/* internal.c */
-	void 	ptr_to_str(void *p, char *out);
-	none 	__exit(int code);
-	none 	print_sz(const str buffer, int sz);
-	none 	printc(const char ch);
-	none 	printi(int num);
-	none 	_printi(int value);
-	none 	print(const str buff);
-	none	println(const str buff);
-	none 	printsz(const str buff, int sz);
-	none 	printa(const str *buff);
-	none 	err_n_exit(const str buff, int code);
+	fn 		ptr_to_str(void *p, char *out);
+	fn 		__exit(int code);
+	fn 		print_sz(const str buffer, int sz);
+	fn		printc(const char ch);
+	fn 		printi(int num);
+	fn 		_printi(int value);
+	fn 		print(const str buff);
+	fn		println(const str buff);
+	fn 		printsz(const str buff, int sz);
+	fn 		printa(const str *buff);
+	fn 		err_n_exit(const str buff, int code);
 #endif
 
 /*
@@ -133,10 +127,10 @@ int 	get_args(char *argv[]);
 */
 #ifdef _CLIBP_MEM_H
 	/* General memory functions */
-	none 	memzero(any ptr, size_t);
+	fn 		memzero(any ptr, size_t);
 	int 	mem_cmp(any src, any ptr, size_t size);
-	none 	mem_cpy(any dest, any src, size_t size);
-	none 	mem_set(any ptr, char ch, size_t size);
+	fn 		mem_cpy(any dest, any src, size_t size);
+	fn 		mem_set(any ptr, char ch, size_t size);
 
 	int 	get_input(str dest, len_t count);
 #endif
@@ -164,23 +158,20 @@ int 	get_args(char *argv[]);
 	} __meta__;
 
 	extern int                  HEAP_META_SZ;
-
-	typedef void                *heap_t;
-
-	extern heap_t               _HEAP_;
 	extern int                  HEAP_DEBUG;
 	extern int                  used_mem;
 
-	void 		set_heap_sz(int n);
-	void 		set_heap_debug();
+	fn 			set_heap_sz(int n);
+	fn 			set_heap_debug();
+	fn 			req_memory();
 
-	void        init_mem();
-	void        uninit_mem();
+	fn        	init_mem();
+	fn        	uninit_mem();
 	int         __get_total_mem_used__(void);
 	ptr         allocate(int sz, int len);
 	int         __get_size__(any ptr);
 	int         __is_heap_init__();
-	void        pfree(any ptr);
+	fn        	pfree(any ptr);
 	__meta__    *__get_meta__(any ptr);
 #endif
 
@@ -278,7 +269,7 @@ int 	get_args(char *argv[]);
 			Desc;
 				close file
 	*/
-	void	file_close(fd_t fd);
+	fn		file_close(fd_t fd);
 #endif
 
 #ifdef _CLIBP_SOCKET_H

@@ -15,7 +15,7 @@ fn set_heap_sz(int n)
 	_HEAP_PAGE_ = n;
 }
 
-void set_heap_debug()
+fn set_heap_debug()
 {
 	HEAP_DEBUG = 1;
 }
@@ -120,7 +120,7 @@ fn pfree(any ptr)
     used_mem -= total;
 }
 
-void uninit_mem()
+fn uninit_mem()
 {
 	__syscall__((long)_HEAP_, _HEAP_PAGE_, 0, 0, 0, 0, _SYS_MUNMAP);
 }

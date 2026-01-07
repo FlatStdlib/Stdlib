@@ -1,6 +1,6 @@
 #include "../../headers/clibp.h"
 
-fn_t _sprintf(str buffer, str format, any *args)
+fn _sprintf(str buffer, str format, any *args)
 {
     int arg = 0, idx = 0;
     for(int i = 0; format[i] != '\0'; i++)
@@ -25,7 +25,7 @@ fn_t _sprintf(str buffer, str format, any *args)
     }
 }
 
-fn_t istr(str dest, int num)
+fn istr(str dest, int num)
 {
 	int temp = num, c = 0;
 	char BUFF[500] = {0};

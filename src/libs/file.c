@@ -37,7 +37,7 @@ int file_write(fd_t fd, const char *buffer, len_t len)
 	return chk;
 }
 
-void file_close(fd_t fd)
+fn file_close(fd_t fd)
 {
     __syscall(fd, -1, -1, -1, -1, -1, -1);
 }

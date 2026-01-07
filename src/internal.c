@@ -2,12 +2,13 @@
 #include "../headers/clibp.h"
 #include "../headers/asm.h"
 
-none __exit(int code)
+int __CLIBP_DEBUG__ = 0;
+fn __exit(int code)
 {
 	__syscall(60, code, 0, 0, -1, -1, -1);
 }
 
-none err_n_exit(const str buff, int code)
+fn err_n_exit(const str buff, int code)
 {
 	if(buff)
 		print(buff);
@@ -40,26 +41,26 @@ fn ptr_to_str(ptr p, char *out)
     out[2 + sizeof(uintptr_t) * 2] = '\0';
 }
 
-none print_sz(const str buffer, int sz)
+fn print_sz(const str buffer, int sz)
 {
 	__syscall(_SYS_WRITE, 1, (long)buffer, sz, 0, 0, 0);
 }
 
-none printc(const char ch)
+fn printc(const char ch)
 {
 	char BUFF[2] = {0};
 	BUFF[0] = ch;
 	print(BUFF);
 }
 
-none printi(int num)
+fn printi(int num)
 {
 	char BUFF[5] = {0};
 	BUFF[0] = '0' + num;
 	print(BUFF);
 }
 
-none _printi(int num)
+fn _printi(int num)
 {
 	if(num == 0)
 	{
@@ -85,12 +86,12 @@ none _printi(int num)
 	print(BUFF);
 }
 
-none print(const str buff)
+fn print(const str buff)
 {
 	__syscall(1, 1, (unsigned long)buff, str_len(buff), -1, -1, -1);
 }
 
-none println(const str buff)
+fn println(const str buff)
 {
 	__syscall(1, 1, (unsigned long)buff, str_len(buff), -1, -1, -1);
 	__syscall(1, 1, (unsigned long)"\n", 1, -1, -1, -1);
