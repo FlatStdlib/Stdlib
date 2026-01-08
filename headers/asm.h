@@ -892,15 +892,15 @@ typedef struct {
 	#define _FCHMODAT					53
 	#define _FCHOWNAT					54
 	#define _FCHOWN					 	55
-	#define _OPENAT					 	56
-	#define _CLOSE					 	57
+	#define _SYS_OPENAT					56
+	#define _SYS_CLOSE					57
 	#define _VHANGUP					58
 	#define _PIPE2					 	59
 	#define _QUOTACTL					60
 	#define _GETDENTS64					61
-	#define _LSEEK					 	62
-	#define _READ					 	63
-	#define _WRITE					 	64
+	#define _SYS_LSEEK					62
+	#define _SYS_READ					63
+	#define _SYS_WRITE					64
 	#define _READV					 	65
 	#define _WRITEV					 	66
 	#define _PREAD64					67
@@ -930,7 +930,7 @@ typedef struct {
 	#define _CAPGET					 	90
 	#define _CAPSET					 	91
 	#define _PERSONALITY				92
-	#define _EXIT					 	93
+	#define _SYS_EXIT					93
 	#define _EXIT_GROUP					94
 	#define _WAITID					 	95
 	#define _SET_TID_ADDRESS			96
@@ -1008,7 +1008,7 @@ typedef struct {
 	#define _GETTIMEOFDAY				169
 	#define _SETTIMEOFDAY				170
 	#define _ADJTIMEX					171
-	#define _GETPID					 	172
+	#define _SYS_GETPID					172
 	#define _GETPPID					173
 	#define _GETUID					 	174
 	#define _GETEUID					175
@@ -1034,35 +1034,39 @@ typedef struct {
 	#define _SHMCTL					 	195
 	#define _SHMAT					 	196
 	#define _SHMDT					 	197
-	#define _SOCKET					 	198
+	#define _SYS_SOCKET					198
 	#define _SOCKETPAIR					199
-	#define _BIND					 	200
-	#define _LISTEN					 	201
+	#define _SYS_BIND					200
+	#define _SYS_LISTEN					201
 	#define _ACCEPT					 	202
 	#define _CONNECT					203
 	#define _GETSOCKNAME				204
 	#define _GETPEERNAME				205
 	#define _SENDTO					 	206
 	#define _RECVFROM					207
-	#define _SETSOCKOPT					208
+	#define _SYS_SETSOCKOPT				208
 	#define _GETSOCKOPT					209
 	#define _SHUTDOWN					210
 	#define _SENDMSG					211
 	#define _RECVMSG					212
 	#define _READAHEAD					213
 	#define _BRK					 	214
-	#define _MUNMAP					 	215
+	#define _SYS_MUNMAP					215
 	#define _MREMAP					 	216
 	#define _ADD_KEY					217
 	#define _REQUEST_KEY				218
 	#define _KEYCTL					 	219
-	#define _CLONE					 	220
-	#define _EXECVE					 	221
+	
+	/* Dup for cross-platform */
+	#define _SYS_CLONE					220
+	#define _SYS_FORK					220
+
+	#define _SYS_EXECVE					221
 	#define _SYS_MMAP					222
 	#define _FADVISE64_64				223
 	#define _SWAPON					 	224
 	#define _SWAPOFF					225
-	#define _MPROTECT					226
+	#define _SYS_MPROTECT				226
 	#define _MSYNC					 	227
 	#define _MLOCK					 	228
 	#define _MUNLOCK					229
@@ -1078,9 +1082,9 @@ typedef struct {
 	#define _MOVE_PAGES					239
 	#define _RT_TGSIGQUEUEINFO			240
 	#define _PERF_EVENT_OPEN			241
-	#define _ACCEPT4					242
+	#define _SYS_ACCEPT4				242
 	#define _RECVMMSG_TIME32			243
-	#define _WAIT4					 	260
+	#define _SYS_WAIT4					260
 	#define _PRLIMIT64					261
 	#define _FANOTIFY_INIT				262
 	#define _FANOTIFY_MARK				263
@@ -1132,6 +1136,8 @@ typedef struct {
 	#define _PIDFD_GETFD				438
 	#define _FACCESSAT2					439
 	#define _PROCESS_MADVISE			440
+	
+	long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
 #elif defined(__aarch64__)
 	#define MAX_REGISTER 8
 	#define SYSCALL_REG "x8"

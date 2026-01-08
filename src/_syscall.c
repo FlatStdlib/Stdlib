@@ -1,5 +1,6 @@
 #include "../headers/clibp.h"
 
+/* Following ABI Standards Here, A Universial syscall */
 long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, long sys)
 {
 	register long ss asm(SYSCALL_REG) = sys;
@@ -115,6 +116,28 @@ long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg
 
         long ret;
         register long check asm("rax");
+        ret = check;
+        if(check < 0)
+            _printi(ret);
+
+        return ret;
+//        return __syscall__(arg1, arg2, arg3, arg4, arg5, arg6, _SYS_MMAP);
+    }
+#elif defined(__riscv)
+
+    long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
+    {
+    	register long sys asm("a7") = _SYS_MMAP;
+        register long a1 asm("a0") = arg1;
+        register long a2 asm("a1") = arg2;
+        register long a3 asm("a2") = arg3;
+        register long a4 asm("a3") = arg4;
+        register long a5 asm("a4") = arg5;
+        register long a6 asm("a5") = arg6;
+        asm("ecall");
+
+        long ret;
+        register long check asm("a0");
         ret = check;
         if(check < 0)
             _printi(ret);

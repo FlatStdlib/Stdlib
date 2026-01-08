@@ -5,13 +5,12 @@
 int __CLIBP_DEBUG__ = 0;
 fn __exit(i32 code)
 {
-	__syscall(60, code, 0, 0, -1, -1, -1);
+	__syscall__(code, 0, 0, -1, -1, -1, _SYS_EXIT);
 }
 
 int get_input(string dest, i32 count) {
 	char BUFFER[count];
-	__syscall(_SYS_READ, 0, (long)BUFFER, count, -1, -1, -1);
-	register long bytes_read asm("rax");
+	long bytes_read = __syscall__(0, (long)BUFFER, count, -1, -1, -1, _SYS_READ);
 	mem_cpy(dest, BUFFER, count);
 
 	return bytes_read;
@@ -35,7 +34,7 @@ fn ptr_to_str(ptr p, string out)
 
 fn print_sz(const string buffer, i32 sz)
 {
-	__syscall(_SYS_WRITE, 1, (long)buffer, sz, 0, 0, 0);
+	__syscall__(1, (long)buffer, sz, 0, 0, 0, _SYS_WRITE);
 }
 
 fn printc(const char ch)
@@ -109,13 +108,13 @@ string int_to_str(int num)
 
 fn print(const string buff)
 {
-	__syscall(1, 1, (unsigned long)buff, str_len(buff), -1, -1, -1);
+	__syscall__(1, (unsigned long)buff, str_len(buff), -1, -1, -1, _SYS_WRITE);
 }
 
 fn println(const string buff)
 {
-	__syscall(1, 1, (unsigned long)buff, str_len(buff), -1, -1, -1);
-	__syscall(1, 1, (unsigned long)"\n", 1, -1, -1, -1);
+	__syscall__(1, (unsigned long)buff, str_len(buff), -1, -1, -1, _SYS_WRITE);
+	__syscall__(1, (unsigned long)"\n", 1, -1, -1, -1, _SYS_WRITE);
 }
 
 ptr to_heap(ptr p, i32 sz)

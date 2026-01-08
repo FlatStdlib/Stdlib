@@ -109,3 +109,26 @@ cloader:
 test_run:
 	sudo make && ./gcc_clibp gay.c -o t && ./t
 	c99 gay.c -o t -lclibp && ./t
+
+riscv-gcc:
+	mkdir -p build
+
+	riscv64-linux-gnu-gcc -c src/*.c \
+	src/stdlib/*.c \
+	src/libs/*.c \
+	-nostdlib -nostdinc
+
+	ar rcs build/riscv_libclibp.a *.o
+	ar rcs build/riscv_clibp.o *.o
+	rm -rf *.o
+
+	riscv64-linux-gnu-gcc -std=c99 -c linker/gcc_clibp.c -o riscv_gcc_clibp.o -nostdlib
+	riscv64-linux-gnu-gcc -std=c99 -c loader/loader.c -o loader/riscv_loader.o -ffunction-sections -Wl,--gc-sections
+
+	riscv64-linux-gnu-ld -o riscv_gcc_clibp riscv_gcc_clibp.o build/riscv_clibp.o
+	rm riscv_gcc_clibp.o
+
+	cp -r headers/* /usr/local/include
+	cp build/riscv_libclibp.a /usr/lib
+
+	rm -rf *.o

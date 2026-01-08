@@ -1,11 +1,9 @@
 /*
     Compile and link with loader
 */
-void __syscall(long, long, long, long, long, long, long);
-void print(const char *buff);
-int str_len(const char *buffer);
-int find_str(const char *buffer, const char *needle);
-int stra(char *src, const char *sub);
+#include "../headers/asm.h"
+long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, long sys);
+void print();
 
 static int _str_len(const char *buffer)
 {
@@ -38,7 +36,7 @@ int arr_contains(char **args, int argc, char *needle)
 		if(!args[i])
 			break;
 
-        if(_mem_cmp(args[i], needle, str_len(args[i])))
+        if(_mem_cmp(args[i], needle, _str_len(args[i])))
             return i;
 	}
 
@@ -54,22 +52,23 @@ static void _mem_cpy(char *dest, const char *buffer, int len)
 }
 
 int get_cmd_info(char *buffer) {
-    __syscall(2, (long)"/proc/self/cmdline", 0, 0, -1, -1, -1);
-    register long open asm("rax");
-    if(open <= 0)
+    #if defined(__x86__) || defined(__x86_64__)
+        long fd = __syscall__((long)"/proc/self/cmdline", 0, 0, -1, -1, -1, _SYS_OPEN);
+	#elif defined(__riscv)
+    	long fd = __syscall__(-100, (long)"/proc/self/cmdline", 0, 0, -1, -1, _SYS_OPENAT);
+	#endif
+    if(fd <= 0)
     {
         return -1;
     }
 
-    int fd = open;
     char BUFFER[255] = {0};
-    __syscall(0, fd, (long)BUFFER, 255, -1, -1, -1);
-    register long bts asm("rax");
+    long bts = __syscall__(fd, (long)BUFFER, 255, -1, -1, -1, _SYS_READ);
 
     int bytes = bts;
     _mem_cpy(buffer, BUFFER, bytes);
 
-    __syscall(3, fd, 0, 0, -1, -1, -1);
+    __syscall__(fd, 0, 0, -1, -1, -1, _SYS_CLOSE);
     return bytes;
 }
 
@@ -99,19 +98,16 @@ void execute(char *app, char **args)
 {
 	if(!app || !args)
 		return;
-
-	int pid;
-	__syscall(57, 0, 0, 0, -1, -1, -1);
-	register long r asm("rax");
-	pid = r;
+    
+	long pid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_FORK);
 
 	if(pid == 0)
 	{
-		__syscall(59, (long)app, (long)args, 0, -1, -1, -1);
+		__syscall__((long)app, (long)args, 0, -1, -1, -1, _SYS_EXECVE);
 	} else if(pid > 0) {
-		__syscall(61, pid, 0, 0, -1, -1, -1);
+		__syscall__(pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
 	} else {
-		__syscall(1, 1, (long)"fork error\n", 7, -1, -1, -1);
+		__syscall__(1, (long)"fork error\n", 7, -1, -1, -1, _SYS_WRITE);
 	}
 }
 
@@ -163,7 +159,7 @@ void _start() {
         }
 
         if(OPT[1] == 'c') {
-        	__syscall(60, 0, 0, 0, -1, -1, -1);
+            __syscall__(0, 0, 0, -1, -1, -1, _SYS_EXIT);
         	execute(rm[0], rm);
         }
     }
@@ -171,7 +167,7 @@ void _start() {
     if(arr_contains(__ARGV__, __ARGC__, "--nolink") > -1)
 	{
         print("Exiting\n");
-        __syscall(60, 0, 0, 0, -1, -1, -1);
+        __syscall__(0, 0, 0, -1, -1, -1, _SYS_EXIT);
 	}
 
 	char *OUTPUT = __ARGV__[3];
@@ -197,5 +193,5 @@ void _start() {
 		execute(strip[0], strip);
 	}
 
-    __syscall(60, 0, 0, 0, -1, -1, -1);
+    __syscall__(0, 0, 0, -1, -1, -1, _SYS_EXIT);
 }

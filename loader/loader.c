@@ -6,7 +6,7 @@
 *   @Reason: To debug on linux raw binaries used for making OS(s)
 */
 // Loader's Main Function Declaration
-#include <clibp.h>
+#include "../headers/clibp.h"
 int start_up();
 int entry();
 /* Declare Function from build/lib.o */
@@ -19,38 +19,35 @@ __attribute__((used, externally_visible)) void __execute(char *app, char **args)
 	if(!app || !args)
 		return;
 
-	int pid;
-	__syscall(57, -1, -1, -1, -1, -1, -1);
-	register long r asm("rax");
-	pid = r;
+	long pid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_FORK);
 
 	if(pid == 0)
 	{
-		__syscall(59, (long)app, (long)args, 0, -1, -1, -1);
+		__syscall__((long)app, (long)args, 0, -1, -1, -1, _SYS_EXECVE);
 	} else if(pid > 0) {
-		__syscall(61, pid, 0, 0, -1, -1, -1);
+		__syscall__(pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
 	} else {
-		__syscall(1, 1, (long)"fork error\n", 7, -1, -1, -1);
+		__syscall__(1, (long)"fork error\n", 7, -1, -1, -1, _SYS_WRITE);
 	}
 }
 
 static int ___get_cmd_info(char *buffer) {
-    __syscall(2, (long)"/proc/self/cmdline", 0, 0, -1, -1, -1);
-    register long open asm("rax");
-    if(open <= 0)
+    #if defined(__x86__) || defined(__x86_64__)
+        long fd = __syscall__((long)"/proc/self/cmdline", 0, 0, -1, -1, -1, _SYS_OPEN);
+	#elif defined(__riscv)
+    	long fd = __syscall__(-100, (long)"/proc/self/cmdline", 0, 0, -1, -1, _SYS_OPENAT);
+	#endif
+    if(fd <= 0)
     {
         return -1;
     }
     
-    int fd = open;
     char BUFFER[255];
-    __syscall(0, fd, (long)BUFFER, 255, -1, -1, -1);
-    register long bts asm("rax");
+    long bytes = __syscall__(fd, (long)BUFFER, 255, -1, -1, -1, _SYS_READ);
 
-    int bytes = bts;
     mem_cpy(buffer, BUFFER, bytes);
 
-    __syscall(3, fd, -1, -1, -1, -1, -1);
+    __syscall__(_SYS_CLOSE, fd, -1, -1, -1, -1, -1);
     return bytes;
 }
 

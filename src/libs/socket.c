@@ -5,9 +5,7 @@ _sock_t listen_tcp(const string ip, int port, int concurrent)
 	if(!ip || port <= 0)
 		return (_sock_t){0};
 
-	__syscall(_SYS_SOCKET, 2, 1, 0, 0, 0, 0);
-	register int sck asm("rax");
-	int sock = sck;
+	long sock = __syscall__(2, 1, 0, 0, 0, 0, _SYS_SOCKET);
 	if(sock < 0) {
 		println("[ x ] Error, Unable to create socket...!");
 		return (_sock_t){-1};
@@ -27,24 +25,21 @@ _sock_t listen_tcp(const string ip, int port, int concurrent)
 	server_addr.sin_port = _htons(port);
 
 	int reuse = 1;
-	__syscall(_SYS_SETSOCKOPT, sock, 1, 2, (long)&reuse, sizeof(reuse), 0);
-	register int cc asm("rax");
+	long cc = __syscall__(sock, 1, 2, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
 	if(cc < 0)
 	{
 		println("[ x ] Error, Unable to set socket option...!");
 		return (_sock_t){-1};
 	}
 
-	__syscall(49, sock, (long)&server_addr, sizeof(server_addr), 0, 0, 0);
-	register int chk asm("rax");
+	long chk = __syscall__(sock, (long)&server_addr, sizeof(server_addr), 0, 0, 0, _SYS_BIND);
 	if(chk < 0)
 	{
 		println("[ x ] Error, Unable to bind socket...!");
 		return (_sock_t){-1};
 	}
 
-	__syscall(_SYS_LISTEN, sock, concurrent, 0, 0, 0, 0);
-	register int c asm("rax");
+	long c = __syscall__(sock, concurrent, 0, 0, 0, 0, _SYS_LISTEN);
 	if(c < 0)
 	{
 		println("[ x ] Error, Unable to listen to socket....!");
@@ -61,12 +56,11 @@ _sock_t listen_tcp(const string ip, int port, int concurrent)
 
 _sock_t sock_accept(_sock_t sock, len_t len)
 {
-	#if defined(___x86___)
-		__syscall(_SYS_ACCEPT4, sock.fd, 0, 0, -1, -1, -1);
-	#elif defined(___x86_64___)
-		__syscall(_SYS_ACCEPT, sock.fd, 0, 0, -1, -1, -1);
+	#if defined(___x86___) || defined(__riscv)
+		long client_fd = __syscall__(sock.fd, 0, 0, -1, -1, -1, _SYS_ACCEPT4);
+	#elif defined(__x86_64__)
+		long client_fd = __syscall__(sock.fd, 0, 0, -1, -1, -1, _SYS_ACCEPT);
 	#endif
-	register int client_fd asm("rax");
 	_sock_t s = {
 		.fd = client_fd,
 		.buff_len = len
@@ -78,9 +72,7 @@ _sock_t sock_accept(_sock_t sock, len_t len)
 string sock_read(_sock_t sock)
 {
 	char BUFF[sock.buff_len];
-	__syscall(_SYS_READ, sock.fd, (long)BUFF, sock.buff_len, 0, 0, 0);
-	register int bts asm("rax");
-	int bytes = bts;
+	long bytes = __syscall__(sock.fd, (long)BUFF, sock.buff_len, 0, 0, 0, _SYS_READ);
 	if(bytes > 0)
 	{
 		string buffer = allocate(0, bytes);
@@ -93,9 +85,7 @@ string sock_read(_sock_t sock)
 
 int create_socket(int family, int type, int protocol)
 {
-	__syscall(family, type, protocol, 0, 0, 0, 0);
-	register int sock asm("rax");
-	return sock;
+	return __syscall__(family, type, protocol, 0, 0, 0, _SYS_SOCKET);
 }
 
 int parse_ipv4(const char *ip, unsigned int *out)

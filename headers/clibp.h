@@ -77,7 +77,13 @@ typedef i32					pos_t;
 */
 typedef void                fn_t;
 
+/* Platform Detection */
+#if defined(__riscv)
+	#define memset mem_set
+#endif
+
 /*
+	Compiler Detection
     Implment C Types when using -nostdlib -nostdinc
 */
 #if defined(__TINYC__) || defined(__GNUC__)
@@ -218,7 +224,7 @@ int 	get_args(char *argv[]);
 				>0 on sucess
 				-1 on fail
 	*/
-	fd_t	open_file(const char *filename, FILE_MODE mode);
+	fd_t	open_file(const char *filename, FILE_MODE mode, int flags);
 
 	/*
 		[@DOC]

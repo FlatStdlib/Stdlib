@@ -20,22 +20,20 @@ static int _str_len(const string buffer)
 }
 
 static int get_cmd_info(string buffer) {
-    __syscall(2, (long)"/proc/self/cmdline", 0, 0, -1, -1, -1);
-    register long open asm("rax");
-    if(open <= 0)
-    {
-        return -1;
-    }
-    
-    int fd = open;
-    char BUFFER[255] = {0};
-    __syscall(0, fd, (long)BUFFER, 255, -1, -1, -1);
-    register long bts asm("rax");
+    #if defined(__x86__) || defined(__x86_64__)
+        long fd = __syscall__((long)"/proc/self/cmdline", 0, 0, -1, -1, -1, _SYS_OPEN);
+	#elif defined(__riscv)
+    	long fd = __syscall__(-100, (long)"/proc/self/cmdline", 0, 0, -1, -1, _SYS_OPENAT);
+	#endif
 
-    int bytes = bts;
+    if(fd <= 0)
+        return -1;
+    
+    char BUFFER[255] = {0};
+    long bytes = __syscall__(fd, (long)BUFFER, 255, -1, -1, -1, _SYS_READ);
     _mem_cpy(buffer, BUFFER, bytes);
 
-    __syscall(3, fd, 0, 0, -1, -1, -1);
+    __syscall__(fd, 0, 0, -1, -1, -1, _SYS_CLOSE);
     return bytes;
 }
 
@@ -61,11 +59,9 @@ static int _find_char(const char *buffer, const char ch, int sz, int match) {
     return -1;
 }
 
-int get_pid() {
-    __syscall(39, 0, 0, 0, -1, -1, -1);
-    volatile register long sys asm("rax");
-
-    return sys;
+int get_pid()
+{
+    return __syscall__(0, 0, 0, -1, -1, -1, _SYS_GETPID);
 }
 
 int get_args(char *argv[]) {
