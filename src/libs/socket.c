@@ -1,91 +1,74 @@
 #include "../../headers/clibp.h"
 
-_sock_t listen_tcp(const string ip, int port, int concurrent)
+sock_t listen_tcp(const string ip, int port, int concurrent)
 {
 	if(port <= 0)
-		return (_sock_t){0};
+		return NULL;
 
-	long sock = __syscall__(2, 1, 0, 0, 0, 0, _SYS_SOCKET);
-	if(sock < 0) {
-		println("[ x ] Error, Unable to create socket...!");
-		return (_sock_t){-1};
-	}
+    long sock = __syscall__(AF_INET, 1, 0, 0, 0, 0, _SYS_SOCKET);
+    if (sock < 0)
+		clibp_panic("error, unable to create a socket...!");
 
 	if(__CLIBP_DEBUG__)
-		print("Socket: "), _printi(sock), print("\n");
+		print("Socket successfully created: "), _printi(sock), print("\n");
 
-	sockaddr_in server_addr;
-	mem_set(&server_addr, 0, sizeof(sockaddr_in));
+    /* reuse address */
+    int reuse = 1;
+    long cc = ___syscall__(sock, SOL_SOCKET, SO_REUSEADDR, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
+    if (cc < 0)
+		clibp_panic("error, unable to reuse addr...!");
 
-	server_addr.sin_family = 2;
-	if(ip && !parse_ipv4(ip, &server_addr.sin_addr))
-	{
-		println("[ x ] Error, Invalid IP for socket...!");
-		return (_sock_t){-1};
-	} else {
-		server_addr.sin_addr = 0;
-	}
+    /* bind */
+    _sockaddr_in addr;
+    mem_set(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = _htons((unsigned short)port);
+    addr.sin_addr.s_addr = 0; // INADDR_ANY
 
-	server_addr.sin_port = _htons(port);
+    long ret = __syscall__(sock, (long)&addr, sizeof(addr), 0, 0, 0, _SYS_BIND);
+    if (ret < 0)
+		clibp_panic("error, unable to bind socket...!");
 
-	int reuse = 1;
-//	int cc = __syscall__(sock, 1, 2, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
-//	if(cc < 0)
-//	{
-//		clibp_panic("error, Unable to set socket option...!");
-//		return (_sock_t){-1};
-//	}
+    /* listen */
+    ret = __syscall__(sock, concurrent, 0, 0, 0, 0, _SYS_LISTEN);
 
-	long chk = __syscall__(sock, (long)&server_addr, sizeof(server_addr), 0, 0, 0, _SYS_BIND);
-	if(chk < 0)
-	{
-		clibp_panic("error, Unable to bind socket...!");
-		return (_sock_t){-1};
-	}
-
-	long c = __syscall__(sock, concurrent, 0, 0, 0, 0, _SYS_LISTEN);
-	if(c < 0)
-	{
-		clibp_panic("error, Unable to listen to socket....!");
-		return (_sock_t){-1};
-	}
-
-	_sock_t socket = {
-		.fd = sock,
-		.addr = server_addr
-	};
-
+	sock_t socket = allocate(0, sizeof(_sock_t));
+	socket->fd = sock;
+	socket->addr = addr;
 	return socket;
 }
 
-_sock_t sock_accept(_sock_t sock, len_t len)
+sock_t sock_accept(sock_t server, len_t len)
 {
 	#if defined(___x86___) || defined(__riscv)
-		long client_fd = __syscall__(sock.fd, 0, 0, -1, -1, -1, _SYS_ACCEPT4);
+		long client_fd = __syscall__(server->fd, 0, 0, -1, -1, -1, _SYS_ACCEPT4);
 	#elif defined(__x86_64__)
-		long client_fd = __syscall__(sock.fd, 0, 0, -1, -1, -1, _SYS_ACCEPT);
+		long client_fd = __syscall__(server->fd, 0, 0, -1, -1, -1, _SYS_ACCEPT);
 	#endif
-	_sock_t s = {
-		.fd = client_fd,
-		.buff_len = len
-	};
+	
+	if(client_fd < 0)
+		return NULL;
 
-	return s;
+	sock_t client = allocate(0, sizeof(_sock_t));
+	client->fd = client_fd;
+	client->buff_len = len;
+
+	return client;
 }
 
-int sock_write(_sock_t sock, string buffer)
+int sock_write(sock_t sock, string buffer)
 {
-	return __syscall__(sock.fd, (long)buffer, str_len(buffer), -1, -1, -1, _SYS_WRITE);
+	return __syscall__(sock->fd, (long)buffer, str_len(buffer), -1, -1, -1, _SYS_WRITE);
 }
 
-string sock_read(_sock_t sock)
+string sock_read(sock_t sock)
 {
-	char BUFF[sock.buff_len];
-	long bytes = __syscall__(sock.fd, (long)BUFF, sock.buff_len, 0, 0, 0, _SYS_READ);
+	char BUFF[sock->buff_len];
+	long bytes = __syscall__(sock->fd, (long)BUFF, sock->buff_len, 0, 0, 0, _SYS_READ);
 	if(bytes > 0)
 	{
 		string buffer = allocate(0, bytes + 1);
-		mem_cpy(buffer, BUFF, sock.buff_len);
+		mem_cpy(buffer, BUFF, sock->buff_len);
 		buffer[bytes] = '\0';
 		return buffer;
 	}
@@ -166,8 +149,8 @@ unsigned int _htonl(unsigned int x)
            ((x & 0xFF000000) >> 24);
 }
 
-fn sock_close(_sock_t sock)
+fn sock_close(sock_t sock)
 {
-	__syscall__(sock.fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
-	mem_set(&sock, 0, sizeof(_sock_t));
+	__syscall__(sock->fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
+	mem_set(sock, 0, sizeof(_sock_t));
 }

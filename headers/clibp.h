@@ -97,6 +97,7 @@ typedef unsigned long int		uintptr_t;
 long _syscall(long n, long a1, long a2, long a3, long a4, long a5, long a6);
 fn __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
 long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, long sys);
+long ___syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, long sys);
 
 // Get Start-up App Cmdline Arguments
 int 	get_args(char* argv[]);
@@ -293,41 +294,49 @@ fn		file_close(fd_t fd);
 #endif
 
 #ifdef _CLIBP_SOCKET_H
-typedef struct {
-	u16                 sun_family;
-	char                sun_path[108];
-} sockaddr_un;
+#define AF_INET         2
+#define SOL_SOCKET      1
+#define SO_REUSEADDR    2
+
+struct sockaddr_un {
+    u16  			sun_family;
+    char 			sun_path[108];
+};
 
 typedef struct {
-	unsigned short int  sin_family;
-	unsigned short int  sin_port;
-	unsigned int        sin_addr;
-	unsigned char       sin_zero[8];
-} sockaddr_in;
+    u16 		sin_family;
+    u16 		sin_port;
+    struct { 
+		u32 s_addr; 
+	} 			sin_addr;
+    u8 			sin_zero[8];
+} _sockaddr_in;
+
+struct sockaddr_in6{
+    u16 				sin6_family;
+    u16 				sin6_port;
+    i32 				sin6_flowinfo;
+    struct { 
+		unsigned char s6_addr[16]; 
+	} 						sin6_addr;
+    i32 					sin6_scope_id;
+};
 
 typedef struct {
-	unsigned short int  sin6_family;
-	unsigned short int  sin6_port;
-	unsigned int        sin6_flowinfo;
-	unsigned char       sin6_addr[16];
-	unsigned int        sin6_scope_id;
-} sockaddr_in6;
+	int             				fd;
+	_sockaddr_in					addr;
 
-typedef struct {
-	int             fd;
-	sockaddr_in     addr;
-
-	int             buff_len;
+	int             				buff_len;
 } _sock_t;
 
 typedef _sock_t* sock_t;
-_sock_t listen_tcp(const string ip, int port, int concurrent);
-_sock_t sock_accept(_sock_t sock, len_t len);
-int sock_write(_sock_t sock, string buffer);
-string sock_read(_sock_t sock);
+sock_t listen_tcp(const string ip, int port, int concurrent);
+sock_t sock_accept(sock_t sock, len_t len);
+int sock_write(sock_t sock, string buffer);
+string sock_read(sock_t sock);
 int parse_ipv4(const char* ip, unsigned int* out);
 char* convert_ip(unsigned int ip);
 unsigned short _htons(unsigned short x);
 unsigned int _htonl(unsigned int x);
-fn sock_close(_sock_t);
+fn sock_close(sock_t);
 #endif
