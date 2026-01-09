@@ -190,9 +190,11 @@ int 	get_args(char *argv[]);
 	fn 		istr(char *dest, int num);
 	len_t 	str_len(string buffer);
 	string 	str_dup(const string buffer);
-	int   	stra(string src, const string sub);
+	int   	str_append(string src, const string sub);
 	bool	str_cmp(const string src, const string needle);
 	pos_t 	find_str(const string buff, const string needle);
+	sArr 	split_lines(const string buffer, int *idx);
+	sArr 	split_string(const string buffer, const char ch, int *idx);
 #endif
 
 #ifdef _CLIBP_ARR_H

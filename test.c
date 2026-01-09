@@ -1,10 +1,5 @@
 #include <clibp.h>
 
-sArr split_lines(string buffer, int *idx)
-{
-	return split_string(buffer, '\n', idx);
-}
-
 sArr split_string(string buffer, const char ch, int *idx)
 {
     if(!buffer)
@@ -52,6 +47,11 @@ sArr split_string(string buffer, const char ch, int *idx)
 
 //    free_arr((void *)arr);
     return NULL;
+}
+
+sArr split_lines(string buffer, int *idx)
+{
+	return split_string(buffer, '\n', idx);
 }
 
 const string info = "PRETTY_NAME=\"Ubuntu 24.04.3 LTS\"\n"
