@@ -90,6 +90,8 @@ compile:
 	src/stdlib/*.c \
 	src/libs/*.c \
 	-nostdlib -nostdinc
+	rm -rf build/libclibp.a
+	rm -rf build/clibp.o
 	ar rcs build/libclibp.a *.o
 	ar rcs build/clibp.o *.o
 	rm -rf *.o
