@@ -107,6 +107,7 @@ bool __arr_contains(sArr arr, i32 size, string value)
 /* gcc_clibp t.c -o t */
 int entry(int argc, char *argv[])
 {
+	println("Loaded from clib+");
 	if(argc < 3)
 	{
 		println("[ x ] error, invalid arguments provided\nUsage: gcc_clibp <file> <-c/-o> <output_file>\nUse '--h' for a list of arguments");
@@ -158,7 +159,6 @@ int entry(int argc, char *argv[])
 /* gcc t.c -o t -lclibp */
 int main(int argc, char *argv[])
 {
-	int exit = entry(argc, argv);
-	printf("HERE\n");
-	return exit;
+	println("Loaded from libc");
+	return 0;
 }

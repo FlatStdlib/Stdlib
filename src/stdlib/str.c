@@ -22,7 +22,7 @@ fn _sprintf(string buffer, string format, any *args)
            	else
            		buffer[idx++] = t + '0';
 
-           	pfree(num);
+           	pfree(num, 1);
             arg++;
             i++;
             continue;
@@ -68,9 +68,10 @@ string str_dup(const string buff)
 {
 	int len = str_len(buff);
 
-	string buffer = (string)allocate(0, len);
+	string buffer = (string)allocate(0, len + 1);
 	mem_cpy(buffer, buff, len);
 
+	buffer[len - 1] = '\0';
 	return buffer;
 }
 
@@ -119,25 +120,6 @@ int stra(string buff, const string sub) {
 	}
 
 	return 1;
-}
-
-// Find Char (to find multiple, increament match each call until -1 or set to 0 to just find 1)
-pos_t find_char(const string buff, const char ch, int match)
-{
-	if(!buff || ch == 0)
-		return -1;
-
-	len_t len = str_len(buff);
-	for(int i = 0; i < len; i++)
-	{
-		if(buff[i] == '\0')
-			break;
-
-		if(buff[i] == ch && i == match)
-			return i;
-	}
-
-	return -1;
 }
 
 // Find String (to find multiple, increament match each call until -1)

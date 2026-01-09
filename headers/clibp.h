@@ -10,6 +10,7 @@
 extern int __CLIBP_DEBUG__;
 #ifndef __CLIBP__
 	#define __CLIBP__
+	#define _CLIBP_CHAR_H
 	#define _CLIBP_STR_H
 	#define _CLIBP_ARR_H
 	#define _CLIBP_MEM_H
@@ -57,7 +58,7 @@ typedef i32					*array;
 
 /* int array and char array */
 typedef i32					*iArr;
-typedef char				**sArr;
+typedef string				*sArr;
 
 typedef void 				*any;
 typedef void 				fn;
@@ -71,24 +72,13 @@ typedef i32 				len_t;
 typedef i32					pos_t;
 
 /*
-    Temporary
-    TODO; change str to string type
-    TODO; change fn_t to fn
-*/
-typedef void                fn_t;
-
-/* Platform Detection */
-#if defined(__riscv)
-	#define memset mem_set
-#endif
-
-/*
 	Compiler Detection
     Implment C Types when using -nostdlib -nostdinc
 */
 #if defined(__TINYC__) || defined(__GNUC__)
-
+	/* Alot of libc libs, have __GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION */
     #if !defined(_STDIO_H) || !defined(__GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION)
+    	#undef __GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION
         #define NULL                    ((void *)0)
     #endif
 
@@ -112,6 +102,7 @@ int 	get_args(char *argv[]);
 			__clibp_panic(msg);
 
 	/* internal.c */
+	fn		toggle_debug_mode();
 	fn 		ptr_to_str(void *p, char *out);
 	fn 		__exit(int code);
 	fn 		print_sz(const string buffer, int sz);
@@ -122,7 +113,7 @@ int 	get_args(char *argv[]);
 	fn 		print(const string buff);
 	fn		println(const string buff);
 	fn 		printsz(const string buff, int sz);
-	fn 		printa(const string *buff);
+	fn 		print_args(sArr arr);
 	ptr		to_heap(ptr p, i32 sz);
 	fn		__clibp_panic(string msg);
 #endif
@@ -154,6 +145,7 @@ int 	get_args(char *argv[]);
 
 	#define _STANDARD_MEM_SZ_   4096
 	#define _LARGE_MEM_SZ_      4096 * 3
+	extern int					_HEAP_PAGE_;
 	extern int                  _HEAP_SZ_;
 	extern int                  _HEAP_PAGE_SZ_;
 
@@ -177,8 +169,16 @@ int 	get_args(char *argv[]);
 	ptr         allocate(int sz, int len);
 	int         __get_size__(any ptr);
 	int         __is_heap_init__();
-	fn        	pfree(any ptr);
+	fn        	pfree(any ptr, int clean);
 	__meta__    *__get_meta__(any ptr);
+#endif
+
+#ifdef _CLIBP_CHAR_H
+	i32 	is_ascii(const char c);
+	i32 	is_ascii_alpha(const char c);
+	i32 	count_char(const string buffer, const char ch);
+	i32 	find_char(const string buffer, const char ch);
+	i32 	find_char_at(const string buffer, const char ch, int match);
 #endif
 
 /* stdlib/str.c */
@@ -186,13 +186,12 @@ int 	get_args(char *argv[]);
 	#define __sprintf(dest, format, ...) \
 		_sprintf(dest, format, (void *[]){__VA_ARGS__, 0});
 
-	fn_t 	_sprintf(string buffer, string format, any *args);
-	fn_t 	istr(char *dest, int num);
+	fn 		_sprintf(string buffer, string format, any *args);
+	fn 		istr(char *dest, int num);
 	len_t 	str_len(string buffer);
 	string 	str_dup(const string buffer);
 	int   	stra(string src, const string sub);
 	bool	str_cmp(const string src, const string needle);
-	pos_t 	find_char(const string buff, const char ch, int match);
 	pos_t 	find_str(const string buff, const string needle);
 #endif
 

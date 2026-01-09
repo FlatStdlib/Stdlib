@@ -6,6 +6,8 @@ fd_t open_file(const char *filename, FILE_MODE mode, int flags)
     	long fd = __syscall__((long)filename, (long)flags, (long)mode, -1, -1, -1, _SYS_OPEN);
 	#elif defined(__riscv)
     	long fd = __syscall__(-100, (long)filename, (long)flags, (long)mode, -1, -1, _SYS_OPENAT);
+    #elif
+    	#error "Unsupported Arch"
 	#endif
 
     if(fd == -2)

@@ -134,6 +134,12 @@ void get_cmdline_args()
 void _start() {
     get_cmdline_args();
 
+    if(__ARGC__ < 3)
+    {
+		print("[ x ] Error, Invalid arguments provided...\nUsage: gcc_clibp <c_file> <option> <output> [rest_of_compiler_commands]\n");
+		__syscall__(0, 0, 0, 0, 0, 0, _SYS_EXIT);
+    }
+
     char *SRC_CODE_FILE = __ARGV__[1];
     int src_len = _str_len(SRC_CODE_FILE);
 

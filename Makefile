@@ -102,18 +102,19 @@ compile:
 cloader:
 	gcc -c linker/gcc_clibp.c -o gcc_clibp.o -nostdlib
 	gcc -c loader/loader.c -o loader/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
-	gcc -c loader/init_loader.c -o loader/init_loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
+	gcc -c loader/init_loader.c -o loader/init_loader.o -nostdlib -ffunction-sections -Wl,--gc-sections -nostdlib
 	ld -o gcc_clibp gcc_clibp.o build/clibp.o
 	rm gcc_clibp.o
 
 test_run:
-	sudo make && ./gcc_clibp gay.c -o t && ./t
-	c99 gay.c -o t -lclibp && ./t
+	sudo make && ./gcc_clibp tests/heap.c -o t && ./t
+	c99 tests/heap.c -o t -lclibp && ./t
 
 riscv-gcc:
 	mkdir -p build
 
-	riscv64-linux-gnu-gcc -c src/*.c \
+	clang --target=riscv64-unknown-elf \
+	-c src/*.c \
 	src/stdlib/*.c \
 	src/libs/*.c \
 	-nostdlib -nostdinc
@@ -122,13 +123,8 @@ riscv-gcc:
 	ar rcs build/riscv_clibp.o *.o
 	rm -rf *.o
 
-	riscv64-linux-gnu-gcc -std=c99 -c linker/gcc_clibp.c -o riscv_gcc_clibp.o -nostdlib
-	riscv64-linux-gnu-gcc -std=c99 -c loader/loader.c -o loader/riscv_loader.o -ffunction-sections -Wl,--gc-sections
+	clang --target=riscv64-unknown-elf -c linker/gcc_clibp.c -o riscv_gcc_clibp.o -nostdlib
 
-	riscv64-linux-gnu-ld -o riscv_gcc_clibp riscv_gcc_clibp.o build/riscv_clibp.o
-	rm riscv_gcc_clibp.o
-
-	cp -r headers/* /usr/local/include
-	cp build/riscv_libclibp.a /usr/lib
+	riscv64-unknown-elf-ld -o riscv_gcc_clibp riscv_gcc_clibp.o build/*.o
 
 	rm -rf *.o

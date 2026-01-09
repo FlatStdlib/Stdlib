@@ -3,6 +3,12 @@
 #include "../headers/asm.h"
 
 int __CLIBP_DEBUG__ = 0;
+
+fn toggle_debug_mode()
+{
+	__CLIBP_DEBUG__ = __CLIBP_DEBUG__ ? 0 : 1;
+}
+
 fn __exit(i32 code)
 {
 	__syscall__(code, 0, 0, -1, -1, -1, _SYS_EXIT);
@@ -55,11 +61,11 @@ fn _printi(int num)
 {
     int temp = num, c = 0;
     char buff[150];
-    if(num == 0)
-    {
-		print("0");
-		return;
-    }
+//    if(num == 0)
+//    {
+//		print("0");
+//		return;
+//    }
 
     while(temp)
     {
@@ -117,9 +123,17 @@ fn println(const string buff)
 	__syscall__(1, (unsigned long)"\n", 1, -1, -1, -1, _SYS_WRITE);
 }
 
+fn print_args(sArr arr)
+{
+	for(int i = 0; arr[i] != NULL; i++)
+	{
+		print(arr[i]);
+	}
+}
+
 ptr to_heap(ptr p, i32 sz)
 {
-	ptr pointer = allocate(0, sz);
+	ptr pointer = allocate(0, sz + 1);
 	mem_cpy(pointer, p, sz);
 
 	((string)pointer)[sz] = '\0';
@@ -128,7 +142,8 @@ ptr to_heap(ptr p, i32 sz)
 
 fn __clibp_panic(string msg)
 {
-	print(__FILE__), print(":"), _printi(__LINE__), print(" ");
-	println(msg);
+	print(__FILE__), print(":"), _printi(__LINE__),
+	print(" -> "), println(msg);
+
 	__exit(1);
 }
