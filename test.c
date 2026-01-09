@@ -71,8 +71,9 @@ int entry()
 
 	for(int i = 0; i < line_count; i++)
 	{
-		(i > 9 ? _printi(i) : printi(i));
-		print(": "), println(test[i]);
+		char output[150];
+		__sprintf(output, "[ %d ]: %s", &i, test[i]);
+		println(output);
 	}
 	return 0;
 }

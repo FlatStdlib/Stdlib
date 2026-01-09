@@ -42,7 +42,7 @@ make # make tcc (for tcc (not complete, testing stage))
 # Standard Lib Use
 
 ```c
-<clibp.h>
+#include <clibp.h>
 
 int entry() {
 	println("Hello World");

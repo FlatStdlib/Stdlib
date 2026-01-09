@@ -34,7 +34,8 @@ fn _sprintf(string buffer, string format, any *args)
 				buffer[idx++] = ptr_buff[c];
 
 			arg++;
-			i += 2;
+			i++;
+			continue;
         }
 
         buffer[idx++] = format[i];
