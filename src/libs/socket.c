@@ -14,7 +14,7 @@ _sock_t listen_tcp(const string ip, int port, int concurrent)
 	if(__CLIBP_DEBUG__)
 		print("Socket: "), _printi(sock), print("\n");
 
-	sockaddr_in server_addr, client_addr;
+	sockaddr_in server_addr;
 	mem_set(&server_addr, 0, sizeof(sockaddr_in));
 
 	server_addr.sin_family = 2;
