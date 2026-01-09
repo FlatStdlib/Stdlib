@@ -13,9 +13,11 @@ int entry()
 		if(!(client = sock_accept(server, 1024)))
 			continue;
 		println("Client Connected");
+		
+		sock_write(client, "hi");
+		sock_close(client);
 	}
 
-	sock_write(client, "hi");
-	sock_close(client);
+	sock_close(server);
 	return 0;
 }
