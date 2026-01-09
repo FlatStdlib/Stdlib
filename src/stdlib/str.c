@@ -198,6 +198,6 @@ sArr split_string(const string buffer, const char ch, int *idx)
     if(*idx > 0)
         return arr;
 
-    pfree(arr);
+    pfree(arr, 1);
     return NULL;
 }

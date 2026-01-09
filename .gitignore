@@ -7,3 +7,8 @@ loader/*.o
 *.save
 a.out
 *.a
+*.c
+p
+t
+gcc_clibp
+

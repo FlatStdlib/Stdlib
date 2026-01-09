@@ -2,7 +2,7 @@
 
 _sock_t listen_tcp(const string ip, int port, int concurrent)
 {
-	if(!ip || port <= 0)
+	if(port <= 0)
 		return (_sock_t){0};
 
 	long sock = __syscall__(2, 1, 0, 0, 0, 0, _SYS_SOCKET);
@@ -11,9 +11,13 @@ _sock_t listen_tcp(const string ip, int port, int concurrent)
 		return (_sock_t){-1};
 	}
 
-	sockaddr_in server_addr, client_addr;
+	if(__CLIBP_DEBUG__)
+		print("Socket: "), _printi(sock), print("\n");
 
-	server_addr.sin_family = 0;
+	sockaddr_in server_addr, client_addr;
+	mem_set(&server_addr, 0, sizeof(sockaddr_in));
+
+	server_addr.sin_family = 2;
 	if(ip && !parse_ipv4(ip, &server_addr.sin_addr))
 	{
 		println("[ x ] Error, Invalid IP for socket...!");
@@ -25,24 +29,24 @@ _sock_t listen_tcp(const string ip, int port, int concurrent)
 	server_addr.sin_port = _htons(port);
 
 	int reuse = 1;
-	long cc = __syscall__(sock, 1, 2, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
-	if(cc < 0)
-	{
-		println("[ x ] Error, Unable to set socket option...!");
-		return (_sock_t){-1};
-	}
+//	int cc = __syscall__(sock, 1, 2, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
+//	if(cc < 0)
+//	{
+//		clibp_panic("error, Unable to set socket option...!");
+//		return (_sock_t){-1};
+//	}
 
 	long chk = __syscall__(sock, (long)&server_addr, sizeof(server_addr), 0, 0, 0, _SYS_BIND);
 	if(chk < 0)
 	{
-		println("[ x ] Error, Unable to bind socket...!");
+		clibp_panic("error, Unable to bind socket...!");
 		return (_sock_t){-1};
 	}
 
 	long c = __syscall__(sock, concurrent, 0, 0, 0, 0, _SYS_LISTEN);
 	if(c < 0)
 	{
-		println("[ x ] Error, Unable to listen to socket....!");
+		clibp_panic("error, Unable to listen to socket....!");
 		return (_sock_t){-1};
 	}
 
@@ -69,14 +73,20 @@ _sock_t sock_accept(_sock_t sock, len_t len)
 	return s;
 }
 
+int sock_write(_sock_t sock, string buffer)
+{
+	return __syscall__(sock.fd, (long)buffer, str_len(buffer), -1, -1, -1, _SYS_WRITE);
+}
+
 string sock_read(_sock_t sock)
 {
 	char BUFF[sock.buff_len];
 	long bytes = __syscall__(sock.fd, (long)BUFF, sock.buff_len, 0, 0, 0, _SYS_READ);
 	if(bytes > 0)
 	{
-		string buffer = allocate(0, bytes);
+		string buffer = allocate(0, bytes + 1);
 		mem_cpy(buffer, BUFF, sock.buff_len);
+		buffer[bytes] = '\0';
 		return buffer;
 	}
 
@@ -154,4 +164,10 @@ unsigned int _htonl(unsigned int x)
            ((x & 0x0000FF00) << 8)  |
            ((x & 0x00FF0000) >> 8)  |
            ((x & 0xFF000000) >> 24);
+}
+
+fn sock_close(_sock_t sock)
+{
+	__syscall__(sock.fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
+	mem_set(&sock, 0, sizeof(_sock_t));
 }

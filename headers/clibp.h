@@ -99,7 +99,7 @@ int 	get_args(char *argv[]);
 
 #ifdef _CLIBP_INTERNAL_H
 	#define clibp_panic(msg) 	\
-			__clibp_panic(msg);
+			__clibp_panic(msg, __FILE__, __LINE__);
 
 	/* internal.c */
 	fn		toggle_debug_mode();
@@ -115,7 +115,7 @@ int 	get_args(char *argv[]);
 	fn 		printsz(const string buff, int sz);
 	fn 		print_args(sArr arr);
 	ptr		to_heap(ptr p, i32 sz);
-	fn		__clibp_panic(string msg);
+	fn		__clibp_panic(string msg, string file, int line);
 #endif
 
 /*
@@ -309,8 +309,12 @@ int 	get_args(char *argv[]);
 
 	typedef _sock_t *sock_t;
 	_sock_t listen_tcp(const string ip, int port, int concurrent);
+	_sock_t sock_accept(_sock_t sock, len_t len);
+	int sock_write(_sock_t sock, string buffer);
+	string sock_read(_sock_t sock);
     int parse_ipv4(const char *ip, unsigned int *out);
     char *convert_ip(unsigned int ip);
     unsigned short _htons(unsigned short x);
     unsigned int _htonl(unsigned int x);
+    fn sock_close(_sock_t);
 #endif

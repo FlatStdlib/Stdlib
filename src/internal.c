@@ -140,9 +140,9 @@ ptr to_heap(ptr p, i32 sz)
 	return pointer;
 }
 
-fn __clibp_panic(string msg)
+fn __clibp_panic(string msg, string file, int line)
 {
-	print(__FILE__), print(":"), _printi(__LINE__),
+	print(file), print(":"), _printi(line),
 	print(" -> "), println(msg);
 
 	__exit(1);
