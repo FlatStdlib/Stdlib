@@ -69,72 +69,76 @@ typedef enum {
     LOOP_DETECTED                   = 508,
     NOT_EXTENDED                    = 510,
     NETWORK_AUTHENTICATION_REQUIRED = 511
-} StatusCode;
+} http_status_code;
 
-#define STATUS_CODE_COUNT {}
 typedef enum
 {
-	_rNULL 			= 0,
-	_rGET 			= 1,
-	_rPOST 			= 2,
-	_rHEAD 			= 3
+	_rNULL 				= 0,
+	_rGET 				= 1,
+	_rPOST 				= 2,
+	_rHEAD 				= 3
 } request_t;
 
 typedef struct
 {
-	string			name;
-	string			path;
-	handler_t		handle;
+	string				name;
+	string				path;
+	handler_t			handle;
 
-	bool			parse_status_code;
-	bool			parse_headers;
-	bool			code;
+	bool				parse_status_code;
+	bool				parse_headers;
+	bool				code;
 } _route;
 
-typedef _route 		route;
-typedef _route 		*route_t;
-typedef _route 		**rArr;
+typedef _route 			route;
+typedef _route 			*route_t;
+typedef _route 			**rArr;
 
 typedef struct
 {
-	i16				socket;
-	request_t		type;
-	request_t		status;
-	string			path;
-	string			http_version;
+	sock_t				socket;
+	request_t			type;
+	http_status_code	status;
+	string				path;
+	string				http_version;
 
-//	map_t			headers;
-//	map_t			post;
+//	map_t				headers;
+//	map_t				post;
 
-	string 			content;
-	sArr			lines;
-	i32				body_line;
+	string 				content;
+	sArr				lines;
+	i32					body_line;
+	thread_t			thread;
 } _cwr;
 
-typedef _cwr 		cwr;
-typedef _cwr 		*cwr_t;
+typedef _cwr 			cwr;
+typedef _cwr 			*cwr_t;
 
 typedef struct
 {
 	/* Web server's socket info */
-	string 			ip;
-	i32 			port;
-	sock_t			connection;
-	addr_in 		addr;
+	string 				ip;
+	i32 				port;
+	sock_t				connection;
+	addr_in 			addr;
+	thread_t			thread;
 
 	/* Routes */
-	handler_t 		middleware;
-	rArr			routes;
-	i32				route_count;
+	handler_t 			middleware;
+	rArr				routes;
+	i32					route_count;
 } _cws;
 
 
 typedef _cws 		cws;
 typedef _cws 		*cws_t;
 
-cws init_web_server(string ip, i32 port)
+handler_t listen_for_request(cws_t ws);
+handler_t request_handler(cwr_t wr);
+
+cws_t init_web_server(string ip, i32 port)
 {
-	cws server = {
+	cws webs = {
 		ip,
 		port,
 		listen_tcp(NULL, 8080, 999),
@@ -144,13 +148,59 @@ cws init_web_server(string ip, i32 port)
 		0
 	};
 
-	return to_heap(server, sizeof(_cws));
+	cws_t ws = to_heap(&webs, sizeof(_cws));
+	ws->thread = allocate(0, sizeof(_thread));
+	if(!ws->thread)
+		clibp_panic("error, unable to allocate mem");
+
+	*ws->thread = start_thread((handler_t)listen_for_request, ws, 0);
+	return ws;
 }
 
-fn listen_for_users(cws_t)
+handler_t listen_for_request(cws_t ws) {
+	sock_t client;
+	while(1)
+	{
+		if(!(client = sock_accept(ws->connection, 1024)))
+			continue;
+
+		cwr_t wr = allocate(0, sizeof(_cwr));
+		if(!wr)
+			clibp_panic("error, unable to allocate new request struct");
+		wr->socket = client;
+		wr->thread = allocate(0, sizeof(_thread));
+		*wr->thread = start_thread((handler_t)request_handler, wr, 0);
+	}
+}
+
+handler_t request_handler(cwr_t wr)
+{
+	string data = sock_read(wr->socket);
+	int len = str_len(data);
+
+	if(len < 3)
+	{
+		println("Malform request...!\n");
+		return NULL;
+	}
+
+	if(find_string(data, "GET")) {
+		wr->type = _rGET;
+	} else if(find_string(data, "POST"))
+	{
+		wr->type = _rPOST;
+	}
+
+}
 
 int entry()
 {
-	println("Hello");
+	cws_t ws = init_web_server(NULL, 8080);
+	if(!ws)
+	{
+		println("error, unable to put up the webserver!");
+		return 1;
+	}
+	println("Webserver up @ localhost:"), _printi(8080), print("\n");
 	return 0;
 }

@@ -107,8 +107,10 @@ fn print_args(sArr arr)
 ptr to_heap(ptr p, i32 sz)
 {
 	ptr pointer = allocate(0, sz + 1);
-	mem_cpy(pointer, p, sz);
+	if(!pointer)
+		return NULL;
 
+	mem_cpy(pointer, p, sz);
 	((string)pointer)[sz] = '\0';
 	return pointer;
 }

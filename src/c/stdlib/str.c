@@ -176,11 +176,15 @@ pos_t find_string(const string buff, const string needle) {
 	int len = str_len(buff);
 	int nlen = str_len(needle);
 
-	for (int i = 0; i <= len - nlen; i++) {
-		int j;
-		for (j = 0; j < nlen; j++)
-			if (buff[i + j] != needle[j]) break;
-		if (j == nlen) return i;
+	for (int i = 0; i <= len; i++) {
+		for(int c = 0; c < nlen; c++)
+		{
+			if(buff[i + c] == needle[c] && c == nlen - 1)
+				return 1;
+
+			if(buff[i + c] != needle[c])
+				break;
+		}
 	}
 
 	return -1;

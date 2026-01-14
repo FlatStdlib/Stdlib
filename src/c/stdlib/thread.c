@@ -1,6 +1,6 @@
 #include "../../../headers/clibp.h"
 
-thread start_thread(void *(*fnc)(), ptr p, int wait)
+thread start_thread(handler_t fnc, ptr p, int wait)
 {
 	if(!fnc)
 		return (thread){0};

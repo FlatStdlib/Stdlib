@@ -13,6 +13,7 @@ extern int __CLIBP_DEBUG__;
 	#define _CLIBP_CHAR_H
 	#define _CLIBP_STR_H
 	#define _CLIBP_ARR_H
+	#define _CLIBP_MAP_H
 	#define _CLIBP_MEM_H
 	#define _CLIBP_FILE_H
 	#define _CLIBP_SOCKET_H
@@ -54,7 +55,7 @@ typedef unsigned long long 	u64;
 typedef char* 				string;
 
 /* general array */
-typedef i32* 				array;
+typedef void** 				array;
 
 /* int array and char array */
 typedef i32* 				iArr;
@@ -235,7 +236,33 @@ i32		count_int_digits(i32 num);
 #endif
 
 #ifdef _CLIBP_ARR_H
-	int 	arr_contains(sArr args, string needle);
+	array 	init_array(void);
+	bool	array_append(array arr, ptr p);
+	int 	array_contains_ptr(array arr, ptr p);
+	int 	array_contains_str(sArr arr, string needle);
+#endif
+
+#ifdef _CLIBP_MAP_H
+	typedef struct {
+		string key;
+		string value;
+	} _field;
+
+	typedef _field field;
+	typedef _field *field_t;
+	typedef _field **fields_t;
+
+	typedef struct {
+		fields_t 	fields;
+		int 		len;
+	} _map;
+
+	typedef _map map;
+	typedef _map *map_t;
+
+	map_t 	init_map(void);
+	bool 	map_append(map_t map, string key, string value);
+	string 	find_key(map_t map, string key);
 #endif
 
 #ifdef _CLIBP_FILE_H
@@ -372,7 +399,7 @@ i32		count_int_digits(i32 num);
 #ifdef _CLIBP_THREAD_H
 	typedef struct
 	{
-		ptr 		(*fnc)();
+		handler_t	fnc;
 		ptr			arguments;
 		i8 			wait;
 		i8 			finished;
@@ -393,6 +420,6 @@ i32		count_int_digits(i32 num);
 	gthread 	init_group_thread();
 	bool 		append_thread(gthread *g, thread_t t);
 
-	thread 		start_thread(void *(*fnc)(), ptr p, int wait);
+	thread 		start_thread(handler_t fnc, ptr p, int wait);
 	fn 			thread_kill(thread_t t);
 #endif
