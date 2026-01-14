@@ -76,9 +76,10 @@ move:
 count:
 	wc -l \
 	tests/*.c \
-	src/*.c \
-	src/stdlib/*.c \
+	src/c/*.c \
+	src/c/stdlib/*.c \
 	headers/*.h \
+	src/asm/*.asm
 
 #
 # Compile the current arch core ASM lib for clib+ built-in
