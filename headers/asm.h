@@ -1,6 +1,4 @@
 /*
-		[ Cross-Compilation Support ]
-
 	- The core of clib+ - targets host cpu info & architecture functionality
 	- For Host Architecture, The plan is to have ASM Lib for all syscall to follow
 	  ABI standard like the current x86 and x86_64 ASM lib in 'src/asm/'
