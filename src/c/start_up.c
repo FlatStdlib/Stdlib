@@ -1,24 +1,5 @@
 #include "../../headers/clibp.h"
 
-static void _mem_cpy(string dest, const string buffer, i32 len)
-{
-    for(int i = 0; i < len; i++)
-    {
-        dest[i] = buffer[i];
-    }
-}
-
-static int _str_len(const string buffer)
-{
-    int count = 0;
-    for(int i = 0; buffer[i] != '\0'; i++)
-    {
-        count++;
-    }
-
-    return count;
-}
-
 static int get_cmd_info(string buffer) {
     #if defined(__x86__) || defined(__x86_64__)
         long fd = __syscall__((long)"/proc/self/cmdline", 0, 0, -1, -1, -1, _SYS_OPEN);
@@ -31,7 +12,7 @@ static int get_cmd_info(string buffer) {
 
     char BUFFER[1024] = {0};
     long bytes = __syscall__(fd, (long)BUFFER, 255, -1, -1, -1, _SYS_READ);
-    _mem_cpy(buffer, BUFFER, bytes);
+    mem_cpy(buffer, BUFFER, bytes);
 
     __syscall__(fd, 0, 0, -1, -1, -1, _SYS_CLOSE);
     return bytes;
@@ -57,11 +38,6 @@ static int _find_char(const char *buffer, const char ch, int sz, int match) {
     }
 
     return -1;
-}
-
-int get_pid()
-{
-    return __syscall__(0, 0, 0, -1, -1, -1, _SYS_GETPID);
 }
 
 int get_args(char *argv[]) {

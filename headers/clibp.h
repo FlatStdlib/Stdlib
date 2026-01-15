@@ -196,11 +196,13 @@ int 	get_input(string dest, len_t count);
 #endif
 
 /*
+		Int Toolchain
 	[ src/stdlib/char.c ]
 */
 i32		count_int_digits(i32 num);
 
 /*
+	 	Char Toolchain
 	[ src/stdlib/char.c ]
 */
 #ifdef _CLIBP_CHAR_H
