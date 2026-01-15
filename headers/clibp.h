@@ -10,6 +10,7 @@
 extern int __CLIBP_DEBUG__;
 #ifndef __CLIBP__
 	#define __CLIBP__
+	#define _CLIBP_INT_H
 	#define _CLIBP_CHAR_H
 	#define _CLIBP_STR_H
 	#define _CLIBP_ARR_H
@@ -110,23 +111,23 @@ long ___syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long ar
 int 	get_args(char* argv[]);
 
 #ifdef _CLIBP_INTERNAL_H
-#define clibp_panic(msg) 	\
-			__clibp_panic(msg, __FILE__, __LINE__);
+	#define clibp_panic(msg) 	\
+				__clibp_panic(msg, __FILE__, __LINE__);
 
-/* internal.c */
-fn		toggle_debug_mode();
-fn 		__exit(int code);
-fn 		execute(string app, sArr args);
-fn 		print_sz(const string buffer, int sz);
-fn		printc(const char ch);
-fn 		printi(int num);
-fn 		_printi(int value);
-fn 		print(const string buff);
-fn		println(const string buff);
-fn 		printsz(const string buff, int sz);
-fn 		print_args(sArr arr);
-ptr		to_heap(ptr p, i32 sz);
-fn		__clibp_panic(string msg, string file, int line);
+	/* internal.c */
+	fn		toggle_debug_mode();
+	fn 		__exit(int code);
+	fn 		execute(string app, sArr args);
+	fn 		print_sz(const string buffer, int sz);
+	fn		printc(const char ch);
+	fn 		printi(int num);
+	fn 		_printi(int value);
+	fn 		print(const string buff);
+	fn		println(const string buff);
+	fn 		printsz(const string buff, int sz);
+	fn 		print_args(sArr arr);
+	ptr		to_heap(ptr p, i32 sz);
+	fn		__clibp_panic(string msg, string file, int line);
 #endif
 
 /*
@@ -134,13 +135,13 @@ fn		__clibp_panic(string msg, string file, int line);
 	@File: src/mem.c
 */
 #ifdef _CLIBP_MEM_H
-/* General memory functions */
-fn 		memzero(any ptr, size_t);
-int 	mem_cmp(any src, any ptr, size_t size);
-fn 		mem_cpy(any dest, any src, size_t size);
-fn 		mem_set(any ptr, char ch, size_t size);
+	/* General memory functions */
+	fn 		memzero(any ptr, size_t);
+	int 	mem_cmp(any src, any ptr, size_t size);
+	fn 		mem_cpy(any dest, any src, size_t size);
+	fn 		mem_set(any ptr, char ch, size_t size);
 
-int 	get_input(string dest, len_t count);
+	int 	get_input(string dest, len_t count);
 #endif
 
 /*
@@ -196,13 +197,15 @@ int 	get_input(string dest, len_t count);
 #endif
 
 /*
-		Int Toolchain
-	[ src/stdlib/char.c ]
+			int
+	[ src/stdlib/int.c ]
 */
+#ifdef _CLIBP_INT_H
 i32		count_int_digits(i32 num);
+#endif
 
 /*
-	 	Char Toolchain
+	 		char
 	[ src/stdlib/char.c ]
 */
 #ifdef _CLIBP_CHAR_H
@@ -215,8 +218,10 @@ i32		count_int_digits(i32 num);
 	int 	replace_char(string buffer, const char find, const char replace);
 #endif
 
-
-/* stdlib/str.c */
+/*
+	 		string
+	[ src/stdlib/string.c ]
+*/
 #ifdef _CLIBP_STR_H
 	#define __sprintf(dest, format, ...) \
 			_sprintf(dest, format, (void *[]){__VA_ARGS__, 0});

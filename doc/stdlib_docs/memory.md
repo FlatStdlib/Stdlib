@@ -37,3 +37,15 @@
 </td></tr>
 </table>
 
+# Memory Library
+
+### Functions
+```c
+/* General memory functions */
+fn 		memzero(any ptr, size_t);
+int 	mem_cmp(any src, any ptr, size_t size);
+fn 		mem_cpy(any dest, any src, size_t size);
+fn 		mem_set(any ptr, char ch, size_t size);
+
+int 	get_input(string dest, len_t count);
+```

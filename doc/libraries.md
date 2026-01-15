@@ -1,6 +1,5 @@
 <div align="center">
     <h1>clib+ Libraries</h1>
-    <p>List Of Libraries Provided for clib+</p>
 
 [Start-up](/README.md)
 | [Introduction](/doc/intro.md)
@@ -8,6 +7,7 @@
 | [Todo](/doc/todo.md)
 </div>
 
+## List Of Libraries Provided for clib+
 <table align="center">
 <tr><td valign=top>
 
@@ -15,7 +15,7 @@
 
 * [Internal](/doc/stdlib_docs/internal.md)
 * [Allocator](/doc/stdlib_docs/allocator.md)
-* [Mem](/doc/stdlib_docs/mem.md)
+* [Memory](/doc/stdlib_docs/memory.md)
 * [Int](/doc/stdlib_docs/int.md)
 * [String](/doc/stdlib_docs/string.md)
 * [Array](/doc/stdlib_docs/array.md)
@@ -37,6 +37,6 @@
 </td></tr>
 </table>
 
-# Public Uploads
+## Public Uploads
 
 To upload a lib, You must request a PR with documentation
