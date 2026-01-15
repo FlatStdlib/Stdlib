@@ -30,7 +30,7 @@
 </td>
 <td valign=top>
 
-<p>External/Public Libs</p>
+<p>Public Libs</p>
 
 * [GLFW2](#)
 </td></tr>
