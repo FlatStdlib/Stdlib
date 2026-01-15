@@ -1,3 +1,6 @@
+global x86_64_mem_set
+glball x86_64_mem_cpy
+
 section .bss
 	buffer resb 1024
 	buff resb 1024
@@ -14,7 +17,8 @@ section .text
 ; 	RDX = size
 ;
 ; @return: void
-mem_set:
+x86_64_mem_set: 		; For external use in C
+__mem_set:
 	xor r10, r10
 
 	.mem_set_loop:
@@ -36,7 +40,8 @@ mem_set:
 ; 	RDX = size
 ;
 ; @return(RAX): idx as success or -1 as mismatch in
-mem_cpy:
+x86_64_mem_cpy:
+__mem_cpy:
 	xor r10, r10
 
 	.mem_cpy_loop:
