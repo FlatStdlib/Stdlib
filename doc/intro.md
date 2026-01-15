@@ -2,8 +2,8 @@
     <h1>clib+ Introduction</h1>
 
 [Start-up](/README.md)
-| ● [Introduction](doc/intro.md)
-| [Libraries](doc/libraries.md)
+| ● [Introduction](/doc/intro.md)
+| [Libraries](/doc/libraries.md)
 </div>
 
 
