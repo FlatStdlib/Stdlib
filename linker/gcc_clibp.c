@@ -184,8 +184,8 @@ void _start() {
         "-o",
         OUTPUT,
 		COPY,
-        "build/clibp.o",
-        "build/loader.o",
+        "/usr/lib/libclibp.a",
+        "/usr/lib/loader.o",
         0
     };
 

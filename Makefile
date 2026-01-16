@@ -82,6 +82,8 @@ cloader:
 #
 move:
 	cp -r headers/*.h $(HEADER_PATH)
+	cp $(BUILD)/$(LIB) $(LIB_PATH)
+	cp $(BUILD)/loader.o $(LIB_PATH)
 	cp gclibp $(CLIBP_PATH)
 	chmod +x $(CLIBP_PATH)
 
