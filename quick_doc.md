@@ -1,11 +1,12 @@
-Library Auto Documentation Test for clib+ header generated with ``_test.py``
+* A Documentation for developers who know what they're doing!
+
+* This documentation MD was generated using ``_test.py``
 
 # _CLIBP_INTERNAL_H
 ```c
 	#define clibp_panic(msg) 	\
 				__clibp_panic(msg, __FILE__, __LINE__);
 
-	/* internal.c */
 	fn		toggle_debug_mode();
 	fn 		__exit(int code);
 	fn 		execute(string app, sArr args);
@@ -22,7 +23,6 @@ Library Auto Documentation Test for clib+ header generated with ``_test.py``
 ```
 # _CLIBP_MEM_H
 ```c
-	/* General memory functions */
 	fn 		memzero(any ptr, size_t);
 	int 	mem_cmp(any src, any ptr, size_t size);
 	fn 		mem_cpy(any dest, any src, size_t size);
@@ -155,68 +155,16 @@ i32		count_int_digits(i32 num);
 		O_TRUNC 	= 01000		// Truncate
 	} FILE_MODE;
 
-	/*
-		[@DOC]
-			fd_t open_file(const char *filename, FILE_MODE mode);
-
-			Desc;
-				open a file stream
-
-			return;
-				>0 on sucess
-				-1 on fail
-	*/
 	fd_t	open_file(const char* filename, FILE_MODE mode, int flags);
 
-	/*
-		[@DOC]
-			int file_content_size(fd_t fd);
-
-			Desc;
-				get file size
-
-			return;
-				>0 on success
-				-1 on fail
-	*/
 	int		file_content_size(fd_t fd);
 
-	/*
-		[@DOC]
-			int file_read(fd_t fd, char *buffer, int sz);
-
-			Desc;
-				get file content
-
-			return;
-				>0 on scuess
-				<=0 on fail
-	*/
 	int		file_read(fd_t fd, char* buffer, int sz);
 
-	/* file_read for unsigned char */
 	#define file_uc_read(fd, buff, sz) file_read
 
-	/*
-		[@DOC]
-			int file_write(fd_t fd, const char *buffer, len_t len);
-
-			Desc;
-				write to file
-
-			return;
-				>0 on success
-				-1 on fail
-	*/
 	int		file_write(fd_t fd, const char* buffer, len_t len);
 
-	/*
-		[@DOC]
-			int file_close(fd_t fd, const char *buffer, len_t len);
-
-			Desc;
-				close file
-	*/
 	fn		file_close(fd_t fd);
 ```
 # _CLIBP_SOCKET_H
