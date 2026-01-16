@@ -46,7 +46,7 @@ i8
 * [Map](/doc/stdlib_docs/map.md)
 * [File](/doc/stdlib_docs/file.md)
 * [Thread](/doc/stdlib_docs/thread.md)
-* [Socket](#/doc/stdlib_docs/socket.md)
+* [Socket](/doc/stdlib_docs/socket.md)
 </td>
 <td valign=top>
 
