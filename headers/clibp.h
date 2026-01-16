@@ -350,7 +350,6 @@ i32		count_int_digits(i32 num);
 #endif
 
 #ifdef _CLIBP_SOCKET_H
-	
 	#define AF_INET         2
 	#define SOL_SOCKET      1
 	#define SO_REUSEADDR    2

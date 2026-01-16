@@ -46,6 +46,7 @@ i8
 * [Map](/doc/stdlib_docs/map.md)
 * [File](/doc/stdlib_docs/file.md)
 * [Thread](/doc/stdlib_docs/thread.md)
+* [Socket](#/doc/stdlib_docs/socket.md)
 </td>
 <td valign=top>
 
@@ -61,6 +62,11 @@ i8
 </td></tr>
 </table>
 
-## Public Uploads
+## Library Release
+You must request a PR with your library and documentation in ``external_pkgs/``
 
-To upload a lib, You must request a PR with documentation
+## Library Requirement:
+- Binary or Source Code
+- Documentation/Examples
+- Bug Free (UB, BOF etc)
+- Makefile for setups
