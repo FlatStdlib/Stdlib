@@ -98,7 +98,16 @@ void _start() {
 
 	set_heap_sz(4096 * 5);
 	init_mem();
-    int code = entry(__ARGC__, __ARGV__);
+
+    char OUTPUT[1024];
+    sArr arr = allocate(sizeof(char *), __ARGC__);
+    for(int i = 0; i < __ARGC__; i++)
+    {
+        arr[i] = str_dup(__ARGV__[i]);
+        arr[i + 1] = NULL;
+    }
+
+    int code = entry(__ARGC__, arr);
 
     if(on_exit)
     	on_exit();

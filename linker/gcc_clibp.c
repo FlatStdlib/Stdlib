@@ -1,97 +1,56 @@
+#include <clibp.h>
+
+const string HELP_BANNER = "    Argument      Description\n"
+						   "______________________________________\n"
+    					   "--output      output binary\n"
+    					   "-c            object file\n"
+    					   "-co           Combine object file(s)";
 /*
-    Compile and link with loader
+    Argument      Description
+______________________________________
+    --output      output binary
+    -c            object file
+    -co           Combine object file(s)
 */
-#include "../headers/asm.h"
-long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, long sys);
-void print();
 
-static int _str_len(const char *buffer)
+#define GCC_FLAGS 5
+string GCC_COMPILE_FLAGS[GCC_FLAGS] = {
+	"/usr/bin/gcc",
+	"-nostdlib",
+	"-ffreestanding",
+	"-c",
+	NULL
+};
+
+#define LD_FLAGS 4
+string LD_COMPILE_FLAGS[LD_FLAGS] = {
+    "/usr/bin/ld",
+	"--no-relax",
+    "-o",
+    NULL
+};
+
+const string CLIBP_LIB = "/usr/lib/libclibp.a";
+const string CLIBP_LOADER = "/usr/lib/loader.o";
+
+int create_gcc_command(sArr command)
 {
-    int count = 0;
-    for(int i = 0; buffer[i] != '\0'; i++)
-    {
-        count++;
-    }
+	int i = 0;
+	for(i = 0; i < GCC_FLAGS - 1; i++)
+		if(GCC_COMPILE_FLAGS[i] != NULL)
+		command[i] = str_dup(GCC_COMPILE_FLAGS[i]);
 
-    return count;
+	return i;
 }
 
-static int _mem_cmp(const char *buff, const char *cmp, int sz)
+int create_ld_command(sArr command)
 {
-    for(int i = 0; i < sz; i++)
-    {
-        if(buff[i] != cmp[i])
-            return 0;
-    }
+	int i = 0;
+	for(i = 0; i < LD_FLAGS - 1; i++)
+		if(LD_COMPILE_FLAGS[i] != NULL)
+			command[i] = str_dup(LD_COMPILE_FLAGS[i]);
 
-    return 1;
-}
-
-int arr_contains(char **args, int argc, char *needle)
-{
-    if(!args || !needle)
-        return -1;
-
-    for(int i = 0; i < argc; i++) {
-		if(!args[i])
-			break;
-
-        if(_mem_cmp(args[i], needle, _str_len(args[i])))
-            return i;
-	}
-
-    return -1;
-}
-
-static void _mem_cpy(char *dest, const char *buffer, int len)
-{
-    for(int i = 0; i < len; i++)
-    {
-        dest[i] = buffer[i];
-    }
-}
-
-int get_cmd_info(char *buffer) {
-    #if defined(__x86__) || defined(__x86_64__)
-        long fd = __syscall__((long)"/proc/self/cmdline", 0, 0, -1, -1, -1, _SYS_OPEN);
-	#elif defined(__riscv)
-    	long fd = __syscall__(-100, (long)"/proc/self/cmdline", 0, 0, -1, -1, _SYS_OPENAT);
-	#endif
-    if(fd <= 0)
-    {
-        return -1;
-    }
-
-    char BUFFER[255] = {0};
-    long bts = __syscall__(fd, (long)BUFFER, 255, -1, -1, -1, _SYS_READ);
-
-    int bytes = bts;
-    _mem_cpy(buffer, BUFFER, bytes);
-
-    __syscall__(fd, 0, 0, -1, -1, -1, _SYS_CLOSE);
-    return bytes;
-}
-
-static int _count_char(const char *buffer, const char ch, int sz) {
-    int count = 0;
-    for(int i = 0; i < sz; i++)
-        if(buffer[i] == ch)
-            count++;
-
-    return count;
-}
-
-static int _find_char(const char *buffer, const char ch, int sz, int match) {
-    int count = 0;
-    for(int i = 0; i < sz; i++) {
-        if(buffer[i] == ch)
-            count++;
-
-        if(count == match)
-            return i;
-    }
-
-    return -1;
+	return i;
 }
 
 void __execute(char *app, char **args)
@@ -111,74 +70,130 @@ void __execute(char *app, char **args)
 	}
 }
 
-int __ARGC__ = 0;
-char *__ARGV__[100] = {0};
-
-void get_cmdline_args()
-{
-    char BUFFER[1024] = {0};
-    int count = get_cmd_info(BUFFER);
-
-    char *ptr = BUFFER;
-    int test = _count_char(BUFFER, '\0', count);
-
-    for(int i = 0, match = 0, last = 0; i < test; i++) {
-        int pos = _find_char(ptr, '\0', count, match++);
-        if(pos == -1)
-            break;
-
-        __ARGV__[__ARGC__++] = (char *)(ptr + (pos + 1));
-    }
-}
-
-void _start() {
-    get_cmdline_args();
-
-    if(__ARGC__ < 3)
-    {
-		print("[ x ] Error, Invalid arguments provided...\nUsage: gcc_clibp <c_file> <option> <output> [rest_of_compiler_commands]\n");
-		__syscall__(0, 0, 0, 0, 0, 0, _SYS_EXIT);
-    }
-
-    char *SRC_CODE_FILE = __ARGV__[1];
-    int src_len = _str_len(SRC_CODE_FILE);
-
-    char COPY[255] = {0};
-    _mem_cpy(COPY, SRC_CODE_FILE, src_len);
-    COPY[src_len - 1] = 'o';
-    char *OPT = __ARGV__[2];
-
-	char *rm[3] = {"/usr/bin/rm", COPY, 0};
-    if(SRC_CODE_FILE[src_len - 1] == 'c') {
-		print("[ + ] Compiling: "), print(SRC_CODE_FILE), print(" to ");
-
-		print(COPY), print("....!\n");
-
-        if(arr_contains(__ARGV__, __ARGC__, "--tcc") > -1) {
-            print("Compiling with TCC....\n");
-            char *n[9] = {"/usr/bin/tcc", "-ffreestanding", "-std=c99", "-c", SRC_CODE_FILE, "-o", COPY, "-nostdlib", 0};
-            __execute(n[0], n);
-            __execute("/usr/bin/execstack", (char *[]){"/usr/bin/execstack", "-c", COPY, 0});
-        } else {
-            char *n[8] = {"/usr/bin/gcc", "-ffreestanding", "-c", SRC_CODE_FILE, "-o", COPY, "-nostdlib", 0};
-            __execute(n[0], n);
-        }
-
-        if(OPT[1] == 'c') {
-            __syscall__(0, 0, 0, -1, -1, -1, _SYS_EXIT);
-        	__execute(rm[0], rm);
-        }
-    }
-
-    if(arr_contains(__ARGV__, __ARGC__, "--nolink") > -1)
+/* 
+	Since this is a one operation thing. Heap gets free'd on exit
+*/
+int entry(int argc, string argv[]) {
+	if(argc == 2 && find_string(argv[1], "--help") > -1)
 	{
-        print("Exiting\n");
-        __syscall__(0, 0, 0, -1, -1, -1, _SYS_EXIT);
+		println(HELP_BANNER);
+		return 0;
 	}
 
-	char *OUTPUT = __ARGV__[3];
-	print("[ + ] Linking to "), print(OUTPUT), print("....!\n");
-    char *n[8] = {
+	if(argc < 3)
+	{
+		println("[ x ] Error, Invalid arguments provided\nUsage: gclibp <c_file> <opt> <output>\nUse --help for help or more arguments");
+		return 1;
+	}
+
+	int idx;
+	char BUFFER[1024];
+	if((idx = array_contains_str((array)argv, "--output")) > -1) {
+		string output_file = argv[idx + 1];
+
+		sArr gcc_cmd = allocate(sizeof(char *), argc + 1);
+		int pos = create_gcc_command(gcc_cmd);
+
+		/* Add the remaining files or command */
+		for(int c = idx + 2; c < argc; c++) {
+			gcc_cmd[pos++] = str_dup(argv[c]);
+		}
+
+		gcc_cmd[pos] = NULL;
+
+		/*
+			Debug GCC Command
+		*/
+		print("Command: ");
+		for(int n = 0; n < pos; n++)
+			print("'"), print(gcc_cmd[n]), println("'");
+		
+		print("\n");
+
+		println("[ + ] Compiling to object file(s)....");
+		__execute(gcc_cmd[0], gcc_cmd);
+		sArr ld_cmd = allocate(sizeof(char *), argc + 2);
+		int ld_pos = create_ld_command(ld_cmd);
+		for(int i = idx + 1; i < argc; i++) {
+			
+			int len = str_len(argv[i]);
+			print("BUFFER LEN: "), _printi(len), print(" -> "), println(argv[i]);
+			int pos = find_char(argv[i], '/');
+			if(pos > -1)
+			{
+				argv[i] += pos + 1;
+			}
+			
+			len = str_len(argv[i]);
+			if(argv[i][len - 1] == 'c') {
+				argv[i][len - 1] = 'o';
+			}
+
+			println(argv[i]);
+			ld_cmd[ld_pos++] = str_dup(argv[i]);
+		}
+
+		ld_cmd[ld_pos++] = str_dup(CLIBP_LIB);
+		ld_cmd[ld_pos++] = str_dup(CLIBP_LOADER);
+		ld_cmd[ld_pos] = NULL;
+			
+		/*
+			Debug Linker Command
+		*/
+		// print("LINKER: ");
+		// for(int n = 0; n < ld_pos; n++)
+		// 	print(ld_cmd[n]), print(" ");
+		
+		// print("\n");
+
+		/* Create binary with object files */
+		__sprintf(BUFFER, "[ + ] Linking with /usr/lib/libclibp.a and Producing '%s'....", output_file);
+		println(BUFFER);
+		__execute(ld_cmd[0], ld_cmd);
+
+		/* Remove object files */
+		sArr rm = allocate(sizeof(char *), argc + 2);
+		rm[0] = str_dup("/usr/bin/rm");
+		for(int i = idx + 1, c = 1; i < argc; i++) {
+			int pos = find_char(argv[i], '/');
+			if(pos > -1)
+			{
+				printi(pos);
+				string sub = get_sub_str(argv[i], pos + 1, str_len(argv[i]) - 1);
+				println(sub);
+				pfree(argv[i], 1);
+				argv[i] = sub;
+			}
+
+			int len = str_len(argv[i]);
+			if(argv[i][len - 1] == 'o') {
+				rm[c++] = str_dup(argv[i]);
+				rm[c] = NULL;
+			}
+		}
+
+    	__execute(rm[0], rm);
+		return 0;
+	}
+
+	string C_FILE = argv[1];
+	string OPT = argv[2];
+	string OUTPUT = argv[3];
+
+	string COPY = str_dup(C_FILE);
+	int len = str_len(COPY);
+	COPY[len - 1] = 'o';
+
+	__sprintf(BUFFER, "[ + ] Compiling '%s' to '%s'", C_FILE, COPY);
+	println(BUFFER);
+	char *GCC_CMD[8] = {"/usr/bin/gcc", "-nostdlib", "-ffreestanding", "-c", C_FILE, "-o", COPY, 0};
+    __execute(GCC_CMD[0], GCC_CMD);
+
+	if(array_contains_str((array)argv, "-c") > -1) {
+		return 0;
+	}
+
+	char *LINKER_CMD[8] = {
         "/usr/bin/ld",
 		"--no-relax",
         "-o",
@@ -189,15 +204,18 @@ void _start() {
         0
     };
 
-    __execute(n[0], n);
+	__sprintf(BUFFER, "[ + ] Linking '%s' with /usr/lib/libclibp.a", COPY);
+	println(BUFFER);
+	__sprintf(BUFFER, "[ + ] Producing '%s'....", OUTPUT);
+	println(BUFFER);
+    __execute(LINKER_CMD[0], LINKER_CMD);
+	
+	/* Remove object file */
+	char *rm[3] = {"/usr/bin/rm", COPY, 0};
     __execute(rm[0], rm);
+    return 0;
+}
 
-	if(arr_contains(__ARGV__, __ARGC__, "--strip") > -1)
-	{
-		print("Stripping....!\n");
-		char *strip[4] = {"/usr/bin/strip", "--strip-unneeded", OUTPUT, 0};
-		__execute(strip[0], strip);
-	}
-
-    __syscall__(0, 0, 0, -1, -1, -1, _SYS_EXIT);
+int main() {
+	printf("Hi from GCC with clib+\n");
 }

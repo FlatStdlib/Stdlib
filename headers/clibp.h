@@ -194,6 +194,7 @@ int 	get_args(char* argv[]);
 	ptr         allocate(int sz, int len);
 	int         __get_size__(any ptr);
 	int         __is_heap_init__();
+	fn 			_pfree(any ptr);
 	fn        	pfree(any ptr, int clean);
 	__meta__* __get_meta__(any ptr);
 #endif

@@ -102,6 +102,7 @@ int __get_size__(any ptr)
 	return !info->size ? info->length : info->size * info->length;
 }
 
+fn _pfree(any ptr) { pfree(ptr, 1); }
 fn pfree(any ptr, int clean)
 {
     if (!ptr) return;

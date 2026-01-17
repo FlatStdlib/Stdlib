@@ -69,10 +69,10 @@ compile:
 # clean-up
 #
 cloader:
-	gcc -c linker/gcc_clibp.c -o gclibp.o -nostdlib
 	gcc -c linker/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
-	cp $(BUILD)/clibp.o cpy.o
-	ld -o gclibp gclibp.o cpy.o
+	gcc -c linker/gcc_clibp.c -o gclibp.o -nostdlib 
+# 	cp $(BUILD)/clibp.o cpy.o
+	ld -o gclibp gclibp.o $(BUILD)/$(LIB) $(BUILD)/loader.o
 
 #
 # Set header files in /usr/local/include/
