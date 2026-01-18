@@ -1,8 +1,13 @@
+import sys
 """
 Library Auto Documentation for clib+
 """
 
-file = open("headers/clibp.h", "r")
+if len(sys.argv) < 3:
+    print(f"[ x ] Error, Invalid arguments provided!\nUsage: {sys.argv[0]} <input> <output>")
+    exit(0)
+
+file = open(sys.argv[1], "r")
 data = file.read()
 lines = data.split("\n")
 file.close()
@@ -77,6 +82,6 @@ markdown = f"{md_header}\n* A Documentation for developers who know what they're
 for lib in libs:
     markdown += f"# {lib}\n```c\n{libs[lib]}```\n"
 
-md_file = open("quick_doc.md", "w")
+md_file = open(sys.argv[2], "w")
 md_file.write(markdown)
 md_file.close()
