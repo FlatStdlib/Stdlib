@@ -29,6 +29,11 @@ handler_t request_handler(cwr_t wr)
 		wr->type = _rHEAD;
 	}
 
+	if(find_string(wr->lines[0], "/fav.ico") > -1)
+	{
+		sock_close(wr->socket);
+		return NULL;
+	}
     /*
         TODO;
             work on the route handler
@@ -37,7 +42,7 @@ handler_t request_handler(cwr_t wr)
     */
 	char *fake = "HTTP/1.1 200 OK\r\n"
 				 "Content-Type: text/html;charset=UTF-8\r\n"
-				 "Content-length: 16\r\n"
+				 "Content-length: 15\r\n"
 				 "Connection: close\r\n\r\n"
 				 "Hello World\r\n\r\n";
 
@@ -105,7 +110,7 @@ fn parse_post(cwr_t wr)
 	if(find_char(wr->body, '&') > -1)
 	{
 		int arg_c = 0;
-		sArr args = split_string(wr->body, '&', arg_&c);
+		sArr args = split_string(wr->body, '&', &arg_c);
 		if(!arg_c)
 			return;
 
@@ -119,7 +124,7 @@ fn parse_post(cwr_t wr)
 			map_append(wr->post, arg[0], arg[1]);
 		}
 
-		pfree_array(args);
+		pfree_array((void *)args);
 	}
 
 	int argc = 0;
@@ -128,7 +133,7 @@ fn parse_post(cwr_t wr)
 		return;
 
 	map_append(wr->post, args[0], args[1]);
-	pfree_array(args);
+	pfree_array((void *)args);
 }
 
 fn parse_get_parameters(cwr_t wr)
@@ -156,7 +161,7 @@ fn parse_get_parameters(cwr_t wr)
 				continue;
 
 			map_append(wr->get, field[0], field[1]);
-			pfree_array(field);
+			pfree_array((void *)field);
 		}
 	}
 

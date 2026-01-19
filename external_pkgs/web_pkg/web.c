@@ -1,4 +1,9 @@
-#include "external_pkgs/web_pkg/headers/libweb.h"
+#include "headers/libweb.h"
+
+handler_t index_page()
+{
+	
+}
 
 int entry()
 {
@@ -11,6 +16,7 @@ int entry()
 	}
 	println("Webserver up @ localhost:"), _printi(40), print("\n");
 
+	web_append_route(ws, create_route("index", "/", (handler_t)index_page, 0));
 	char n[1024];
 	int bytes = get_input(n, 1024);
 	return 0;

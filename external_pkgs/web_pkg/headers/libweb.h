@@ -50,7 +50,15 @@ typedef _cws 		*cws_t;
 
 cws_t init_web_server(string ip, i32 port);
 handler_t listen_for_request(cws_t ws);
-handler_t request_handler(cwr_t wr);
 fn web_append_route(cws_t ws, route_t route);
 int find_route(cws_t ws, string route);
+
+// parser.c
+handler_t request_handler(cwr_t wr);
+fn parse_request(cwr_t wr);
+fn parse_post(cwr_t wr);
+fn parse_get_parameters(cwr_t wr);
+
+// route.c
+route_t create_route(string name, string path, handler_t fnc, int view_only);
 #endif

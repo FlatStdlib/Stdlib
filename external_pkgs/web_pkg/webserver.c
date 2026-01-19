@@ -46,7 +46,6 @@ fn web_append_route(cws_t ws, route_t route)
 {
 	ws->routes[ws->route_count++] = route;
 	ws->routes = reallocate(ws->routes, sizeof(_route *) * (ws->route_count + 1));
-	ws->routes[ws->route_count] = NULL;
 }
 
 int find_route(cws_t ws, string route)
