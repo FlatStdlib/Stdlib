@@ -46,6 +46,13 @@ handler_t request_handler(cwr_t wr)
 				 "Connection: close\r\n\r\n"
 				 "Hello World\r\n\r\n";
 
+	print("Line Info: "), println(wr->lines[0]);
+	int r = find_route(_WEB_, "/");
+	if(r == -1) {
+		println("Error");
+		return NULL;
+	}
+	print("Route Found: "), _printi(r), print("\n");
 	sock_write(wr->socket, fake);
 	return NULL;
 }

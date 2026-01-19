@@ -1,6 +1,6 @@
 #define __CLIBP_DEBUG__
 #include "headers/libweb.h"
-
+cws_t _WEB_ = NULL;
 cws_t init_web_server(string ip, i32 port)
 {
 	cws_t ws = allocate(0, sizeof(_cws));
@@ -20,6 +20,7 @@ cws_t init_web_server(string ip, i32 port)
 		clibp_panic("error, unable to allocate mem");
 
 	*ws->thread = start_thread((handler_t)listen_for_request, ws, 0);
+	_WEB_ = ws;
 	return ws;
 }
 
@@ -53,8 +54,8 @@ int find_route(cws_t ws, string route)
 	if(!ws || !route)
 		return -1;
 
-	for(int i = 0; i < ws->route_count && ws->routes[i] != NULL; i++)
-		if(str_cmp(ws->routes[i]->path, route))
+	for(int i = 0; i < ws->route_count; i++)
+		if(mem_cmp(ws->routes[i]->path, route, str_len(ws->routes[i]->path)))
 			return i;
 
 	return -1;

@@ -48,6 +48,8 @@ typedef struct
 typedef _cws 		cws;
 typedef _cws 		*cws_t;
 
+extern cws_t _WEB_;
+
 cws_t init_web_server(string ip, i32 port);
 handler_t listen_for_request(cws_t ws);
 fn web_append_route(cws_t ws, route_t route);
