@@ -207,9 +207,9 @@ fn validate_variable(string line, sArr args)
 			clibp_panic("missing colon -> ':' after type!");
 
 		v->type = string_to_type(raw_type);
-		print("Var Type ID: "), _printi(v->type), print("\n");
+		print("Var Type ID: "), _printi(v->type), print(" | ");
 		print_args((string []){"Var Type: ", type_to_string(v->type), "\n", 0});
-		print("Var Heap Sz: "), print(heap_size), print("\n");
+		print("Var Heap Sz: "), print(heap_size), print(" | ");
 
 		v->name = str_dup(args[1]);
 		if(len == 2 && v->name[__get_size__(v->name) - 1] == ';')
@@ -225,7 +225,9 @@ fn validate_variable(string line, sArr args)
 			clibp_panic("incomplete variable line");
 
 		// TODO; Merge 3 >= end to string as value
-		print_args((string []){"Var Value: ", args[3], "\n", 0});
+		print_args((string []){"Var Value: ", line + find_char(line, '='), "\n", 0});
+		if(line[line_len - 2] != ';')
+			clibp_panic("missing semi-colon -> ';' at the end of line");
 		return;
 	}
 
@@ -240,8 +242,8 @@ fn validate_variable(string line, sArr args)
 		clibp_panic("missing colon -> ':' after type!");
 
 	v->type = string_to_type(args[start++]);
-	print("Var Type ID: "), _printi(v->type), print("\n");
-	print_args((string []){"Var Type: ", type_to_string(v->type), "\n", 0});
+	print("Var Type ID: "), _printi(v->type), print(" | ");
+	print_args((string []){"Var Type: ", type_to_string(v->type), " | ", 0});
 	v->name = str_dup(args[start++]);
 	if(args[start++][0] != '=')
 		clibp_panic("missing set -> '=' symbol");

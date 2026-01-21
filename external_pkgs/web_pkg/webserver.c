@@ -13,15 +13,23 @@ cws_t init_web_server(string ip, i32 port)
 	ws->middleware = NULL;
 	ws->routes = allocate(0, sizeof(_route *));
 	ws->route_count = 0;
+	_WEB_ = ws;
 
-	// listen_for_request(ws);
-	ws->thread = allocate(0, sizeof(_thread));
-	if(!ws->thread)
+	return ws;
+}
+
+fn start_web_server(cws_t ws, int thread)
+{
+	if(thread)
+	{
+		ws->thread = allocate(0, sizeof(_thread));
+		if(!ws->thread)
 		clibp_panic("error, unable to allocate mem");
 
-	*ws->thread = start_thread((handler_t)listen_for_request, ws, 0);
-	_WEB_ = ws;
-	return ws;
+		*ws->thread = start_thread((handler_t)listen_for_request, ws, 0);
+	} else {
+		listen_for_request(ws);
+	}
 }
 
 handler_t listen_for_request(cws_t ws) {

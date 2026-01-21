@@ -51,6 +51,7 @@ typedef _cws 		*cws_t;
 extern cws_t _WEB_;
 
 cws_t init_web_server(string ip, i32 port);
+fn start_web_server(cws_t ws, int thread);
 handler_t listen_for_request(cws_t ws);
 fn web_append_route(cws_t ws, route_t route);
 int find_route(cws_t ws, string route);

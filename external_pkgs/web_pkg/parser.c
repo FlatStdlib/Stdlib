@@ -40,20 +40,24 @@ handler_t request_handler(cwr_t wr)
             Parse wr->lines[0] for req info
             find path handler or reject request with status code 
     */
-	char *fake = "HTTP/1.1 200 OK\r\n"
-				 "Content-Type: text/html;charset=UTF-8\r\n"
-				 "Content-length: 15\r\n"
-				 "Connection: close\r\n\r\n"
-				 "Hello World\r\n\r\n";
+//	char *fake = "HTTP/1.1 200 OK\r\n"
+//				 "Content-Type: text/html;charset=UTF-8\r\n"
+//				 "Content-length: 15\r\n"
+//				 "Connection: close\r\n\r\n"
+//				 "Hello World\r\n\r\n";
 
-	print("Line Info: "), println(wr->lines[0]);
-	int r = find_route(_WEB_, "/");
+	int c = 0;
+	sArr info = split_string(wr->lines[0], ' ', &c);
+
+
+	// trim GET parameters
+	int r = find_route(_WEB_, info[1]);
 	if(r == -1) {
 		println("Error");
 		return NULL;
 	}
-	print("Route Found: "), _printi(r), print("\n");
-	sock_write(wr->socket, fake);
+
+	_WEB_->routes[r]->handle(wr);
 	return NULL;
 }
 

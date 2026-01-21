@@ -1,8 +1,8 @@
 #include "headers/libweb.h"
 
-handler_t index_page()
+handler_t index_page(cws_t wr)
 {
-	
+	print("HI");
 }
 
 int entry()
@@ -20,7 +20,6 @@ int entry()
 	for(int i = 0; i < ws->route_count; i++)
 		print("Path: "), println(ws->routes[i]->path);
 
-	char n[1024];
-	int bytes = get_input(n, 1024);
+	start_web_server(ws, 0);
 	return 0;
 }
