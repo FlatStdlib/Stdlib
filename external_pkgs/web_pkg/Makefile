@@ -9,7 +9,7 @@ compile_w_ssl:
 	-lssl -lcrypto
 
 # Bloatware
-compile_no_ssl:
+NOSSL:
 	gclibp --output a.out \
 	web.c \
 	src/webserver.c \

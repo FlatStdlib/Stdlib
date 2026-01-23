@@ -289,13 +289,13 @@ i32		count_int_digits(i32 num);
 	typedef u32 fd_t;
 
 	typedef enum FILE_MODE {
-		O_RDONLY 	= 0,		// Read
-		O_WRONLY 	= 01,		// Write
-		O_RDWR 		= 02,		// Read-Write
-		O_CREAT 	= 0100,		// Create
-		O_EXCL 		= 0200,
-		O_NOCTTY 	= 0400,
-		O_TRUNC 	= 01000		// Truncate
+		_O_RDONLY 	= 0,		// Read
+		_O_WRONLY 	= 01,		// Write
+		_O_RDWR 		= 02,	// Read-Write
+		_O_CREAT 	= 0100,		// Create
+		_O_EXCL 		= 0200,
+		_O_NOCTTY 	= 0400,
+		_O_TRUNC 	= 01000		// Truncate
 	} FILE_MODE;
 
 	/*

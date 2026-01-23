@@ -7,6 +7,13 @@
 #ifndef _CLIBP_WEB_H
 #define _CLIBP_WEB_H
 
+typedef struct {
+    status_code code;
+    map_t           headers;
+    map_t           cookie;
+    string          content;
+} _response;
+
 typedef struct
 {
 	sock_t			socket;
@@ -63,6 +70,7 @@ fn parse_request(cwr_t wr);
 fn parse_post(cwr_t wr);
 fn parse_get_parameters(cwr_t wr);
 fn request_Destruct(cwr_t wr);
+fn send_response(cwr_t wr, _response r);
 
 // route.c
 route_t create_route(string name, string path, handler_t fnc, int parse_req);
