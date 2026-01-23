@@ -36,7 +36,7 @@ handler_t listen_for_request(cws_t ws) {
 	while(1)
 	{
 		if(__CLIBP_DEBUG__)
-			println("Listening for web requests....!");
+			println("[ WEB_SERVER ] Listening for web requests....!");
 
 		if(!(client = sock_accept(ws->connection, 1024)))
 			continue;
@@ -49,7 +49,7 @@ handler_t listen_for_request(cws_t ws) {
 		*wr->thread = start_thread((handler_t)request_handler, wr, 0);
 	}
 
-	println("Exiting...");
+	println("[ WEB_SERVER ] Exiting...");
 }
 
 fn web_append_route(cws_t ws, route_t route)
@@ -68,4 +68,21 @@ int find_route(cws_t ws, string route)
 			return i;
 
 	return -1;
+}
+
+fn cws_destruct(cws_t ws)
+{
+	if(!ws)
+		return;
+
+	if(ws->ip)
+		pfree(ws->ip, 1);
+
+	if(ws->connection)
+		sock_close(ws->connection);
+
+	if(ws->routes)
+		pfree_array((array)ws->routes);
+
+	pfree(ws, 1);
 }

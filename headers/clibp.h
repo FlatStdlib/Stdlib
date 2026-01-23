@@ -23,7 +23,10 @@ extern int __CLIBP_DEBUG__;
 	#define _CLIBP_INTERNAL_H
 	#define _CLIBP_ALLOCATOR_H
 
-	#define printf print
+	
+	#define _printf(format, ...) \
+			_sprintf(_OUTPUT_, format, (void *[]){__VA_ARGS__, 0}); \
+			print(_OUTPUT_);
 	#define nullptr_t ((void *)0)
 	#define emptyptr_t ((void *)-1)
 #endif

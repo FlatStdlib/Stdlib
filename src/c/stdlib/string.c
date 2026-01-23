@@ -158,12 +158,7 @@ bool str_cmp(const string src, const string needle)
 {
 	if (!src || !needle) return false;
 
-	for (int i = 0;; i++) {
-		if (src[i] != needle[i]) return false;
-		if (src[i] == '\0') break;
-	}
-
-	return true;
+	return mem_cmp(src, needle, str_len(src));
 }
 
 //loop with `i < len` is bad, it overwrites data.

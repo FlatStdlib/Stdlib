@@ -93,6 +93,7 @@ int entry(int argc, string argv[]) {
 
 		/* Add the remaining files or command */
 		for(int c = idx + 2; c < argc; c++) {
+			if(str_cmp(argv[c], "--cflags")) continue;
 			gcc_cmd[pos++] = str_dup(argv[c]);
 		}
 
@@ -103,7 +104,7 @@ int entry(int argc, string argv[]) {
 		*/
 		// print("Command: ");
 		// for(int n = 0; n < pos; n++)
-		// 	print("'"), print(gcc_cmd[n]), println("'");
+		// 	print("'"), print(gcc_cmd[n]), print("' ");
 		
 		// print("\n");
 
@@ -111,8 +112,9 @@ int entry(int argc, string argv[]) {
 		__execute(gcc_cmd[0], gcc_cmd);
 		sArr ld_cmd = allocate(sizeof(char *), argc + 2);
 		int ld_pos = create_ld_command(ld_cmd);
-		for(int i = idx + 1; i < argc; i++) {
-			
+		for(int i = idx + 1; i < argc; i++)
+		{
+			if(str_cmp(argv[i], "--cflags")) break;
 			// print("BUFFER LEN: "), _printi(len), print(" -> "), println(argv[i]);
 			int cnt = count_char(argv[i], '/');
 			int pos = find_char_at(argv[i], '/', cnt);
@@ -154,6 +156,7 @@ int entry(int argc, string argv[]) {
 		sArr rm = allocate(sizeof(char *), argc + 2);
 		rm[0] = str_dup("/usr/bin/rm");
 		for(int i = idx + 1, c = 1; i < argc; i++) {
+			if(str_cmp(argv[i], "--cflags")) break;
 			int pos = find_char(argv[i], '/');
 			if(pos > -1)
 			{
@@ -227,5 +230,5 @@ int entry(int argc, string argv[]) {
 }
 
 int main() {
-	printf("Hi from GCC with clib+\n");
+	_printf("Hi from GCC with clib+\n", 0);
 }

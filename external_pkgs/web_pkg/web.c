@@ -15,7 +15,7 @@ typedef struct {
 
 fn send_response(cwr_t wr, _response r)
 {
-	// TODO; change this shit
+	// TODO; change this hardcoded size shit
 	string ctx = allocate(0, 4096);
 
 	str_append(ctx, "HTTP/1.1 ");
@@ -80,35 +80,19 @@ fn send_response(cwr_t wr, _response r)
 	pfree(ctx, 1);
 }
 
-handler_t test_page(cwr_t wr)
-{
-	send_response(wr, (_response){
-		OK, 
-		0,
-		0,
-		"Hello World!"
-	});
+handler_t index_page(cwr_t wr) {
+	send_response(wr, (_response){ OK, 0, 0, "Hello World!" });
 }
 
-handler_t index_page(cwr_t wr)
-{
-	send_response(wr, (_response){
-		OK,
-		0,
-		0,
-		"Hello World!"
-	});
-}
-
-int entry()
-{
+int entry() {
 	cws_t ws = init_web_server(NULL, 50);
 	if(!ws)
 	{
 		println("error, unable to put up the webserver!");
 		return 1;
 	}
-	print("Webserver up @ http://localhost:"), _printi(50), print("\n");
+
+	_printf("Web server running @ http://localhost:%d\n", (void *)&ws->port);
 
 	web_append_route(ws, create_route(
 		"index",
@@ -116,13 +100,14 @@ int entry()
 		(handler_t)index_page,
 		1
 	));
-	web_append_route(ws, create_route(
-		"test",
-		"/test",
-		(handler_t)test_page,
-		0
-	));
 
 	start_web_server(ws, 0);
 	return 0;
+}
+
+int main() { 
+	set_heap_sz(4096 * 5);
+	init_mem();
+	return entry();
+	uninit_mem();
 }
