@@ -1,8 +1,6 @@
 #include "headers/libweb.h"
 
-map_t ending_default_headers;
-
-map_t DEFAULT_HEADERS[] = {
+field_t DEFAULT_HEADERS[] = {
 	&(_field){ .key = "Content-Type", .value = "text/html;charset=UTF-8" },
 	&(_field){ .key = "Connection", .value = "close" },
 	NULL
@@ -20,21 +18,55 @@ fn send_response(cwr_t wr, _response r)
 	// TODO; change this shit
 	string ctx = allocate(0, 4096);
 
-	str_append(ctx, "HTTP/1.1");
+	str_append(ctx, "HTTP/1.1 ");
 	str_append_int(ctx, r.code);
+	str_append(ctx, " ");
 	str_append(ctx, status_code_to_string(r.code));
-	str_append(ctx, "\r\n\r\n");
+	str_append(ctx, "\r\n");
 
+	int body_len = r.content ? str_len(r.content) + 3: 0;
 	if(r.headers)
 	{
-		for(int i = 0; i < r.headers; i++)
+		if(body_len > 0)
+		{
+			string n = int_to_str(body_len);
+			str_append(ctx, "Content-Length: ");
+			str_append(ctx, n);
+			pfree(n, 1);
+		}
+
+		for(int i = 0; i < r.headers->len; i++)
 		{
 			str_append(ctx, r.headers->fields[i]->key);
 			str_append(ctx, ":");
 			str_append(ctx, r.headers->fields[i]->value);
-			str_append(ctx, "\r\n\n");
+			str_append(ctx, "\r\n");
+		}
+	} else {
+		if(body_len > 0)
+		{
+			string n = int_to_str(body_len);
+			str_append(ctx, "Content-Length: ");
+			str_append(ctx, n);
+			str_append(ctx, "\r\n");
+			pfree(n, 1);
+		}
+
+		for(int i = 0; DEFAULT_HEADERS[i] != NULL; i++)
+		{
+			str_append(ctx, DEFAULT_HEADERS[i]->key);
+			str_append(ctx, ": ");
+			str_append(ctx, DEFAULT_HEADERS[i]->value);
+			str_append(ctx, "\r\n");
 		}
 	}
+
+	str_append(ctx, "\r\n");
+	if(r.cookie)
+	{
+		// implement this shit
+	}
+
 
 	if(r.content) {
 		str_append(ctx, r.content);
@@ -42,39 +74,34 @@ fn send_response(cwr_t wr, _response r)
 	}
 
 	sock_write(wr->socket, ctx);
+	if(__CLIBP_DEBUG__)
+		print("Generated Response: "), println(ctx);
+
 	pfree(ctx, 1);
 }
 
-
+handler_t test_page(cwr_t wr)
+{
+	send_response(wr, (_response){
+		OK, 
+		0,
+		0,
+		"Hello World!"
+	});
+}
 
 handler_t index_page(cwr_t wr)
 {
-	println("\x1b[31mNew Request\x1b[39m");
-	char *fake = "HTTP/1.1 200 OK\r\n"
-				 "Content-Type: text/html;charset=UTF-8\r\n"
-				 "Content-length: 15\r\n"
-				 "Connection: close\r\n\r\n"
-				 "Hello World\r\n\r\n";
-
-	__sprintf(_OUTPUT_, "Header Count: %d", (void *)&wr->headers->len);
-	println(_OUTPUT_);
-	for(int i = 0; i < wr->headers->len; i++) {
-		print("[ "), i <= 9 ? printi(i) : _printi(i), print(" ]: ");
-		print_args((string []){
-			"Key: ",
-			wr->headers->fields[i]->key,
-			" -> ",
-			wr->headers->fields[i]->value,
-			"\n", 0
-		});
-	}
-	println("\x1b[31mEnding req\x1b[39m");
-	sock_write(wr->socket, fake);
+	send_response(wr, (_response){
+		OK,
+		0,
+		0,
+		"Hello World!"
+	});
 }
 
 int entry()
 {
-	create_default_web_headers();
 	cws_t ws = init_web_server(NULL, 50);
 	if(!ws)
 	{
@@ -88,6 +115,12 @@ int entry()
 		"/",
 		(handler_t)index_page,
 		1
+	));
+	web_append_route(ws, create_route(
+		"test",
+		"/test",
+		(handler_t)test_page,
+		0
 	));
 
 	start_web_server(ws, 0);

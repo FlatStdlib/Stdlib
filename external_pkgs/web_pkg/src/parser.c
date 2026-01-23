@@ -1,5 +1,73 @@
 #include "../headers/libweb.h"
 
+ptr status_code_strings[][2] = {
+    {(ptr)CONTINUEE,                         "Continue" },
+    {(ptr)SWITCH_PROTOCOL,                   "Switching Protocols" },
+    {(ptr)PROCESSING,                        "Processing" },
+    {(ptr)EARLY_HINT,                        "Early Hints" },
+    {(ptr)OK,                                "OK" },
+    {(ptr)CREATED,                           "Created" },
+    {(ptr)ACCEPTED,                          "Accepted" },
+    {(ptr)NON_AUTHORIZED_INFO,               "Non-Authoritative Information" },
+    {(ptr)NO_CONTENT,                        "No Content" },
+    {(ptr)RESET_CONTENT,                     "Reset Content" },
+    {(ptr)PARTIAL_CONTENT,                   "Partial Content" },
+    {(ptr)MULTI_STATUS,                      "Multi-Status" },
+    {(ptr)ALREADY_REPRORTED,                 "Already Reported" },
+    {(ptr)IM_USED,                           "IM Used" },
+    {(ptr)MULTIPLE_CHOICES,                  "Multiple Choices" },
+    {(ptr)MOVED_PERMANENTLY,                 "Moved Permanently" },
+    {(ptr)FOUND,                             "Found" },
+    {(ptr)SEE_OTHER,                         "See Other" },
+    {(ptr)NOT_MODIFIED,                      "Not Modified" },
+    {(ptr)USE_PROXY,                         "Use Proxy" },
+    {(ptr)SWITCH_PROXY,                      "Switch Proxy" },
+    {(ptr)TEMP_REDIRECT,                     "Temporary Redirect" },
+    {(ptr)PERM_REDIRECT,                     "Permanent Redirect" },
+    {(ptr)BAD_REQUEST,                       "Bad Request" },
+    {(ptr)UNAUTHORIZED,                      "Unauthorized" },
+    {(ptr)PAYMENT_REQUIRED,                  "Payment Required" },
+    {(ptr)FORBIDDEN,                         "Forbidden" },
+    {(ptr)NOT_FOUND,                         "Not Found" },
+    {(ptr)METHOD_NOT_ALLOWED,                "Method Not Allowed" },
+    {(ptr)NOT_ACCEPTABLE,                    "Not Acceptable" },
+    {(ptr)PROXY_AUTH_REQUIRED,               "Proxy Authentication Required" },
+    {(ptr)REQUIRE_TIMEOUT,                   "Request Timeout" },
+    {(ptr)CONFLICT,                          "Conflict" },
+    {(ptr)GONE,                              "Gone" },
+    {(ptr)LENGTH_REQUIRED,                   "Length Required" },
+    {(ptr)PRECONDITION_FAILED,               "Precondition Failed" },
+    {(ptr)PAYLOAD_TOO_LARGE,                 "Content Too Large" },
+    {(ptr)URI_TOO_LONG,                      "URI Too Long" },
+    {(ptr)UNSUPPORTED_MEDIA_TYPE,            "Unsupported Media Type" },
+    {(ptr)RANGE_NOT_SATISFIABLE,             "Range Not Satisfiable" },
+    {(ptr)EXPECTATION_FAILED,                "Expectation Failed" },
+    {(ptr)IM_A_TEAPOT,                       "I'm a teapot" },
+    {(ptr)MISDIRECTED_REQUEST,               "Misdirected Request" },
+    {(ptr)UNPROCESSABLE_ENTITY,              "Unprocessable Content" },
+    {(ptr)LOCKED,                            "Locked" },
+    {(ptr)FAILED_DEPENDENCY,                 "Failed Dependency" },
+    {(ptr)TOO_EARLY,                         "Too Early" },
+    {(ptr)UPGRADE_REQUIRED,                  "Upgrade Required" },
+    {(ptr)PROCONDITION_REQUIRED,             "Precondition Required" },
+    {(ptr)TOO_MANY_REQUEST,                  "Too Many Requests" },
+    {(ptr)REQ_HEADER_FIELD_TOO_LARGE,        "Request Header Fields Too Large" },
+    {(ptr)UNAVAILABLE_FOR_LEGAL_REASON,      "Unavailable For Legal Reasons" },
+
+    {(ptr)INTERNAL_SERVER_ERR,               "Internal Server Error" },
+    {(ptr)NOT_IMPLEMENTED,                   "Not Implemented" },
+    {(ptr)BAD_GATEWAY,                       "Bad Gateway" },
+    {(ptr)SERVER_UNAVAILABLE,                "Service Unavailable" },
+    {(ptr)GATEWAY_TIMEOUT,                   "Gateway Timeout" },
+    {(ptr)HTTP_VERSION_NOT_SUPPORTED,        "HTTP Version Not Supported" },
+    {(ptr)VARIANT_ALSO_NEGOTIATES,           "Variant Also Negotiates" },
+    {(ptr)INSUFFICIENT_STORAGE,              "Insufficient Storage" },
+    {(ptr)LOOP_DETECTED,                     "Loop Detected" },
+    {(ptr)NOT_EXTENDED,                      "Not Extended" },
+    {(ptr)NETWORK_AUTHENTICATION_REQUIRED,   "Network Authentication Required" },
+    NULL
+};
+
 handler_t request_handler(cwr_t wr)
 {
 	wr->content = sock_read(wr->socket);
@@ -38,9 +106,11 @@ handler_t request_handler(cwr_t wr)
 	wr->uri = str_dup(info[1]);
 	int r = find_route(_WEB_, info[1]);
 	if(r == -1) {
-		print_args((string []){"[ WEB_SERVER_LISTENER ]: Attempt @ ", info[1], "\n", 0});
+		print_args((string []){"[ WEB_SERVER ]: Attempt @ ", info[1], "\n", 0});
 		return NULL;
 	}
+	
+		print_args((string []){"[ WEB_SERVER ]: New request @ ", info[1], "\n", 0});
 
 	if(__CLIBP_DEBUG__)
 		print_args((string []){"Triggering: ", _WEB_->routes[r]->name, "\n", 0});

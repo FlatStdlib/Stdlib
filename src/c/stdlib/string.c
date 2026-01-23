@@ -127,9 +127,7 @@ fn str_append_int(string dest, int num)
 		BUFF[c] = t;
 	}
 
-	for (int i = 0; BUFF[i] != '\0'; i++) {
-		dest[i] = BUFF[i];
-	}
+	str_append(dest, BUFF);
 }
 
 string str_dup(const string buff)

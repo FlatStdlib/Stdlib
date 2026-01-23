@@ -49,6 +49,7 @@ typedef _cws 		cws;
 typedef _cws 		*cws_t;
 
 extern cws_t _WEB_;
+extern ptr status_code_strings[][2];
 
 cws_t init_web_server(string ip, i32 port);
 fn start_web_server(cws_t ws, int thread);

@@ -15,6 +15,7 @@
 
 * New name for this project
 * Website (Being Worked)
+* heap-based string lib is needed
 * ``asm()`` implementation ( not ``__asm__()`` )
 * Implement ASM Syscalls and CPU Arch Info in ``src/asm/*.asm`` for ARM v5/v7, Aarch64, and WIN64
 * Implement format types for ``_sprintf`` in ``src/stdlib/src.c``
