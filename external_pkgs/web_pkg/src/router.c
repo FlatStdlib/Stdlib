@@ -23,11 +23,20 @@ bool get_html_template(route_t r, string template_file)
         return false;
 
     fd_t file = open_file(template_file, 0, 0);
-    size_t sz = file_content_size(file);
+    if(!file)
+        clibp_panic("unable to read html file..!");
+
+    i32 sz = file_content_size(file);
+    _printf("-> File Sz: %d\n", (void *)&sz);
+    if(sz <= 0)
+        clibp_panic("cannot read file");
 
     r->template = allocate(0, sz + 1);
-    file_read(file, r->template, sz);
+    if(!r->template)
+        clibp_panic("segfault");
+    i32 bytes = file_read(file, r->template, sz);
 
+    r->template[sz] = '\0';
     file_close(file);
     return true;
 }

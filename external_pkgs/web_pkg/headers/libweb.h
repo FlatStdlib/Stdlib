@@ -70,7 +70,7 @@ fn parse_request(cwr_t wr);
 fn parse_post(cwr_t wr);
 fn parse_get_parameters(cwr_t wr);
 fn request_Destruct(cwr_t wr);
-fn send_response(cwr_t wr, _response r);
+fn send_response(cwr_t wr, _response r, bool heap_content);
 
 // route.c
 route_t create_route(string name, string path, handler_t fnc, int parse_req);

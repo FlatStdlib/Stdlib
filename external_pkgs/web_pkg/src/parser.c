@@ -339,7 +339,7 @@ fn request_Destruct(cwr_t wr)
 	pfree(wr, 1);
 }
 
-fn send_response(cwr_t wr, _response r)
+fn send_response(cwr_t wr, _response r, bool heap_content)
 {
     // TODO; change this hardcoded size shit
     string ctx = allocate(0, 4096);
@@ -350,25 +350,12 @@ fn send_response(cwr_t wr, _response r)
     str_append(ctx, status_code_to_string(r.code));
     str_append(ctx, "\r\n");
 
-	string body = NULL;
-    if(r.content) {
-		if(str_endswith(r.content, ".html")) {
-			fd_t file = open_file(r.content, 0, 0);
-			size_t sz = file_content_size(file);
-			
-			string file_content = allocate(0, sz + 1);
-			int bytes = file_read(file, file_content, sz);
-			if(bytes <= 0)
-				clibp_panic("unable to read file!");
+    int body_len = 1;
+	if(heap_content)
+		body_len = __get_size__(r.content) + 3;
+	else
+		body_len = str_len(r.content) + 3;
 
-			file_close(file);
-			body = file_content;
-		} else {
-			body = r.content;
-		}
-    }
-
-    int body_len = body ? str_len(body) + 3: 1;
     if(r.headers)
     {
         if(body_len > 0)
@@ -406,9 +393,9 @@ fn send_response(cwr_t wr, _response r)
     }
 
     str_append(ctx, "\r\n");
-    if(body)
+    if(r.content)
 	{
-		str_append(ctx, body);
+		str_append(ctx, r.content);
 		str_append(ctx, "\r\n\r\n");
 	}
 
