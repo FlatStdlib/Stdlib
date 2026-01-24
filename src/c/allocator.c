@@ -1,7 +1,8 @@
 #include "../../headers/clibp.h"
 
-int _HEAP_PAGE_         = 4096;
-int _HEAP_PAGE_SZ_ 		= 4096;
+#define _HEAP_PAGE_SZ_  4096
+int _HEAP_MULTIPLER_    = 2;
+int _HEAP_PAGE_         = _HEAP_PAGE_SZ_ * 2;
 heap_t _HEAP_ 			= NULL;
 int used_mem 			= 0;
 int HEAP_DEBUG 			= 0;
@@ -22,12 +23,29 @@ fn set_heap_debug()
 
 fn req_memory()
 {
-	if(!_HEAP_PAGE_) _HEAP_PAGE_ = _HEAP_PAGE_SZ_;
-    if(__syscall__((long)_HEAP_, _HEAP_PAGE_, 0x1 | 0x2, 0, 0, 0, _SYS_MPROTECT) != 0)
-    {
-        clibp_panic("Segfault");
-        return;
-    }
+    /* Save old heap and free it */
+    i32 old_size = _HEAP_PAGE_;
+    heap_t old_heap = _HEAP_;
+    _HEAP_ = NULL;
+
+    /* Set new heap size to increase */
+    _HEAP_MULTIPLER_++;
+    _HEAP_PAGE_ = _HEAP_PAGE_SZ_ * _HEAP_MULTIPLER_;
+
+    /* Initialize a new heap */
+    init_mem();
+    mem_cmp(_HEAP_, old_heap, old_size);
+
+    /* Save new heap to free the old one */
+    i32 new_size = _HEAP_PAGE_;
+    heap_t new_heap = _HEAP_;
+
+    _HEAP_ = old_heap;
+    _HEAP_PAGE_ = old_size;
+    uninit_mem();
+
+    _HEAP_ = new_heap;
+    _HEAP_PAGE_ = new_size;
 }
 
 fn init_mem() {
