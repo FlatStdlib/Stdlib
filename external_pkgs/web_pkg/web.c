@@ -1,10 +1,10 @@
 #include "headers/libweb.h"
 
-handler_t test_page(router_t r, cwr_t wr) {
-	send_response(wr, (_response){ OK, 0, 0, r->tmeplate});
+handler_t test_page(route_t r, cwr_t wr) {
+	send_response(wr, (_response){ OK, 0, 0, r->template});
 }
 
-handler_t index_page(router_t r, cwr_t wr) {
+handler_t index_page(route_t r, cwr_t wr) {
 	send_response(wr, (_response){ OK, 0, 0, "Hello World!" });
 }
 

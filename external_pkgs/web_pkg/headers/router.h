@@ -21,5 +21,6 @@
     typedef _route 	**rArr;
 
     route_t create_route(string name, string path, handler_t fnc, int view_only);
+    bool get_html_template(route_t r, string template_file);
     bool toggle_read_only(route_t r);
 #endif
