@@ -96,7 +96,7 @@ static int ___get_args(char *argv[]) {
 void _start() {
 	__ARGC__ = ___get_args(__ARGV__);
 
-	set_heap_sz(4096 * 5);
+	set_heap_sz(4096 * 2);
 	init_mem();
 
     char OUTPUT[1024];

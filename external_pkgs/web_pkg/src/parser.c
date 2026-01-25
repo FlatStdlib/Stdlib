@@ -128,6 +128,7 @@ handler_t request_handler(cwr_t wr)
 	_WEB_->routes[r]->handle(_WEB_->routes[r], wr);
 
 	request_Destruct(wr);
+	pfree_array((array)info);
 	return NULL;
 }
 
@@ -156,11 +157,16 @@ i32 parse_get_params(cwr_t wr)
 			if(!args)
 				continue;
 
-			if(arg_c < 2)
+			if(arg_c < 2) {
+				pfree_array((array)args);
 				continue;
+			}
 			
 			map_append(wr->get, args[0], args[1]);
+			pfree_array((array)args);
 		}
+
+		pfree_array((array)argv);
 	}
 
 	int argc = 0;
@@ -209,7 +215,8 @@ fn parse_request(cwr_t wr)
 		}
 
 		/* Parse Header Line */
-		if(find_char(wr->lines[i], ':') > -1)
+		int pos;
+		if((pos = find_char(wr->lines[i], ':')) > -1)
 		{
 			int arg_c = 0;
 			sArr args = split_string(wr->lines[i], ':', &arg_c);
@@ -224,7 +231,6 @@ fn parse_request(cwr_t wr)
 				continue;
 			}
 
-			int pos = find_char(wr->lines[i], ':');
 			if(!map_append(wr->headers, args[0], wr->lines[i] + (pos + 2)))
 				clibp_panic("failed to get header");
 			

@@ -19,9 +19,15 @@ handler_t index_page(route_t r, cwr_t wr) {
 			"</html>\n"
 		)
 	}, 0);
+	println("SENT");
 }
 
 int entry() {
+	toggle_debug_mode();
+	uninit_mem();
+	set_heap_sz(_HEAP_PAGE_ * 5);
+	init_mem();
+
 	cws_t ws = init_web_server(NULL, 80);
 	if(!ws)
 	{

@@ -141,7 +141,7 @@
 #define _TGKILL					 	131
 #define _SIGALTSTACK				132
 #define _RT_SIGSUSPEND				133
-#define _RT_SIGACTION				134
+#define _SYS_RT_SIGACTION		    134
 #define _RT_SIGPROCMASK				135
 #define _RT_SIGPENDING				136
 #define _RT_SIGTIMEDWAIT_TIME32		137

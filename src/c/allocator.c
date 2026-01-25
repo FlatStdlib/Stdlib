@@ -21,33 +21,6 @@ fn set_heap_debug()
 	HEAP_DEBUG = 1;
 }
 
-fn req_memory()
-{
-    /* Save old heap and free it */
-    i32 old_size = _HEAP_PAGE_;
-    heap_t old_heap = _HEAP_;
-    _HEAP_ = NULL;
-
-    /* Set new heap size to increase */
-    _HEAP_MULTIPLER_++;
-    _HEAP_PAGE_ = _HEAP_PAGE_SZ_ * _HEAP_MULTIPLER_;
-
-    /* Initialize a new heap */
-    init_mem();
-    mem_cmp(_HEAP_, old_heap, old_size);
-
-    /* Save new heap to free the old one */
-    i32 new_size = _HEAP_PAGE_;
-    heap_t new_heap = _HEAP_;
-
-    _HEAP_ = old_heap;
-    _HEAP_PAGE_ = old_size;
-    uninit_mem();
-
-    _HEAP_ = new_heap;
-    _HEAP_PAGE_ = new_size;
-}
-
 fn init_mem() {
     long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
     if (ret <= 0)
@@ -58,7 +31,7 @@ fn init_mem() {
     // Clear the heap to mark all memory as free
     mem_set(_HEAP_, 1, _HEAP_PAGE_);
 
-    if (HEAP_DEBUG)
+    if (HEAP_DEBUG || __CLIBP_DEBUG__)
         print("[ + ] Heap initialized!\n");
 }
 
@@ -99,11 +72,12 @@ any allocate(int sz, int len) {
 
     used_mem += mem_needed;
 
-	if(HEAP_DEBUG)
+	if(HEAP_DEBUG || __CLIBP_DEBUG__)
 	{
 		char buff[100];
 		ptr_to_str(ptr, buff);
 		print("[ + ] Allocated "), _printi(sz ? sz * len : len), print(" to "), println(buff);
+        int n = sz ? sz * len : len;
 	}
 
     return (any)((char *)ptr + HEAP_META_SZ);
@@ -153,7 +127,7 @@ fn pfree(any ptr, int clean)
 
     used_mem -= total;
 
-	if(HEAP_DEBUG)
+	if(HEAP_DEBUG || __CLIBP_DEBUG__)
 	{
     	char buff[100];
     	ptr_to_str(m, buff);
@@ -163,7 +137,8 @@ fn pfree(any ptr, int clean)
 
 fn uninit_mem()
 {
-	if(HEAP_DEBUG)
+	if(HEAP_DEBUG || __CLIBP_DEBUG__)
 		println("[ + ] Uninitializing");
+        
 	__syscall__((long)_HEAP_, _HEAP_PAGE_, 0, 0, 0, 0, _SYS_MUNMAP);
 }

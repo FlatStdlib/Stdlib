@@ -3,15 +3,26 @@
 */
 #include <clibp.h>
 
-#define TCSETS 0x5402
+#define TCSETS              0x5402
+
+#define SIGINT              2
+#define SA_RESTART          0x10000000
+typedef u32                 sigset_t;
+
+struct sigaction {
+    handler_t   (*sa_handler)(int);
+    u32         sa_flags;
+    fn          (*sa_restorer)(void);
+    sigset_t    sa_mask;
+};
 
 struct termios {
-    u32 c_iflag;
-    u32 c_oflag;
-    u32 c_cflag;
-    u32 c_lflag;
-    u8  c_line;
-    u8  c_cc[32];
+    u32         c_iflag;
+    u32         c_oflag;
+    u32         c_cflag;
+    u32         c_lflag;
+    u8          c_line;
+    u8          c_cc[32];
 };
 
 struct termios old;
