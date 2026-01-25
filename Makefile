@@ -75,8 +75,8 @@ compile:
 # clean-up
 #
 cloader:
-	gcc -c ../linker/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
-	gcc -c ../linker/lbg.c -o $(GBASE_OBJ) -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
+	gcc -c ../lbg-compiler/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
+	gcc -c ../lbg-compiler/lbg.c -o $(GBASE_OBJ) -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
 # 	cp $(BUILD)/clibp.o cpy.o
 	ld --gc-sections -o $(GBASE_EXEC) $(GBASE_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
 

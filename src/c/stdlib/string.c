@@ -339,7 +339,6 @@ bool is_empty(string buffer)
 	return 1;
 }
 
-/* add to header file */
 fn byte_to_hex(u8 byte, string out) {
     const char hex_chars[] = "0123456789ABCDEF";
 

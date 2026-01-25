@@ -253,6 +253,7 @@ i32		count_int_digits(i32 num);
 	bool 	is_empty(string buffer);
 	bool 	str_startswith(string buffer, string needle);
 	bool 	str_endswith(string buffer, string needle);
+	fn 		byte_to_hex(u8 byte, string out);
 #endif
 
 #ifdef _LB_ARR_H
