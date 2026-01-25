@@ -6,7 +6,7 @@
 | [Introduction](doc/intro.md)
 | [Quick Doc](/quick_doc.md)
 | [Libraries](doc/libraries.md)
-| [Todo](/doc/clibp/todo.md)
+| [Todo](https://github.com/libbase/libbase)
 </div>
 
 # Some Info
@@ -26,8 +26,8 @@
 Run the following commands to install the library!
 ```bash
 sudo apt install git make;
-git clone https://github.com/clibplus/clibp_v3_0.git
-cd cdlib_v3_0
+git clone https://github.com/libbase/base.git
+cd base
 make # make tcc (for tcc (not complete, testing stage))
 ```
 
