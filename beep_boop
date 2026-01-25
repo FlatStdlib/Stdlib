@@ -1,0 +1,25 @@
+/*
+section .data
+    my_int     dd  123
+    my_char    db  'A'
+    my_long    dq  1234567890123
+    my_float   dd  3.14
+    my_double  dq  3.141592653589793
+
+section .bss
+    my_int     resd 1    ; int (32-bit)
+    my_char    resb 1    ; char (8-bit)
+    my_long    resq 1    ; long (64-bit)
+    my_float   resd 1    ; float (32-bit)
+    my_double  resq 1    ; double (64-bit)
+
+
+ # [ MOVING DATA ] #
+
+mov dword [my_int], 1337
+mov byte  [my_char], 'A'
+mov qword [my_long], 1234567890123
+
+mov dword [my_float], __float32__(2.5)
+mov qword [my_double], __float64__(3.14159)
+*/

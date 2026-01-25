@@ -58,9 +58,6 @@ int entry() {
 	return 0;
 }
 
-// int main() { 
-// 	set_heap_sz(4096 * 5);
-// 	init_mem();
-// 	return entry();
-// 	uninit_mem();
-// }
+int main() { 
+	return entry();
+}

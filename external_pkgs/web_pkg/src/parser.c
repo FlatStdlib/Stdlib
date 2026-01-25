@@ -227,7 +227,7 @@ fn parse_request(cwr_t wr)
 			{
 				clibp_panic("unable to get header arguments!");
 				// TODO; CHANGE, THIS ACTUALLY DOESNT FREE THE ELEMENTS
-				pfree((array)args, 1);
+				pfree_array((array)args);
 				continue;
 			}
 
