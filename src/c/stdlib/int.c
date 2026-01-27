@@ -18,3 +18,25 @@ i32 count_int_digits(i32 num) {
 
     return count;
 }
+
+int str_to_int(const char *s)
+{
+    int sign = 1;
+    int result = 0;
+
+    // handle optional sign
+    if (*s == '-') {
+        sign = -1;
+        s++;
+    } else if (*s == '+') {
+        s++;
+    }
+
+    // parse digits
+    while (*s >= '0' && *s <= '9') {
+        result = result * 10 + (*s - '0');
+        s++;
+    }
+
+    return result * sign;
+}
