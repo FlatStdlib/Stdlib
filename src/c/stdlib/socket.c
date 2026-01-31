@@ -1,6 +1,6 @@
 #include "../../../headers/libbase.h"
 
-sock_t listen_tcp(const string ip, int port, int concurrent)
+public sock_t listen_tcp(const string ip, int port, int concurrent)
 {
     long sock = __syscall__(AF_INET, 1, 0, 0, 0, 0, _SYS_SOCKET);
     if (sock < 0)
@@ -38,7 +38,7 @@ sock_t listen_tcp(const string ip, int port, int concurrent)
 	return socket;
 }
 
-sock_t sock_accept(sock_t server, len_t len)
+public sock_t sock_accept(sock_t server, len_t len)
 {
 	#if defined(__riscv)
 		long client_fd = __syscall__(server->fd, 0, 0, -1, -1, -1, _SYS_ACCEPT4);
@@ -56,17 +56,17 @@ sock_t sock_accept(sock_t server, len_t len)
 	return client;
 }
 
-int create_socket(int family, int type, int protocol)
+public int create_socket(int family, int type, int protocol)
 {
     return __syscall__(family, type, protocol, 0, 0, 0, _SYS_SOCKET);
 }
 
-int sock_write(sock_t sock, string buffer)
+public int sock_write(sock_t sock, string buffer)
 {
 	return __syscall__(sock->fd, (long)buffer, str_len(buffer), -1, -1, -1, _SYS_WRITE);
 }
 
-string sock_read(sock_t sock)
+public string sock_read(sock_t sock)
 {
 	char BUFF[sock->buff_len];
 	long bytes = __syscall__(sock->fd, (long)BUFF, sock->buff_len, 0, 0, 0, _SYS_READ);
@@ -81,13 +81,13 @@ string sock_read(sock_t sock)
 	return NULL;
 }
 
-fn sock_close(sock_t sock)
+public fn sock_close(sock_t sock)
 {
 	__syscall__(sock->fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
 	pfree(sock, 1);
 }
 
-int parse_ipv4(const char *ip, unsigned int *out)
+public int parse_ipv4(const char *ip, unsigned int *out)
 {
     unsigned int res = 0;
     int octet = 0;
@@ -130,7 +130,7 @@ int parse_ipv4(const char *ip, unsigned int *out)
 }
 
 
-char *convert_ip(unsigned int ip) {
+public string convert_ip(unsigned int ip) {
     static char buf[16];
 
     unsigned char b1 = (ip >> 24) & 0xFF;
@@ -142,12 +142,12 @@ char *convert_ip(unsigned int ip) {
     return buf;
 }
 
-unsigned short _htons(unsigned short x)
+public unsigned short _htons(unsigned short x)
 {
 	return ((x & 0xFF) << 8) | ((x & 0xFF00) >> 8);
 }
 
-unsigned int _htonl(unsigned int x)
+public unsigned int _htonl(unsigned int x)
 {
     return ((x & 0x000000FF) << 24) |
            ((x & 0x0000FF00) << 8)  |

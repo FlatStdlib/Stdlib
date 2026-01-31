@@ -1,17 +1,15 @@
 #include "../../../headers/libbase.h"
 
-i32 is_ascii(char c)
-{
-	return (unsigned char)c <= 127;
-}
+public i32 is_ascii(char c)
+{ return (unsigned char)c <= 127; }
 
-i32 is_ascii_alpha(char c)
+public i32 is_ascii_alpha(char c)
 {
 	unsigned char b = (unsigned char)c;
 	return (b > 'a' && b < 'z' || b > 'A' && b < 'Z');
 }
 
-i32 count_char(const string buffer, const char ch)
+public i32 count_char(const string buffer, const char ch)
 {
 	if(!buffer)
 		return -1;
@@ -26,12 +24,12 @@ i32 count_char(const string buffer, const char ch)
 	return count;
 }
 
-i32 find_char(const string buffer, const char ch)
+public i32 find_char(const string buffer, const char ch)
 {
 	return find_char_at(buffer, ch, 1);
 }
 
-i32 find_char_at(const string buffer, const char ch, i32 match)
+public i32 find_char_at(const string buffer, const char ch, i32 match)
 {
 	if(!buffer)
 		return -1;
@@ -49,7 +47,7 @@ i32 find_char_at(const string buffer, const char ch, i32 match)
 	return -1;
 }
 
-int _find_char_at(const string buffer, const char ch, int match, int *start)
+public int _find_char_at(const string buffer, const char ch, int match, int *start)
 {
 	if(!buffer)
     	return -1;
@@ -67,7 +65,7 @@ int _find_char_at(const string buffer, const char ch, int match, int *start)
 	return -1;
 }
 
-int replace_char(string buffer, const char find, const char replace)
+public int replace_char(string buffer, const char find, const char replace)
 {
 	if(!buffer)
 		return 0;

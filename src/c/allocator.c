@@ -8,20 +8,19 @@ int used_mem 			= 0;
 int HEAP_DEBUG 			= 0;
 const int HEAP_META_SZ 	= sizeof(__meta__);
 
-int __get_total_mem_used__(void) { return used_mem; }
-int __is_heap_init__() { return (_HEAP_ ? 1 : 0); }
+public int __get_total_mem_used__(void) 
+{ return used_mem; }
 
-fn set_heap_sz(int n)
-{
-	_HEAP_PAGE_ = n;
-}
+public int __is_heap_init__(void)
+{ return (_HEAP_ ? 1 : 0); }
 
-fn set_heap_debug()
-{
-	HEAP_DEBUG = 1;
-}
+public fn set_heap_sz(int n)
+{ _HEAP_PAGE_ = n; }
 
-fn init_mem() {
+public fn set_heap_debug(void)
+{ HEAP_DEBUG = 1; }
+
+public fn init_mem(void) {
     long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
     if (ret <= 0)
         lb_panic("mmap failed!");
@@ -35,7 +34,7 @@ fn init_mem() {
         print("[ + ] Heap initialized!\n");
 }
 
-static int find_space(int space)
+private int find_space(int space)
 {
     for (int i = 0; i <= _HEAP_PAGE_ - space; i++) {
         int free = 1;
@@ -51,7 +50,7 @@ static int find_space(int space)
     return -1;
 }
 
-any allocate(int sz, int len) {
+public any allocate(int sz, int len) {
     if (!len) return NULL;
 
     int space_left = _HEAP_PAGE_ - used_mem;
@@ -83,7 +82,7 @@ any allocate(int sz, int len) {
     return (any)((char *)ptr + HEAP_META_SZ);
 }
 
-any reallocate(any p, int sz)
+public any reallocate(any p, int sz)
 {
     any new_p = allocate(0, sz + 1);
     if(!new_p)
@@ -95,25 +94,25 @@ any reallocate(any p, int sz)
     return new_p;
 }
 
-__meta__ *__get_meta__(any ptr)
+public __meta__ *__get_meta__(any ptr)
 {
 	return ((__meta__ *)((char *)ptr - HEAP_META_SZ));
 }
 
-int __get_size__(any ptr)
+public int __get_size__(any ptr)
 {
 	__meta__ *info = __get_meta__(ptr);
 	return !info->size ? info->length : info->size * info->length;
 }
 
-fn pfree_array(array p)
+public fn pfree_array(array p)
 {
 	for(int i = 0; p[i] != NULL; i++)
 		pfree(p[i], 1);
 }
 
-fn _pfree(any ptr) { pfree(ptr, 1); }
-fn pfree(any ptr, int clean)
+public fn _pfree(any ptr) { pfree(ptr, 1); }
+public fn pfree(any ptr, int clean)
 {
     if (!ptr) return;
 
@@ -135,7 +134,7 @@ fn pfree(any ptr, int clean)
     }
 }
 
-fn uninit_mem()
+public fn uninit_mem(void)
 {
 	if(HEAP_DEBUG || __LB_DEBUG__)
 		println("[ + ] Uninitializing");

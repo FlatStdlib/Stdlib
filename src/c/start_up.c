@@ -1,6 +1,7 @@
 #include "../../headers/libbase.h"
 
-static int get_cmd_info(string buffer) {
+private int get_cmd_info(string buffer)
+{
     #if defined(__x86__) || defined(__x86_64__)
         long fd = __syscall__((long)"/proc/self/cmdline", 0, 0, -1, -1, -1, _SYS_OPEN);
 	#elif defined(__riscv)
@@ -18,7 +19,8 @@ static int get_cmd_info(string buffer) {
     return bytes;
 }
 
-static int _count_char(const char *buffer, const char ch, int sz) {
+private int _count_char(const char *buffer, const char ch, int sz)
+{
     int count = 0;
     for(int i = 0; i < sz; i++)
         if(buffer[i] == ch)
@@ -27,7 +29,8 @@ static int _count_char(const char *buffer, const char ch, int sz) {
     return count;
 }
 
-static int _find_char(const char *buffer, const char ch, int sz, int match) {
+private int _find_char(const char *buffer, const char ch, int sz, int match)
+{
     int count = 0;
     for(int i = 0; i < sz; i++) {
         if(buffer[i] == ch)
@@ -40,7 +43,8 @@ static int _find_char(const char *buffer, const char ch, int sz, int match) {
     return -1;
 }
 
-int get_args(char *argv[]) {
+public int get_args(char *argv[])
+{
     int args = 0;
     char BUFFER[1024] = {0};
     int count = get_cmd_info(BUFFER);

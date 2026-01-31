@@ -70,44 +70,37 @@ typedef i32* 				iArr;
 typedef string* 			sArr;
 
 typedef void* 				any;
+
+#define public
+#define private static
 typedef void 				fn;
 typedef void* 				(*handler_t)();
 
-/* backend purposes only */
+/* Backend and allocator Purposes Only */
 typedef void* 				ptr;
 
 /* Counters */
 typedef i32 				len_t;
 typedef i32					pos_t;
 
-/* stdio.h */
 #define bool				i8
 #define true				1
 #define false				0
 
-/* stdint.h */
-//#undef _STDINT_H
-//typedef unsigned long int       size_t;
-//typedef unsigned long int       uintptr_t;
-
-//extern string __ARGV__[80];
-//extern int __ARGC__;
 /*
-	Compiler Detection
-	Implment C Types when using -nostdlib -nostdinc
+	Compiler Detection - Disable GLIBC Shit
 */
 #if defined(__TINYC__) || defined(__GNUC__)
-	/* Alot of libc libs, have __GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION */
-	#if !defined(_STDIO_H) || !defined(__GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION)
-		#undef __GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION
-		#define NULL                    ((void *)0)
-	#endif
+	/* 
+		Alot of libc libs, have __GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION 
+		Disable it
+	*/
+	#undef __GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION
+	#define NULL                    ((void *)0)
 
-	/* Implementation of the following types from stdint.h */
-//    #if !defined(_STDINT_H) && !defined(__SIZE_TYPE__)
-		typedef unsigned long int		size_t;
-		typedef unsigned long int		uintptr_t;
-//    #endif
+	// Redeclaring from stddef.h exactly the same to avoid name confliction
+	typedef unsigned long int		size_t;
+	typedef unsigned long int		uintptr_t;
 #endif
 
 /* Global Function Declaraction */
@@ -124,19 +117,19 @@ int 	get_args(char* argv[]);
 		__lb_panic(msg, __FILE__, __LINE__);
 
 	/* internal.c */
-	fn		toggle_debug_mode();
-	fn 		__exit(int code);
-	fn 		execute(string app, sArr args);
-	fn 		print_sz(const string buffer, int sz);
-	fn		printc(const char ch);
-	fn 		printi(int num);
-	fn 		_printi(int value);
-	fn 		print(const string buff);
-	fn		println(const string buff);
-	fn 		printsz(const string buff, int sz);
-	fn 		print_args(sArr arr);
-	ptr		to_heap(ptr p, i32 sz);
-	fn		__lb_panic(string msg, string file, int line);
+	public fn		toggle_debug_mode();
+	public fn 		__exit(int code);
+	public fn 		execute(string app, sArr args);
+	public fn 		print_sz(const string buffer, int sz);
+	public fn		printc(const char ch);
+	public fn 		printi(int num);
+	public fn 		_printi(int value);
+	public fn 		print(const string buff);
+	public fn		println(const string buff);
+	public fn 		printsz(const string buff, int sz);
+	public fn 		print_args(sArr arr);
+	public ptr		to_heap(ptr p, i32 sz);
+	public fn		__lb_panic(string msg, string file, int line);
 #endif
 
 /*
@@ -145,12 +138,12 @@ int 	get_args(char* argv[]);
 */
 #ifdef _LB_MEM_H
 	/* General memory functions */
-	fn 		memzero(any ptr, size_t);
-	int 	mem_cmp(any src, any ptr, size_t size);
-	fn 		mem_cpy(any dest, any src, size_t size);
-	fn 		mem_set(any ptr, char ch, size_t size);
+	public fn 		memzero(any ptr, size_t);
+	public int 		mem_cmp(any src, any ptr, size_t size);
+	public fn 		mem_cpy(any dest, any src, size_t size);
+	public fn 		mem_set(any ptr, char ch, size_t size);
 
-	int 	get_input(string dest, len_t count);
+	public int 		get_input(string dest, len_t count);
 #endif
 
 /*
@@ -191,21 +184,22 @@ int 	get_args(char* argv[]);
 	extern const int            HEAP_META_SZ;
 	extern int                  used_mem;
 
-	fn 			set_heap_sz(int n);
-	fn 			set_heap_debug();
-	fn 			req_memory();
+	public fn 			set_heap_sz(int n);
+	public fn 			set_heap_debug(void);
+	private fn 			req_memory(void);
 
-	fn        	init_mem();
-	fn        	uninit_mem();
-	int         __get_total_mem_used__(void);
-	ptr         allocate(int sz, int len);
-	ptr  		reallocate(any p, int sz);
-	int         __get_size__(any ptr);
-	int         __is_heap_init__();
-	fn 			pfree_array(array p);
-	fn 			_pfree(any ptr);
-	fn        	pfree(any ptr, int clean);
-	__meta__* 	__get_meta__(any ptr);
+	public fn        	init_mem(void);
+	public fn        	uninit_mem(void);
+	public int         	__get_total_mem_used__(void);
+	private int			find_space(int space);
+	public ptr         	allocate(int sz, int len);
+	public ptr  		reallocate(any p, int sz);
+	public int         	__get_size__(any ptr);
+	public int         	__is_heap_init__();
+	public fn 			pfree_array(array p);
+	public fn 			_pfree(any ptr);
+	public fn        	pfree(any ptr, int clean);
+	public __meta__* 	__get_meta__(any ptr);
 #endif
 
 /*
@@ -213,8 +207,8 @@ int 	get_args(char* argv[]);
 	[ src/stdlib/int.c ]
 */
 #ifdef _LB_INT_H
-	i32		count_int_digits(i32 num);
-	int		str_to_int(const char *s);
+	public i32		count_int_digits(i32 num);
+	public int		str_to_int(const char *s);
 #endif
 
 /*
@@ -222,13 +216,13 @@ int 	get_args(char* argv[]);
 	[ src/stdlib/char.c ]
 */
 #ifdef _LB_CHAR_H
-	i32 	is_ascii(const char c);
-	i32 	is_ascii_alpha(const char c);
-	i32 	count_char(const string buffer, const char ch);
-	i32 	find_char(const string buffer, const char ch);
-	i32 	find_char_at(const string buffer, const char ch, int match);
-	i32 	_find_char_at(const string buffer, const char ch, int match, int *start);
-	int 	replace_char(string buffer, const char find, const char replace);
+	public i32 		is_ascii(const char c);
+	public i32 		is_ascii_alpha(const char c);
+	public i32 		count_char(const string buffer, const char ch);
+	public i32 		find_char(const string buffer, const char ch);
+	public i32 		find_char_at(const string buffer, const char ch, int match);
+	public i32 		_find_char_at(const string buffer, const char ch, int match, int *start);
+	public int 		replace_char(string buffer, const char find, const char replace);
 #endif
 
 /*
@@ -239,29 +233,30 @@ int 	get_args(char* argv[]);
 	#define __sprintf(dest, format, ...) \
 			_sprintf(dest, format, (void *[]){__VA_ARGS__, 0});
 
-	fn 		ptr_to_str(ptr p, string out);
-	string	int_to_str(int num);
-	fn 		_sprintf(string buffer, string format, any* args);
-	fn 		str_append_int(string dest, int num);
-	len_t 	str_len(string buffer);
-	string 	str_dup(const string buffer);
-	int   	str_append(string src, const string sub);
-	bool	str_cmp(const string src, const string needle);
-	pos_t 	find_string(const string buff, const string needle);
-	sArr 	split_lines(const string buffer, int* idx);
-	sArr 	split_string(const string buffer, const char ch, int* idx);
-	string 	get_sub_str(const string buffer, int start, int end);
-	bool 	is_empty(string buffer);
-	bool 	str_startswith(string buffer, string needle);
-	bool 	str_endswith(string buffer, string needle);
-	fn 		byte_to_hex(u8 byte, string out);
+	public fn 		ptr_to_str(ptr p, string out);
+	public string	int_to_str(int num);
+	public fn 		_sprintf(string buffer, string format, any* args);
+	public fn 		str_append_int(string dest, int num);
+	public len_t 	str_len(string buffer);
+	public string 	str_dup(const string buffer);
+	public bool 	str_append_array(string buff, const array arr);
+	public bool   	str_append(string src, const string sub);
+	public bool		str_cmp(const string src, const string needle);
+	public pos_t 	find_string(const string buff, const string needle);
+	public sArr 	split_lines(const string buffer, int* idx);
+	public sArr 	split_string(const string buffer, const char ch, int* idx);
+	public string 	get_sub_str(const string buffer, int start, int end);
+	public bool 	is_empty(string buffer);
+	public bool 	str_startswith(string buffer, string needle);
+	public bool 	str_endswith(string buffer, string needle);
+	public fn 		byte_to_hex(u8 byte, string out);
 #endif
 
 #ifdef _LB_ARR_H
-	array 	init_array(void);
-	array	array_append(array arr, ptr p);
-	int 	array_contains_ptr(array arr, ptr p);
-	int 	array_contains_str(array arr, string needle);
+	public array 	init_array(void);
+	public array	array_append(array arr, ptr p);
+	public int 		array_contains_ptr(array arr, ptr p);
+	public int 		array_contains_str(array arr, string needle);
 #endif
 
 #ifdef _LB_MAP_H
@@ -282,11 +277,11 @@ int 	get_args(char* argv[]);
 	typedef _map map;
 	typedef _map *map_t;
 
-	map_t 	init_map(void);
-	bool 	map_append(map_t map, string key, string value);
-	string 	find_key(map_t map, string key);
-	fn 		field_destruct(field_t field);
-	fn 		map_destruct(map_t map);
+	public map_t 	init_map(void);
+	public bool 	map_append(map_t map, string key, string value);
+	public string 	find_key(map_t map, string key);
+	public fn 		field_destruct(field_t field);
+	public fn 		map_destruct(map_t map);
 #endif
 
 #ifdef _LB_FILE_H
@@ -313,7 +308,7 @@ int 	get_args(char* argv[]);
 				>0 on sucess
 				-1 on fail
 	*/
-	fd_t	open_file(const char* filename, FILE_MODE mode, int flags);
+	public fd_t		open_file(const char* filename, FILE_MODE mode, int flags);
 
 	/*
 		[@DOC]
@@ -326,7 +321,7 @@ int 	get_args(char* argv[]);
 				>0 on success
 				-1 on fail
 	*/
-	int		file_content_size(fd_t fd);
+	public int		file_content_size(fd_t fd);
 
 	/*
 		[@DOC]
@@ -339,7 +334,7 @@ int 	get_args(char* argv[]);
 				>0 on scuess
 				<=0 on fail
 	*/
-	int		file_read(fd_t fd, char* buffer, int sz);
+	public int		file_read(fd_t fd, char* buffer, int sz);
 
 	/* file_read for unsigned char */
 	#define file_uc_read(fd, buff, sz) file_read
@@ -355,7 +350,7 @@ int 	get_args(char* argv[]);
 				>0 on success
 				-1 on fail
 	*/
-	int		file_write(fd_t fd, const char* buffer, len_t len);
+	public int		file_write(fd_t fd, const char* buffer, len_t len);
 
 	/*
 		[@DOC]
@@ -364,7 +359,7 @@ int 	get_args(char* argv[]);
 			Desc;
 				close file
 	*/
-	fn		file_close(fd_t fd);
+	public fn		file_close(fd_t fd);
 #endif
 
 #ifdef _LB_SOCKET_H
@@ -409,15 +404,15 @@ int 	get_args(char* argv[]);
 	typedef _sock_t sock;
 	typedef _sock_t *sock_t;
 
-	sock_t 		listen_tcp(const string ip, int port, int concurrent);
-	sock_t 		sock_accept(sock_t sock, len_t len);
-	int 		sock_write(sock_t sock, string buffer);
-	string 		sock_read(sock_t sock);
-	int 		parse_ipv4(const char* ip, u32 *out);
-	char* 		convert_ip(u32 ip);
-	u16			_htons(u16 x);
-	u32 		_htonl(u32 x);
-	fn 			sock_close(sock_t);
+	public sock_t 		listen_tcp(const string ip, int port, int concurrent);
+	public sock_t 		sock_accept(sock_t sock, len_t len);
+	public int 			sock_write(sock_t sock, string buffer);
+	public string 		sock_read(sock_t sock);
+	public int 			parse_ipv4(const char* ip, u32 *out);
+	public string 		convert_ip(u32 ip);
+	public u16			_htons(u16 x);
+	public u32 			_htonl(u32 x);
+	public fn 			sock_close(sock_t);
 #endif
 
 #ifdef _LB_THREAD_H
@@ -441,9 +436,9 @@ int 	get_args(char* argv[]);
 		int			idx;
 	} gthread;
 
-	gthread 	init_group_thread();
-	bool 		append_thread(gthread *g, thread_t t);
+	public gthread 		init_group_thread();
+	public bool 		append_thread(gthread *g, thread_t t);
 
-	thread 		start_thread(handler_t fnc, ptr p, int wait);
-	fn 			thread_kill(thread_t t);
+	public thread 		start_thread(handler_t fnc, ptr p, int wait);
+	public fn 			thread_kill(thread_t t);
 #endif

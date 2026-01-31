@@ -1,6 +1,6 @@
 #include "../../../headers/libbase.h"
 
-fd_t open_file(const char *filename, FILE_MODE mode, int flags)
+public fd_t open_file(const char *filename, FILE_MODE mode, int flags)
 {
 	#if defined(__x86__) || defined(__x86_64__)
     	long fd = __syscall__((long)filename, (long)flags, (long)mode, -1, -1, -1, _SYS_OPEN);
@@ -19,7 +19,7 @@ fd_t open_file(const char *filename, FILE_MODE mode, int flags)
     return fd;
 }
 
-int file_content_size(fd_t fd)
+public int file_content_size(fd_t fd)
 {
 	long size = __syscall__(fd, 0, 2, -1, -1, -1, _SYS_LSEEK);
 
@@ -27,17 +27,17 @@ int file_content_size(fd_t fd)
 	return size;
 }
 
-int file_read(fd_t fd, char *buffer, int sz)
+public int file_read(fd_t fd, char *buffer, int sz)
 {
     return __syscall__(fd, (long)buffer, sz, -1, -1, -1, _SYS_READ);
 }
 
-int file_write(fd_t fd, const char *buffer, len_t len)
+public int file_write(fd_t fd, const char *buffer, len_t len)
 {
     return __syscall__(fd, (long)buffer, len, -1, -1, -1, _SYS_WRITE);
 }
 
-fn file_close(fd_t fd)
+public fn file_close(fd_t fd)
 {
     __syscall__(fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
 }

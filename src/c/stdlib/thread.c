@@ -1,6 +1,6 @@
 #include "../../../headers/libbase.h"
 
-thread start_thread(handler_t fnc, ptr p, int wait)
+public thread start_thread(handler_t fnc, ptr p, int wait)
 {
 	if(!fnc)
 		return (thread){0};
@@ -34,7 +34,7 @@ thread start_thread(handler_t fnc, ptr p, int wait)
 	return t;
 }
 
-fn thread_kill(thread *t)
+public fn thread_kill(thread *t)
 {
 	char output[100];
 	__sprintf(output, "Killing thread: %d\n", (void *)&t->pid);

@@ -1,11 +1,11 @@
 #include "../../../headers/libbase.h"
 
-array init_array(void)
+public array init_array(void)
 {
 	return allocate(sizeof(void *), 1);
 }
 
-int array_count(array arr)
+public int array_count(array arr)
 {
 	int i, count = 0;
 	for(i = 0; arr[i] != NULL; i++)
@@ -14,7 +14,7 @@ int array_count(array arr)
 	return count;
 }
 
-array array_append(array arr, ptr p)
+public array array_append(array arr, ptr p)
 {
 	if(!arr)
 		return NULL;
@@ -28,7 +28,7 @@ array array_append(array arr, ptr p)
 	return new_arr;
 }
 
-int array_contains_ptr(array arr, ptr p)
+public int array_contains_ptr(array arr, ptr p)
 {
 	if(!arr || !p)
 		return -1;
@@ -42,7 +42,7 @@ int array_contains_ptr(array arr, ptr p)
 	return -1;
 }
 
-int array_contains_str(array arr, string needle)
+public int array_contains_str(array arr, string needle)
 {
 	if(!arr || !needle)
         return -1;

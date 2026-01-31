@@ -1,11 +1,11 @@
 #include "../../../headers/libbase.h"
 
-i32 is_i32_valid(i32 num)
+public i32 is_i32_valid(i32 num)
 {
     return (num < -0x80000000 || num > 0x7FFFFFFF);
 }
 
-i32 count_int_digits(i32 num) {
+public i32 count_int_digits(i32 num) {
     int n = num;
     if(n == 0) return 1;
     if(n < 0) n = -n;
@@ -19,7 +19,7 @@ i32 count_int_digits(i32 num) {
     return count;
 }
 
-int str_to_int(const char *s)
+public int str_to_int(const char *s)
 {
     int sign = 1;
     int result = 0;

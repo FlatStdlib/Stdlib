@@ -1,6 +1,6 @@
 #include "../../../headers/libbase.h"
 
-map_t init_map(void)
+public map_t init_map(void)
 {
 	map_t map = allocate(0, sizeof(_map));
 	if(!map)
@@ -12,7 +12,7 @@ map_t init_map(void)
 	return map;
 }
 
-bool map_append(map_t map, string key, string value)
+public bool map_append(map_t map, string key, string value)
 {
 	if(!map || !key || !value)
 		return false;
@@ -29,7 +29,7 @@ bool map_append(map_t map, string key, string value)
 	return true;
 }
 
-string find_key(map_t map, string key)
+public string find_key(map_t map, string key)
 {
 	if(!map || !key)
 		return NULL;
@@ -43,7 +43,7 @@ string find_key(map_t map, string key)
 	return NULL;
 }
 
-fn field_destruct(field_t field)
+public fn field_destruct(field_t field)
 {
 	if(field->key)
 		pfree(field->key, 1);
@@ -54,7 +54,7 @@ fn field_destruct(field_t field)
 	pfree(field, 1);
 }
 
-fn map_destruct(map_t map)
+public fn map_destruct(map_t map)
 {
 	for(int i = 0; i < map->len; i++)
 		field_destruct(map->fields[i]);

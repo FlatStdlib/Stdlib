@@ -1,6 +1,6 @@
 #include "../../../headers/libbase.h"
 
-fn ptr_to_str(ptr p, string out)
+public fn ptr_to_str(ptr p, string out)
 {
 	static const char hex[] = "0123456789abcdef";
 	uintptr_t v = (uintptr_t)p;
@@ -15,7 +15,7 @@ fn ptr_to_str(ptr p, string out)
 	out[idx] = '\0';
 }
 
-string _int_to_str(int num)
+public string _int_to_str(int num)
 {
     int temp = num, c = 0;
     char buff[150] = {0};
@@ -37,7 +37,7 @@ string _int_to_str(int num)
 }
 
 /* Returns an string on the heap */
-string int_to_str(int num)
+public string int_to_str(int num)
 {
 	int temp = num, c = 0;
     char buff[150] = {0};
@@ -68,7 +68,7 @@ string int_to_str(int num)
 	return str_dup(buff);
 }
 
-fn _sprintf(string buffer, string format, any* args)
+public fn _sprintf(string buffer, string format, any* args)
 {
 	int arg = 0, idx = 0;
 
@@ -129,7 +129,7 @@ fn _sprintf(string buffer, string format, any* args)
 	buffer[idx] = '\0';
 }
 
-fn str_append_int(string dest, int num)
+public fn str_append_int(string dest, int num)
 {
 	int temp = num, c = 0;
 	char BUFF[500] = { 0 };
@@ -149,7 +149,7 @@ fn str_append_int(string dest, int num)
 	str_append(dest, BUFF);
 }
 
-string str_dup(const string buff)
+public string str_dup(const string buff)
 {
 	int len = str_len(buff);
 
@@ -160,7 +160,7 @@ string str_dup(const string buff)
 	return buffer;
 }
 
-len_t str_len(const string buffer)
+public len_t str_len(const string buffer)
 {
 	if (!buffer)
 		return 0;
@@ -173,27 +173,38 @@ len_t str_len(const string buffer)
 }
 
 //this here work for any size
-bool str_cmp(const string src, const string needle)
+public bool str_cmp(const string src, const string needle)
 {
 	if (!src || !needle) return false;
 
 	return mem_cmp(src, needle, str_len(src));
 }
 
+public bool str_append_array(string buff, const array arr)
+{
+	if(!buff || !arr)
+		return false;
+
+	for(int i = 0; arr[i] != NULL; i++)
+		str_append(buff, arr[i]);
+
+	return true;
+}
+
 //loop with `i < len` is bad, it overwrites data.
-int str_append(string buff, const string sub) {
-	if (!buff || !sub) return 0;
+public bool str_append(string buff, const string sub) {
+	if (!buff || !sub) return false;
 
 	int idx = str_len(buff);
 	for (int i = 0; sub[i] != '\0'; i++)
 		buff[idx++] = sub[i];
 
 	buff[idx] = '\0';
-	return 1;
+	return true;
 }
 
 //Returns 1 or 0, not the actual position = bug
-pos_t find_string(const string buff, const string needle) {
+public pos_t find_string(const string buff, const string needle) {
 	if (!buff || !needle) return -1;
 
 	int len = str_len(buff);
@@ -213,7 +224,7 @@ pos_t find_string(const string buff, const string needle) {
 	return -1;
 }
 
-sArr split_lines(const string buffer, int* idx)
+public sArr split_lines(const string buffer, int* idx)
 {
 	if (!buffer)
     	return NULL;
@@ -263,7 +274,7 @@ sArr split_lines(const string buffer, int* idx)
 	return NULL;
 }
 
-sArr split_string(const string buffer, const char ch, int* idx)
+public sArr split_string(const string buffer, const char ch, int* idx)
 {
 	if (!buffer)
 		return NULL;
@@ -315,7 +326,7 @@ sArr split_string(const string buffer, const char ch, int* idx)
 	return NULL;
 }
 
-string get_sub_str(const string buffer, int start, int end)
+public string get_sub_str(const string buffer, int start, int end)
 {
 	int len = end - start;
     string buff = allocate(0, end);
@@ -331,7 +342,7 @@ string get_sub_str(const string buffer, int start, int end)
 	return buff;
 }
 
-bool is_empty(string buffer)
+public bool is_empty(string buffer)
 {
 	if(!buffer)
 		return 0;
@@ -345,7 +356,7 @@ bool is_empty(string buffer)
 	return 1;
 }
 
-fn byte_to_hex(u8 byte, string out) {
+public fn byte_to_hex(u8 byte, string out) {
     const char hex_chars[] = "0123456789ABCDEF";
 
     out[0] = hex_chars[(byte >> 4) & 0xF];
@@ -353,7 +364,7 @@ fn byte_to_hex(u8 byte, string out) {
     out[2] = '\0';
 }
 
-bool str_startswith(string buffer, string needle)
+public bool str_startswith(string buffer, string needle)
 {
     if(!buffer || !needle)
         return false;
@@ -374,7 +385,7 @@ bool str_startswith(string buffer, string needle)
     return true;
 }
 
-bool str_endswith(string buffer, string needle)
+public bool str_endswith(string buffer, string needle)
 {
     if(!buffer || !needle)
         return false;

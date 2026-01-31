@@ -5,23 +5,18 @@
 int __LB_DEBUG__ = 0;
 char _OUTPUT_[1024] = {0};
 
-fn toggle_debug_mode()
-{
-	__LB_DEBUG__ = __LB_DEBUG__ ? 0 : 1;
-}
+public fn toggle_debug_mode()
+{ __LB_DEBUG__ = __LB_DEBUG__ ? 0 : 1; }
 
-fn __exit(i32 code)
+public fn __exit(i32 code)
 {
 	__syscall__(code, 0, 0, -1, -1, -1, _SYS_EXIT);
 }
 
-int get_input(string dest, i32 count) {
-	long bytes_read = __syscall__(0, (long)dest, count, -1, -1, -1, _SYS_READ);
+public int get_input(string dest, i32 count)
+{ return __syscall__(0, (long)dest, count, -1, -1, -1, _SYS_READ); }
 
-	return bytes_read;
-}
-
-fn execute(string app, sArr args)
+public fn execute(string app, sArr args)
 {
 	if(!app || !args)
 		return;
@@ -38,12 +33,12 @@ fn execute(string app, sArr args)
 	}
 }
 
-fn print_sz(const string buffer, i32 sz)
+public fn print_sz(const string buffer, i32 sz)
 {
 	__syscall__(1, (long)buffer, sz, 0, 0, 0, _SYS_WRITE);
 }
 
-fn printc(const char ch)
+public fn printc(const char ch)
 {
 	char BUFF[2] = {0};
 	BUFF[0] = ch;
@@ -51,7 +46,7 @@ fn printc(const char ch)
 	print(BUFF);
 }
 
-fn printi(i32 num)
+public fn printi(i32 num)
 {
 	if(num == 0)
 	{
@@ -63,7 +58,7 @@ fn printi(i32 num)
 	print(BUFF);
 }
 
-fn _printi(int num)
+public fn _printi(int num)
 {
     int temp = num, c = 0;
     char buff[150] = {0};
@@ -84,12 +79,12 @@ fn _printi(int num)
 	print_sz(buff, i + 1);
 }
 
-fn print(const string buff)
+public fn print(const string buff)
 {
 	__syscall__(1, (unsigned long)buff, str_len(buff), -1, -1, -1, _SYS_WRITE);
 }
 
-fn println(const string buff)
+public fn println(const string buff)
 {
 	if(buff)
 		__syscall__(1, (unsigned long)buff, str_len(buff), -1, -1, -1, _SYS_WRITE);
@@ -97,7 +92,7 @@ fn println(const string buff)
 	__syscall__(1, (unsigned long)"\n", 1, -1, -1, -1, _SYS_WRITE);
 }
 
-fn print_args(sArr arr)
+public fn print_args(sArr arr)
 {
 	for(int i = 0; arr[i] != NULL; i++)
 	{
@@ -105,7 +100,7 @@ fn print_args(sArr arr)
 	}
 }
 
-ptr to_heap(ptr p, i32 sz)
+public ptr to_heap(ptr p, i32 sz)
 {
 	ptr pointer = allocate(0, sz + 1);
 	if(!pointer)
@@ -116,7 +111,7 @@ ptr to_heap(ptr p, i32 sz)
 	return pointer;
 }
 
-fn __lb_panic(string msg, string file, int line)
+public fn __lb_panic(string msg, string file, int line)
 {
 	if(__LB_DEBUG__)
 		print(file), print(":"), _printi(line), print(" -> ");
