@@ -329,11 +329,11 @@ public sArr split_string(const string buffer, const char ch, int* idx)
 public string get_sub_str(const string buffer, int start, int end)
 {
 	int len = end - start;
-    string buff = allocate(0, end);
+    string buff = allocate(0, end + 1);
 
 	int idx = 0;
     for(int i = 0; buffer[i] != '\0'; i++) {
-    	if(i >= start || i <= end) {
+    	if(i >= start && i <= end) {
     		buff[idx++] = buffer[i];
 		}
 	}
