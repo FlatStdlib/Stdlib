@@ -405,3 +405,26 @@ public bool str_endswith(string buffer, string needle)
 
     return true;
 }
+
+public bool str_strip(string buffer)
+{
+    if (!buffer)
+        return false;
+
+    int len = str_len(buffer);
+    int start = 0;
+    int end = len - 1;
+
+    while (start < len && (buffer[start] == ' ' || buffer[start] == '\t'))
+        start++;
+
+    while (end >= start && (buffer[end] == ' ' || buffer[end] == '\t'))
+        end--;
+
+    int idx = 0;
+    for (int i = start; i <= end; i++)
+        buffer[idx++] = buffer[i];
+
+    buffer[idx] = '\0';
+    return true;
+}

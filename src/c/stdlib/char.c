@@ -83,6 +83,23 @@ public int replace_char(string buffer, const char find, const char replace)
 	return count;
 }
 
+public bool trim_char(string buff, int ch)
+{
+	if(!buff)
+		return false;
+
+	int idx = 0;
+	for(int i = 0; buff[i] != '\0'; i++) {
+		if(i == ch)
+			continue;
+
+		char n = buff[i];
+		buff[idx++] = n;
+	}
+
+	return true;
+}
+
 public bool trim_char_idx(string buff, int pos)
 {
 	if(!buff)

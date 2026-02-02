@@ -452,6 +452,7 @@ int 	get_args(char* argv[]);
 	public i32 		find_char(const string buffer, const char ch);
 	public i32 		find_char_at(const string buffer, const char ch, int match);
 	public i32 		_find_char_at(const string buffer, const char ch, int match, int *start);
+	public bool 	trim_char(string buff, int ch);
 	public bool		trim_char_idx(string buff, int pos);
 	public int 		replace_char(string buffer, const char find, const char replace);
 #endif
@@ -481,6 +482,7 @@ int 	get_args(char* argv[]);
 	public bool 	str_startswith(string buffer, string needle);
 	public bool 	str_endswith(string buffer, string needle);
 	public fn 		byte_to_hex(u8 byte, string out);
+	public bool 	str_strip(string buffer);
 #endif
 
 #ifdef _LB_ARR_H
