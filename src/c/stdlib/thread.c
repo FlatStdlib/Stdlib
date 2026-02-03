@@ -1,4 +1,4 @@
-#include "../../../headers/libbase.h"
+#include "../../../headers/fsl.h"
 
 #define _NSIG       64
 #define _NSIG_BPW   (8 * sizeof(unsigned long))
@@ -43,20 +43,12 @@ public thread start_thread(handler_t fnc, ptr p, int wait)
 		__syscall__(0, 0, 0, -1, -1, -1, _SYS_GETTID)
 	};
 
-    struct sigaction sa;
-    mem_set(&sa, 0, sizeof(sa));
-	sa.sa_handler  = (void *)1; // SIG_IGN == 1
-	sa.sa_flags    = SA_NOCLDWAIT | SA_RESTORER;
-	sa.sa_restorer = sig_restorer;
-	sa.sa_mask.sig[0] = 0;
-
-    __syscall__(17, (long)&sa, 0, sizeof(sigset_t), 0, 0, _SYS_RT_SIGACTION);
     if(t.pid == 0)
 	{
 		p ? fnc(p) : fnc();
 		__exit(0);
 	} else if(t.pid > 0) {
-		if(__LB_DEBUG__) {
+		if(__FSL_DEBUG__) {
 			print("Executed: "), _printi(t.pid), print("\n");
 		}
 
@@ -75,7 +67,7 @@ public fn thread_kill(thread *t)
 {
 	char output[100];
 	__sprintf(output, "Killing thread: %d\n", (void *)&t->pid);
-	if(__LB_DEBUG__) {
+	if(__FSL_DEBUG__) {
 		print(output);
 	}
 

@@ -8,20 +8,20 @@
 #pragma once
 
 extern char _OUTPUT_[1024];
-extern int __LB_DEBUG__;
-#ifndef __LB__
-	#define __LB__
-	#define _LB_INT_H
-	#define _LB_CHAR_H
-	#define _LB_STR_H
-	#define _LB_ARR_H
-	#define _LB_MAP_H
-	#define _LB_MEM_H
-	#define _LB_FILE_H
-	#define _LB_SOCKET_H
-	#define _LB_THREAD_H
-	#define _LB_INTERNAL_H
-	#define _LB_ALLOCATOR_H
+extern int __FSL_DEBUG__;
+#ifndef __FSL__
+	#define __FSL__
+	#define _FSL_INT_H
+	#define _FSL_CHAR_H
+	#define _FSL_STR_H
+	#define _FSL_ARR_H
+	#define _FSL_MAP_H
+	#define _FSL_MEM_H
+	#define _FSL_FILE_H
+	#define _FSL_SOCKET_H
+	#define _FSL_THREAD_H
+	#define _FSL_INTERNAL_H
+	#define _FSL_ALLOCATOR_H
 
 	
 	#define _printf(format, ...) \
@@ -151,9 +151,9 @@ int 	get_args(char* argv[]);
                 __VA_ARGS__                                            \
         }
 
-#ifdef _LB_INTERNAL_H
-	#define lb_panic(msg) 	\
-		__lb_panic(msg, __FILE__, __LINE__);
+#ifdef _FSL_INTERNAL_H
+	#define fsl_panic(msg) 	\
+		__fsl_panic(msg, __FILE__, __LINE__);
 
 	/*
 		[@DOC]
@@ -304,16 +304,16 @@ int 	get_args(char* argv[]);
 			@descriptiion:
 				Display a panic message and exit with code 1
 
-			@note: use marco: lb_panic()
+			@note: use marco: fsl_panic()
 	*/
-	public fn		__lb_panic(string msg, string file, int line);
+	public fn		__fsl_panic(string msg, string file, int line);
 #endif
 
 /*
 		Memory Utilities
 	@File: src/mem.c
 */
-#ifdef _LB_MEM_H
+#ifdef _FSL_MEM_H
 	/*
 		[@DOC]
 			@parameters:
@@ -382,7 +382,7 @@ int 	get_args(char* argv[]);
 		Allocator
 	@File: src/allocator.c
 */
-#ifdef _LB_ALLOCATOR_H
+#ifdef _FSL_ALLOCATOR_H
 	#if defined(_C_MALLOC_ALTERNATIVE)
 		#define malloc allocate
 	#endif
@@ -438,7 +438,7 @@ int 	get_args(char* argv[]);
 			int
 	[ src/stdlib/int.c ]
 */
-#ifdef _LB_INT_H
+#ifdef _FSL_INT_H
 	public i32		count_int_digits(i32 num);
 	public int		str_to_int(const char *s);
 #endif
@@ -447,7 +447,7 @@ int 	get_args(char* argv[]);
 	 		char
 	[ src/stdlib/char.c ]
 */
-#ifdef _LB_CHAR_H
+#ifdef _FSL_CHAR_H
 	public i32 		is_ascii(const char c);
 	public i32 		is_ascii_alpha(const char c);
 	public i32 		count_char(const string buffer, const char ch);
@@ -461,7 +461,7 @@ int 	get_args(char* argv[]);
 	 		string
 	[ src/stdlib/string.c ]
 */
-#ifdef _LB_STR_H
+#ifdef _FSL_STR_H
 	#define __sprintf(dest, format, ...) \
 			_sprintf(dest, format, (void *[]){__VA_ARGS__, 0});
 
@@ -484,14 +484,14 @@ int 	get_args(char* argv[]);
 	public fn 		byte_to_hex(u8 byte, string out);
 #endif
 
-#ifdef _LB_ARR_H
+#ifdef _FSL_ARR_H
 	public array 	init_array(void);
 	public array	array_append(array arr, ptr p);
 	public int 		array_contains_ptr(array arr, ptr p);
 	public int 		array_contains_str(array arr, string needle);
 #endif
 
-#ifdef _LB_MAP_H
+#ifdef _FSL_MAP_H
 	typedef struct {
 		string key;
 		string value;
@@ -516,7 +516,7 @@ int 	get_args(char* argv[]);
 	public fn 		map_destruct(map_t map);
 #endif
 
-#ifdef _LB_FILE_H
+#ifdef _FSL_FILE_H
 	typedef u32 fd_t;
 
 	typedef enum FILE_MODE {
@@ -594,7 +594,7 @@ int 	get_args(char* argv[]);
 	public fn		file_close(fd_t fd);
 #endif
 
-#ifdef _LB_SOCKET_H
+#ifdef _FSL_SOCKET_H
 	#define AF_INET         2
 	#define SOL_SOCKET      1
 	#define SO_REUSEADDR    2
@@ -647,7 +647,7 @@ int 	get_args(char* argv[]);
 	public fn 			sock_close(sock_t);
 #endif
 
-#ifdef _LB_THREAD_H
+#ifdef _FSL_THREAD_H
 	typedef struct
 	{
 		handler_t	fnc;

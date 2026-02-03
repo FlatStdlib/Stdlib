@@ -1,4 +1,4 @@
-#include <libbase.h>
+#include <fsl.h>
 
 public fn gop_str_append(void *n)
 {
@@ -25,7 +25,7 @@ public fn group_op(int count, void *fn[restrict count][2], int check_returns, in
             int exit = fnc(args);
             if(exit != exit_code) {
                 _printf("Operation %d returned %d\n", (void *)&i, (void *)&exit);
-                lb_panic("Unable to complete group operation");
+                fsl_panic("Unable to complete group operation");
             }
         } else {
             void *(*fnc)() = (void *(*)())fn[i][0];

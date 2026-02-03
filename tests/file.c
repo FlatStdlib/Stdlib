@@ -1,12 +1,12 @@
-#include <libbase.h>
+#include <fsl.h>
 
 int entry()
 {
-	__LB_DEBUG__ = 1;
+	__FSL_DEBUG__ = 1;
 	fd_t file = open_file("/etc/os-release", 0, 0);
 	if(file < 0)
 	{
-		lb_panic("error, unable to open file");
+		fsl_panic("error, unable to open file");
 		return 1;
 	}
 
@@ -18,14 +18,14 @@ int entry()
 	string buffer = allocate(0, size + 1);
 	if(!buffer)
 	{
-		lb_panic("error, unable to allocate memory...!");
+		fsl_panic("error, unable to allocate memory...!");
 		return 1;
 	}
 
 	int bytes = file_read(file, buffer, size);
 	if(bytes <= 0)
 	{
-		lb_panic("error, unable to read file...!");
+		fsl_panic("error, unable to read file...!");
 		return 1;
 	}
 

@@ -1,4 +1,4 @@
-#include "../../../headers/libbase.h"
+#include "../../../headers/fsl.h"
 
 public fd_t open_file(const string filename, FILE_MODE mode, int flags)
 {
@@ -11,7 +11,7 @@ public fd_t open_file(const string filename, FILE_MODE mode, int flags)
 	#endif
 
     if(fd == -2)
-		lb_panic("No file or directory");
+		fsl_panic("No file or directory");
 
     if(fd < 0)
         return -1;

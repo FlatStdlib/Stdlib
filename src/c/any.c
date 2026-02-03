@@ -1,4 +1,4 @@
-#include "../../headers/libbase.h"
+#include "../../headers/fsl.h"
 
 typedef enum
 {
@@ -47,7 +47,7 @@ int any_cmp(any p, any v, i32 len)
 {
 	if(*(int *)((char *)p - ANY_META_SZ - sizeof(int)) == 0x7C)
 	{
-		lb_panic("invalid memory provided...!\n");
+		fsl_panic("invalid memory provided...!\n");
 	}
 
 	any_t *n = (any_t *)((char *)p - ANY_META_SZ);

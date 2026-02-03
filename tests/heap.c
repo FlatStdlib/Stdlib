@@ -1,6 +1,6 @@
 #include <stdio.h>
-#define _LB_INTERNAL_H
-#include <libbase.h>
+#define _FSL_INTERNAL_H
+#include <fsl.h>
 #define STR_LEN 7
 #define _PRESTRING_ "Testing"
 fn test_fake_realloc()
@@ -13,7 +13,7 @@ fn test_fake_realloc()
 		string realloc = to_heap(n, i + 1);
 		if(!realloc)
 		{
-			lb_panic("error, unable to realloc");
+			fsl_panic("error, unable to realloc");
 		}
 
 		pfree(n, 1);

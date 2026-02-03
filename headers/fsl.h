@@ -8,20 +8,20 @@
 #pragma once
 
 extern char _OUTPUT_[1024];
-extern int __LB_DEBUG__;
-#ifndef __LB__
-	#define __LB__
-	#define _LB_INT_H
-	#define _LB_CHAR_H
-	#define _LB_STR_H
-	#define _LB_ARR_H
-	#define _LB_MAP_H
-	#define _LB_MEM_H
-	#define _LB_FILE_H
-	#define _LB_SOCKET_H
-	#define _LB_THREAD_H
-	#define _LB_INTERNAL_H
-	#define _LB_ALLOCATOR_H
+extern int __FSL_DEBUG__;
+#ifndef __FSL__
+	#define __FSL__
+	#define _FSL_INT_H
+	#define _FSL_CHAR_H
+	#define _FSL_STR_H
+	#define _FSL_ARR_H
+	#define _FSL_MAP_H
+	#define _FSL_MEM_H
+	#define _FSL_FILE_H
+	#define _FSL_SOCKET_H
+	#define _FSL_THREAD_H
+	#define _FSL_INTERNAL_H
+	#define _FSL_ALLOCATOR_H
 
 	
 	#define _printf(format, ...) \
@@ -113,16 +113,14 @@ long ___syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long ar
 int 	get_args(char* argv[]);
 
 /*
-    [@DOC]
-        @parameters:
-            # count     | Max count of elements in array
-            # arr       | array to iterate
-            # callback  | Iterator callback variable
-            # counter   | A counter
+    @DOC
+        @param count     Max count of elements in array
+        @param arr       array to iterate
+        @param callback  Iterator callback variable
+        @param counter   A counter
 
-        @return: n/a
-        @description:
-            An iterator for array management
+        @returns n/a
+        @note An iterator for array management
 */
 #define foreach(count, arr, callback, counter, ...)  					\
         for(int i = 0; i < count; i++) {                                \
@@ -131,16 +129,14 @@ int 	get_args(char* argv[]);
         }
 
 /*
-	[@DOC]
-		@parameters:
-			# count         | Max count of elements in array
-			# arr           | array to iterate
-			# callback      | Iterator callback variable
-			# counter       | A counter
+	@DOC
+		@param count         Max count of elements in array
+		@param arr           array to iterate
+		@param callback      Iterator callback variable
+		@param counter       A counter
 
-		@return: n/a
-		@description:
-        	An iterator for double-pointer array management
+		@returns n/a
+		@note An iterator for double-pointer array management
 */
 #define foreach_ptr(count, arr, callback, counter, ...) 			   \
 		for(int i = 0; i < count; i++)                                 \
@@ -149,229 +145,188 @@ int 	get_args(char* argv[]);
                 __VA_ARGS__                                            \
         }
 
-#ifdef _LB_INTERNAL_H
-	#define lb_panic(msg) 	\
-		__lb_panic(msg, __FILE__, __LINE__);
+#ifdef _FSL_INTERNAL_H
+	#define fsl_panic(msg) 	\
+		__fsl_panic(msg, __FILE__, __LINE__);
 
 	/*
-		[@DOC]
-			@parameters: n/a
+		@DOC
 			@return: n/a
-			@description:
-				Enable debug mode, stdout
+			@note: Enable debug mode, stdout
 	*/
 	public fn		toggle_debug_mode();
 
 	/*
-		[@DOC]
-			@parameters:
-				# code 		| Exit code
+		@DOC
+			@param code 		| Exit code
 
 			@return: n/a
-			@description
-				Safety exit app
+			@note: Safety exit app
 	*/
 	public fn 		__exit(int code);
 
 	/*
-		[@DOC]
-			@parameters:
-				# app 		| App Execution
-				# args 		| Argument for app including the app at the beginning of the array
+		@DOC
+			@param app 		App Execution
+			@param args 	Argument for app including the app at the beginning of the array
 
 			@return: n/a
-			@description:
-				Execute an application
+			@note: Execute an application
 	*/
 	public fn 		execute(string app, sArr args);
 
 	/*
-		[@DOC]
-			@parameters:
-				# buffer	| Buffer to output
-				# Size		| Max size of the buffer to output
+		@DOC
+			@param buffer	Buffer to output
+			@param Size		Max size of the buffer to output
 
 			@return: n/a
-			@description:
-				Output string to stdout
+			@note: Output string to stdout
 	*/
 	public fn 		print_sz(const string buffer, int sz);
 
 	/*
-		[@DOC]
-			@parameters:
-				# ch		| Char to output
+		@DOC
+			@param ch		Char to output
 
 			@return: n/a
-			@descrption:
-				Output char to stdout
+			@note: Output char to stdout
 	*/
 	public fn		printc(const char ch);
 
 	/*
-		[@DOC]
-			@parameters:
-				# num		| int to output
+		@DOC
+			@param num		int to output
 
 			@return: n/a
-			@description:
-				Output int to stdout
-
-			@note: this is supports num > -1 && num < 10
+			@note: Output int to stdout. this is supports num > -1 && num < 10
 	*/
 	public fn 		printi(int num);
 
 	/*
-		[@DOC]
-			@parameters:
-				# value 	|
+		@DOC
+			@param value 	int to print
 
 			@return: n/a
-			@description:
-				Output int to stdout
-
-			@note: this is supports num > 9
+			@note: Output int to stdout. this is supports num > 9
 	*/
 	public fn 		_printi(int value);
 
 	/*
-		[@DOC]
-			@parameters:
-				# buff		| buffer to output
+		@DOC
+			@param buff		buffer to output
 
 			@return: n/a
-			@description:
-				Output string to stdout
+			@note: Output string to stdout
 	*/
 	public fn 		print(const string buff);
 
 	/*
-		[@DOC]
-			@parameters:
-				# buff		| buffer to output
+		@DOC
+			@param buff		buffer to output
 
 			@return: n/a
-			@descrption
-				Output string to stdout with a newline sequence
+			@note: Output string to stdout with a newline sequence
 	*/
 	public fn		println(const string buff);
 
 	/*
-		[@DOC]
-			@parameters:
-				# buff 		| buffer to output
-				# sz		| max bytes to output
+		@DOC
+			@param buff 	buffer to output
+			@param sz		max bytes to output
 
 			@return: n/a
-			@description:
-				Output a buffer upto a size
+			@note: Output a buffer upto a size
 	*/
 	public fn 		printsz(const string buff, int sz);
 
 	/*
-		[@DOC]
-			@parameters:
-				# arr 		| Array of strings to output
+		@DOC
+			@param arr 		Array of strings to output
 
 			@return: n/a
-			@description:
-				Output an array of strings
+			@note: Output an array of strings
 	*/
 	public fn 		print_args(sArr arr);
 
 	/*
-		[@DOC]
-			@parameters:
-				# p			| Pointer to copy
-				# size		| Size for allocation
+		@DOC
+			@param p 		Pointer to copy
+			@param size 	Size for allocation
 
-			@return: new ptr
-			@description:
-				Copy a memory chunk to a new heap block
+			@returns: new ptr
+			@note: Copy a memory chunk to a new heap block
 	*/
 	public ptr		to_heap(ptr p, i32 sz);
 
 	/*
-		[DOC]
-			@parameters:
-				# msg 		| panic message
-				# file 		| file that panic
-				# line		| line that panic
+		@DOC
+			@param msg 		panic message
+			@param file 	file that panic
+			@param line		line that panic
 
 			@return: n/a
-			@descriptiion:
-				Display a panic message and exit with code 1
-
-			@note: use marco: lb_panic()
+			@note: Display a panic message and exit with code 1.
+					use marco: fsl_panic() instead
 	*/
-	public fn		__lb_panic(string msg, string file, int line);
+	public fn		__fsl_panic(string msg, string file, int line);
 #endif
 
 /*
 		Memory Utilities
 	@File: src/mem.c
 */
-#ifdef _LB_MEM_H
+#ifdef _FSL_MEM_H
 	/*
-		[@DOC]
-			@parameters:
-				# p			| The pointer to zero
-				# size		| Amount to zero
+		@DOC
+			@param p		The pointer to zero
+			@param size		Amount to zero
 
 			@return: n/a
-			@description
-				Zero an entire memery block
+			@note: Zero an entire memery block
 	*/
 	public fn 		memzero(any p, size_t size);
 
 	/*
-		[@DOC]
-			@parameters:
-				# src		| Pointer to compare
-				# p			| Pointer to compare
-				# size		| Max size to compare
+		@DOC
+			@param src		Pointer to compare
+			@param p		Pointer to compare
+			@param size		Max size to compare
 
-			@return: n/a
-			@description:
-				Compare 2 memory block to match
+			@return: int
+			@note: Compare 2 memory block to match
 	*/
 	public int 		mem_cmp(any src, any p, size_t size);
 
 	/*
-		[@DOC]
-			@parameters:
-				# dest		| Pointer to copy to
-				# src		| Pointer to copy from
-				# size		| Max size to copy
+		@DOC
+			@param dest		Pointer to copy to
+			@param src		Pointer to copy from
+			@param size		Max size to copy
 
 			@return: n/a
-			@description:
-				Copy an entire memory block to another
+			@note: Copy an entire memory block to another
 	*/
 	public fn 		mem_cpy(any dest, any src, size_t size);
 
 	/*
-		[@DOC]
-			@parameters:
-				# p			| Pointer to change
-				# ch		| New char to set
-				# size 		| Max size to change
+		@DOC
+			@param p		Pointer to change
+			@param ch		New char to set
+			@param size 	Max size to change
 
 			@return: n/a
-			@description:
-				Set a value to the whole memory block
+			@note: Set a value to the whole memory block
 	*/
 	public fn 		mem_set(any p, char ch, size_t size);
 
 	/*
-		[@DOC]
-			@parameters:
-				# dest		| Pointer to set user input content
-				# count		| Max count of byte to set
+		@DOC
+			@param dest		Pointer to set user input content
+			@param count	Max count of byte to set
 
 			@return: n/a
-			@description:
-				Get user input
+			@note: Get user input
 	*/
 	public int 		get_input(string dest, len_t count);
 #endif
@@ -380,7 +335,7 @@ int 	get_args(char* argv[]);
 		Allocator
 	@File: src/allocator.c
 */
-#ifdef _LB_ALLOCATOR_H
+#ifdef _FSL_ALLOCATOR_H
 	#if defined(_C_MALLOC_ALTERNATIVE)
 		#define malloc allocate
 	#endif
@@ -436,7 +391,7 @@ int 	get_args(char* argv[]);
 			int
 	[ src/stdlib/int.c ]
 */
-#ifdef _LB_INT_H
+#ifdef _FSL_INT_H
 	public i32		count_int_digits(i32 num);
 	public int		str_to_int(const char *s);
 #endif
@@ -445,7 +400,7 @@ int 	get_args(char* argv[]);
 	 		char
 	[ src/stdlib/char.c ]
 */
-#ifdef _LB_CHAR_H
+#ifdef _FSL_CHAR_H
 	public i32 		is_ascii(const char c);
 	public i32 		is_ascii_alpha(const char c);
 	public i32 		count_char(const string buffer, const char ch);
@@ -461,7 +416,7 @@ int 	get_args(char* argv[]);
 	 		string
 	[ src/stdlib/string.c ]
 */
-#ifdef _LB_STR_H
+#ifdef _FSL_STR_H
 	#define __sprintf(dest, format, ...) \
 			_sprintf(dest, format, (void *[]){__VA_ARGS__, 0});
 
@@ -486,14 +441,14 @@ int 	get_args(char* argv[]);
 	public string 	float_to_str(double n, char *out, int precision);
 #endif
 
-#ifdef _LB_ARR_H
+#ifdef _FSL_ARR_H
 	public array 	init_array(void);
 	public array	array_append(array arr, ptr p);
 	public int 		array_contains_ptr(array arr, ptr p);
 	public int 		array_contains_str(array arr, string needle);
 #endif
 
-#ifdef _LB_MAP_H
+#ifdef _FSL_MAP_H
 	typedef struct {
 		string key;
 		string value;
@@ -518,7 +473,7 @@ int 	get_args(char* argv[]);
 	public fn 		map_destruct(map_t map);
 #endif
 
-#ifdef _LB_FILE_H
+#ifdef _FSL_FILE_H
 	typedef u32 fd_t;
 
 	typedef enum FILE_MODE {
@@ -532,39 +487,33 @@ int 	get_args(char* argv[]);
 	} FILE_MODE;
 
 	/*
-		[@DOC]
-			@parameters:
-				# filename 	| Filename or path to file
-				# mode 		| Open Mode
-				# flags 	| flags
+		@DOC
+			@param filename Filename or path to file
+			@param mode 	Open Mode
+			@param flags 	flags
 
 			@return: >0 on sucess, -1 on fail
-			@description:
-				Open a file stream
+			@note: Open a file stream
 	*/
 	public fd_t		open_file(const string filename, FILE_MODE mode, int flags);
 
 	/*
-		[@DOC]
-			@parameters:
-				# fd 		| File Descriptor
+		@DOC
+			@param fd 		File Descriptor
 
 			@return: >0 on success, -1 on fail
-			@description:
-				Retrieve file size
+			@note: Retrieve file size
 	*/
 	public int		file_content_size(fd_t fd);
 
 	/*
-		[@DOC]
-			@parameters
-				# fd 		| File descriptor
-				# buffer	| The buffer to add input to
-				# size 		| max size of the buffer
+		@DOC
+			@param fd 		File descriptor
+			@param buffer	The buffer to add input to
+			@param size 	max size of the buffer
 
-			@return; >0 on scuess, <=0 on fail
-			@description:
-				Read file content
+			@return: >0 on scuess, <=0 on fail
+			@note: Read file content
 	*/
 	public int		file_read(fd_t fd, string buffer, int sz);
 
@@ -572,31 +521,27 @@ int 	get_args(char* argv[]);
 	#define file_uc_read(fd, buff, sz) file_read
 
 	/*
-		[@DOC]
-			@parameters:
-				# fd 		| File descriptor
-				# buffer	| Buffer of data to send
-				# len		| max length of the data to send
+		@DOC
+			@param fd 		File descriptor
+			@param buffer	Buffer of data to send
+			@param len		max length of the data to send
 
 			@return: >0 on success, -1 on fail
-			@description:
-				Write to file
+			@note: Write to file
 	*/
 	public int		file_write(fd_t fd, const string buffer, len_t len);
 
 	/*
-		[@DOC]
-			@parameters:
-				# fd		| File descriptor
+		@DOC
+			@param fd		File descriptor
 
 			@return: n/a
-			@description:
-				close file
+			@note: close file
 	*/
 	public fn		file_close(fd_t fd);
 #endif
 
-#ifdef _LB_SOCKET_H
+#ifdef _FSL_SOCKET_H
 	#define AF_INET         2
 	#define SOL_SOCKET      1
 	#define SO_REUSEADDR    2
@@ -649,7 +594,7 @@ int 	get_args(char* argv[]);
 	public fn 			sock_close(sock_t);
 #endif
 
-#ifdef _LB_THREAD_H
+#ifdef _FSL_THREAD_H
 	typedef struct
 	{
 		handler_t	fnc;

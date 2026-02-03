@@ -1,12 +1,12 @@
 #define STR_H
-#include "../../headers/libbase.h"
+#include "../../headers/fsl.h"
 #include "../../headers/asm.h"
 
-int __LB_DEBUG__ = 0;
+int __FSL_DEBUG__ = 0;
 char _OUTPUT_[1024] = {0};
 
 public fn toggle_debug_mode()
-{ __LB_DEBUG__ = __LB_DEBUG__ ? 0 : 1; }
+{ __FSL_DEBUG__ = __FSL_DEBUG__ ? 0 : 1; }
 
 public fn __exit(i32 code)
 {
@@ -111,9 +111,9 @@ public ptr to_heap(ptr p, i32 sz)
 	return pointer;
 }
 
-public fn __lb_panic(string msg, string file, int line)
+public fn __fsl_panic(string msg, string file, int line)
 {
-	if(__LB_DEBUG__)
+	if(__FSL_DEBUG__)
 		print(file), print(":"), _printi(line), print(" -> ");
 
 	print("\x1b[31merror\x1b[39m: "), println(msg);

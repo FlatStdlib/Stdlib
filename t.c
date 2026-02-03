@@ -1,4 +1,4 @@
-#include <libbase.h>
+#include <fsl.h>
 
 public fn create_output(string search, string comment, string alias)
 {
@@ -22,14 +22,14 @@ public bool entry(i32 argc, string argv[])
 	uninit_mem();
 	set_heap_sz(_HEAP_PAGE_ * 8);
 	init_mem();
-	fd_t file = open_file("libbase.h", 0, 0);
+	fd_t file = open_file("fsl.h", 0, 0);
 	if(!file)
-		lb_panic("err");
+		fsl_panic("err");
 
 	i32 sz = file_content_size(file);
 	string buff = allocate(0, sz + 1);
 	if(file_read(file, buff, sz) <= 0)
-		lb_panic("unable to read header...!");
+		fsl_panic("unable to read header...!");
 
 	file_close(file);
 	int line_count = 0;

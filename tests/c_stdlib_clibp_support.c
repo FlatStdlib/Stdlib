@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <libbase.h>
+#include <fsl.h>
 #include <asm.h>
 
 /* gcc_clibp */
@@ -21,7 +21,7 @@ int entry()
     /* heap test */
 	println("Attempting to init heap...");
 
-	__LB_DEBUG__ = 1;
+	__FSL_DEBUG__ = 1;
     int heap_check = __is_heap_init__();
 	print("Heap: "), printi(heap_check),
     print(": "), printi(__get_total_mem_used__()),
