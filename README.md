@@ -15,12 +15,14 @@
 - The library is a minimal C backend with a custom loader to link!
 - Currently working on a machine code compiler to bind all FSL into a modernize C-like language in the future!
 
-### Supported Architectures
+### Supported Architecture
 
 - x86
 - x86_64
 - AMD
 - RISC-V (Still in development)
+
+Note: The only confirmed working architecture is x86 and x86_64. Mainly intel CPU!
 
 ### Install
 
@@ -54,7 +56,9 @@ Use --help for help or more arguments
 
 # Contribution
 
-Want to help out with the FSL? You can start by downloading this stdlib and the FSL-GCC toolchain compiler @ https://github.com/FlatStdlib/fsl
+<p>Want to help out with the FSL? You can start by downloading this stdlib and the FSL-GCC toolchain compiler @ https://github.com/FlatStdlib/fsl<p>
+
+Check out the TODO list for a set of task from important to least important.
 
 # Community 
 
