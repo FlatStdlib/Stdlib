@@ -451,7 +451,7 @@ int 	get_args(char* argv[]);
 #ifdef _FSL_MAP_H
 	typedef struct {
 		string key;
-		string value;
+		ptr value;
 	} _field;
 
 	typedef _field field;

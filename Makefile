@@ -11,21 +11,21 @@ BUILD 		= build
 
 # Library Filename & External Library Path
 # Header file default path
-LIB			= libbase.a
+LIB			= libfsl.a
 LIB_PATH	= /usr/lib
 HEADER_PATH = /usr/local/include
 
 # Object Filename and Path
-OBJ			= libbase.o
+OBJ			= libfsl.o
 OBJ_PATH	= $(BUILD)
 
 #
 # Base-GCC Executable (DO NOT CHANGE)
-# Compile and Link sources with libbase
+# Compile and Link sources with fsl
 #
-GBASE_EXEC 	= lbg
-GBASE_OBJ	= lbg.o
-GBASE_PATH 	= /bin/lbg	# Final Executable Path
+GBASE_EXEC 	= fsl
+GBASE_OBJ	= fsl.o
+GBASE_PATH 	= /bin/fsl	# Final Executable Path
 
 # Compilation flags and files
 FLAGS 		= -c -nostdlib -nostdinc
@@ -75,8 +75,8 @@ compile:
 # clean-up
 #
 cloader:
-	gcc -c ../lbg-compiler/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
-	gcc -c ../lbg-compiler/lbg.c -o $(GBASE_OBJ) -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
+	gcc -c ../fsl/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
+	gcc -c ../fsl/fsl.c -o $(GBASE_OBJ) -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
 # 	cp $(BUILD)/clibp.o cpy.o
 	ld --gc-sections -o $(GBASE_EXEC) $(GBASE_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
 
@@ -106,7 +106,12 @@ clean:
 # Test all test files in 'tests/'
 #
 test_run:
-	gclibp tests/heap.c -o heap && ./heap
-	gclibp tests/file.c -o file && ./file
-	gclibp tests/thread.c -o thread && ./thread
-	rm -rf heap file thread
+	fsl tests/heap.c -o heap && ./heap
+	fsl tests/file.c -o file && ./file
+	fsl tests/thread.c -o thread && ./thread
+	fsl tests/map.c -o map && ./map
+	fsl tests/array.c -o array && ./array
+	fsl tests/c_stdlib_clibp_support.c -o cstdlib_fsl && ./cstdlib_fsl
+	gcc tests/c_stdlib_clibp_support.c -o cstdlib_fsl -lfsl && ./cstdlib_fsl
+	fsl tests/change_heap.c -o change_heap && ./change_heap
+	rm -rf heap file thread map array cstdlib_fsl change_heap
