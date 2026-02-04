@@ -54,12 +54,12 @@ Use --help for help or more arguments
 
 # Contribution
 
-Want to help out with the project? You can start by downloading this stdlib and the FSL-GCC toolchain compiler @ https://github.com/FlatStdlib/fsl
+Want to help out with the FSL? You can start by downloading this stdlib and the FSL-GCC toolchain compiler @ https://github.com/FlatStdlib/fsl
 
 # Community 
 
-We have a discord server for the public FSL community
-Join here for any questions or help with anything FSL https://discord.gg/3w85CEhN6w
+<p>We have a discord server for the public FSL community</p>
+<p>Join here for any questions or help with anything FSL <a href="https://discord.gg/3w85CEhN6w">Click</a></p>
 
 ### File Structure Information
 ```
