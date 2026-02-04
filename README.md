@@ -35,6 +35,23 @@ cd Stdlib
 make # make tcc (for tcc (not complete, testing stage))
 ```
 
+### File Structure Information
+```
+| - Stdlib              ; Stdlib
+|
+| - headers
+    | - fsl.h           ; Start of the Stdlib
+    | - fsl_gcc.h
+    | - asm.h           ; Syscall chaining to match names to each architecture for target
+    | - architectures   ; Syscall Based Single-header libs
+| - src
+    | - asm             ; Some ASM Wrappers
+    | - c               ; Basic C Internals and Stdlib
+        | - stdlib      ; Type(s) and Functionalities
+| - tests               ; Tests to run. Indicating Good for Production Use On the target host
+
+```
+
 ### Standard Use
 
 ```c
@@ -65,19 +82,3 @@ Check out the TODO list for a set of task from important to least important.
 <p>We have a discord server for the public FSL community</p>
 <p>Join here for any questions or help with anything FSL <a href="https://discord.gg/3w85CEhN6w">Click Here to Join</a></p>
 
-### File Structure Information
-```
-| - Stdlib				; Stdlib
-|
-| - headers
-	| - fsl.h			; Start of the Stdlib
-	| - fsl_gcc.h
-	| - asm.h			; Syscall chaining to match names to each architecture for target
-	| - architectures 	; Syscall Based Single-header libs
-| - src
-	| - asm				; Some ASM Wrappers
-	| - c 				; Basic C Internals and Stdlib
-		| - stdlib		; Type(s) and Functionalities
-| - tests				; Tests to run. Indicating Good for Production Use On the target host
-	
-```
