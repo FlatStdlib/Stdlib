@@ -6,7 +6,7 @@
 | [Introduction](doc/intro.md)
 | [Quick Doc](/quick_doc.md)
 | [Libraries](doc/libraries.md)
-| [Todo](https://github.com/libbase/libbase)
+| [Todo](doc/todo.md)
 </div>
 
 # Some Info
