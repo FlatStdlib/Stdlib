@@ -88,7 +88,6 @@ public fn println(const string buff)
 {
 	if(buff)
 		__syscall__(1, (unsigned long)buff, str_len(buff), -1, -1, -1, _SYS_WRITE);
-		
 	__syscall__(1, (unsigned long)"\n", 1, -1, -1, -1, _SYS_WRITE);
 }
 

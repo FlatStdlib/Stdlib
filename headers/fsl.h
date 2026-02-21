@@ -599,8 +599,9 @@ int 	get_args(char* argv[]);
 	{
 		handler_t	fnc;
 		ptr			arguments;
-		i8 			wait;
-		i8 			finished;
+		bool		wait;
+		bool		running;
+		bool		finished;
 		i32			pid;
 		i32			ttid;
 	} _thread;
@@ -613,10 +614,13 @@ int 	get_args(char* argv[]);
 	{
 		threads_t	threads;
 		int			idx;
+		bool		running;
 	} gthread;
 
 	public gthread		init_group_thread();
 	public bool			append_thread(gthread *g, thread_t t);
+
+	public bool 		run_thread(thread *t, int wait);
 
 	public thread 		start_thread(handler_t fnc, ptr p, int wait);
 	public fn			thread_kill(thread_t t);

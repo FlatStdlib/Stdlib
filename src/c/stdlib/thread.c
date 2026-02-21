@@ -63,6 +63,33 @@ public thread start_thread(handler_t fnc, ptr p, int wait)
 	return t;
 }
 
+public bool run_thread(thread *t, int wait)
+{
+	if(!t || !wait)
+		return 0;
+
+	t->running = 1;
+	t->finished = 0;
+	t->pid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_FORK);
+    t->ttid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_GETTID);
+	if(t->pid == 0)
+    {
+        t->arguments ? t->fnc(t->arguments) : t->fnc();
+        __exit(0);
+    } else if(t->pid > 0) {
+        if(__FSL_DEBUG__) {
+            print("Executed: "), _printi(t->pid), print("\n");
+        }
+
+        if(wait)
+            __syscall__(t->pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
+    } else {
+        println("fork error");
+    }
+
+    t->ttid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_GETTID);
+}
+
 public fn thread_kill(thread *t)
 {
 	char output[100];

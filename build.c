@@ -14,7 +14,7 @@ public _build *init_build(string cc)
     b->argv = allocate(0, sizeof(string) * 2);
     b->argv[0] = str_dup(cc);
     b->argc = 1;
-    
+
     return b;
 }
 
@@ -73,22 +73,7 @@ const string FILES[] = {
     NULL
 };
 
-#define RawC(...) \
-    __VA_ARGS__;
-
-#define Noob(num) \
-    #num;
-
 int entry(int argc, char *argv[])
 {
-    RawC(
-        char *fag = "SHIT BRUHS";
-        _printf("%s\n", fag);
-    );
-
-    RawC(
-        char *test = "TESTING THIS";
-        _printf("%s\n", test);
-    );
     return 0;
 }
