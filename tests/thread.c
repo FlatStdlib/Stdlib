@@ -63,23 +63,25 @@ void pool_run(gthread *gt)
 
 	gt->running = 1;
 	int total_running = 0;
-	struct sleep_t s = { 1, 50000000 };
+	struct sleep_t s = { 0, 50000000 };
 	while(gt->running != 0)
 	{
 		total_running = 0;
 		for(int i = 0; i < gt->idx; i++)
 		{
-			// Check if thread has finished (Running would be enabled still)
-			if(gt->threads[i]->running && gt->threads[i]->finished)
+			if(!gt->threads[i]->finished)
 			{
-				thread_kill(gt->threads[i]);
-			} else { total_running++; }
+				if(!gt->threads[i]->running)
+				{
+					println("EXECUTED...!");
+					gt->threads[i]->running = 1;
+					/* Wait here so parent process can deterministically mark completion. */
+					run_thread(gt->threads[i], 1);
+					gt->threads[i]->finished = 1;
+					gt->threads[i]->running = 0;
+				}
 
-			if(!gt->threads[i]->running)
-			{
-				println("EXECUTED...!");
-				gt->threads[i]->running = 1;
-				run_thread(gt->threads[i], 0);
+				total_running++;
 			}
 		}
 		printi(total_running), println(NULL);
@@ -107,8 +109,6 @@ int entry()
 	thread_append(gt, t);
 
 	pool_run(gt);
-
-	struct sleep_t wait = {120, 50000000};
-	__syscall__((long)&wait, 0, 0, 0, 0, 0, _SYS_NANOSLEEP);
 	return 0;
 }
+
