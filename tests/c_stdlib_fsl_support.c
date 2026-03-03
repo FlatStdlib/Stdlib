@@ -3,10 +3,10 @@
 
   2 entry point, 1 for each compiler support
 
-  // gcc test.c -o test -lclibp
+  // gcc test.c -o test -lfsl
   - C       main()
 
-  // gcc_clibp test.c -o test
+  // fsl test.c -o test
   - clib+   entry()
 */
 #include <stdio.h>
@@ -15,7 +15,7 @@
 #include <fsl.h>
 #include <asm.h>
 
-/* gcc_clibp */
+/* fsl */
 int entry()
 {
     /* heap test */
@@ -59,7 +59,7 @@ int entry()
     print(": "), _printi(mem_used),
     print("/"), _printi(_HEAP_PAGE_), print("\n");
 
-    println("Compiled with CLIBP");
+    println("Compiled with fsl");
     return 0;
 }
 
