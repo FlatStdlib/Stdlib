@@ -2,10 +2,11 @@
 
 private int get_cmd_info(string buffer)
 {
-    #if defined(__x86__) || defined(__x86_64__)
-        long fd = __syscall__((long)"/proc/self/cmdline", 0, 0, -1, -1, -1, _SYS_OPEN);
+    long fd = 0;
+    #if defined(__x86__) || defined(__i386__) || defined(__x86_64__)
+        fd = __syscall__((long)"/proc/self/cmdline", 0, 0, -1, -1, -1, _SYS_OPEN);
 	#elif defined(__riscv)
-    	long fd = __syscall__(-100, (long)"/proc/self/cmdline", 0, 0, -1, -1, _SYS_OPENAT);
+    	fd = __syscall__(-100, (long)"/proc/self/cmdline", 0, 0, -1, -1, _SYS_OPENAT);
 	#endif
 
     if(fd <= 0)

@@ -40,10 +40,11 @@ public sock_t listen_tcp(const string ip, int port, int concurrent)
 
 public sock_t sock_accept(sock_t server, len_t len)
 {
-	#if defined(__riscv)
-		long client_fd = __syscall__(server->fd, 0, 0, -1, -1, -1, _SYS_ACCEPT4);
-	#elif defined(__x86__) || defined(__x86_64__)
-		long client_fd = __syscall__(server->fd, 0, 0, -1, -1, -1, _SYS_ACCEPT);
+    int client_fd = 0;
+	#if defined(__riscv) || defined(__x86__)
+		client_fd = __syscall__(server->fd, 0, 0, -1, -1, -1, _SYS_ACCEPT4);
+	#elif defined(__x86_64__)
+		client_fd = __syscall__(server->fd, 0, 0, -1, -1, -1, _SYS_ACCEPT);
 	#endif
 
 	if(client_fd < 0)

@@ -21,11 +21,11 @@ struct sigaction {
 static void sig_restorer(void)
 {
     asm volatile (
-        "mov $15, %%rax\n"   // SYS_rt_sigreturn
+        "mov $15, %%eax\n"   // SYS_rt_sigreturn
         "syscall\n"
         :
         :
-        : "rax", "memory"
+        : "eax", "memory"
     );
 }
 

@@ -11,17 +11,20 @@ extern char _OUTPUT_[1024];
 extern int __FSL_DEBUG__;
 #ifndef __FSL__
 	#define __FSL__
-	#define _FSL_INT_H
-	#define _FSL_CHAR_H
-	#define _FSL_STR_H
-	#define _FSL_ARR_H
-	#define _FSL_MAP_H
-	#define _FSL_MEM_H
-	#define _FSL_FILE_H
-	#define _FSL_SOCKET_H
-	#define _FSL_THREAD_H
-	#define _FSL_INTERNAL_H
-	#define _FSL_ALLOCATOR_H
+	
+	#ifndef _NO_FSL_LIBS_
+		#define _FSL_INT_H
+		#define _FSL_CHAR_H
+		#define _FSL_STR_H
+		#define _FSL_ARR_H
+		#define _FSL_MAP_H
+		#define _FSL_MEM_H
+		#define _FSL_FILE_H
+		#define _FSL_SOCKET_H
+		#define _FSL_THREAD_H
+		#define _FSL_INTERNAL_H
+		#define _FSL_ALLOCATOR_H
+	#endif
 
 	
 	#define _printf(format, ...) \

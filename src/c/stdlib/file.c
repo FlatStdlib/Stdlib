@@ -2,10 +2,11 @@
 
 public fd_t open_file(const string filename, FILE_MODE mode, int flags)
 {
-	#if defined(__x86__) || defined(__x86_64__)
-    	long fd = __syscall__((long)filename, (long)flags, (long)mode, -1, -1, -1, _SYS_OPEN);
+	int fd = 0;
+	#if defined(__x86__) || defined(__i386__) || defined(__x86_64__)
+    	fd = __syscall__((long)filename, (long)flags, (long)mode, -1, -1, -1, _SYS_OPEN);
 	#elif defined(__riscv)
-    	long fd = __syscall__(-100, (long)filename, (long)flags, (long)mode, -1, -1, _SYS_OPENAT);
+    	fd = __syscall__(-100, (long)filename, (long)flags, (long)mode, -1, -1, _SYS_OPENAT);
     #else
     	#error "Unsupported Arch"
 	#endif
