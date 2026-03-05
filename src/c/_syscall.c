@@ -8,6 +8,22 @@ public long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, l
 }
 
 #if defined(__x86__)
+    __attribute__((naked)) long custom_mmap(long, long, long, long, long, long)
+    {
+        asm volatile(
+            "push ebp\n\t"
+            "mov eax, 0xc0\n\t"
+            "mov ebx, [esp+8]\n\t"
+            "mov ecx, [esp+12]\n\t"
+            "mov edx, [esp+16]\n\t"
+            "mov esi, [esp+20]\n\t"
+            "mov edi, [esp+24]\n\t"
+            "mov ebp, [esp+28]\n\t"
+            "int 0x80\n\t"
+            "pop ebp\n\t"
+            "ret\n\t");
+    }
+    
     void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
     {
         register long sys asm("eax") = syscall;
