@@ -18,8 +18,13 @@ section .text
     global _start
 
 _start:
-    mov eax, 90
-    mov ebx, mmap_args
+    mov eax, 192
+    mov ebx, 0
+    mov ecx, 4096
+    mov edx, 3
+    mov esi, 22
+    mov edi, -1
+    mov ebp, 0
     int 0x80
 
     mov [nptr], eax

@@ -227,7 +227,6 @@ int 	get_args(char* argv[]);
 	/*
 		@DOC
 			@param buff		buffer to output
-
 			@return: n/a
 			@note: Output string to stdout with a newline sequence
 	*/
@@ -237,18 +236,16 @@ int 	get_args(char* argv[]);
 		@DOC
 			@param buff 	buffer to output
 			@param sz		max bytes to output
-
-			@return: n/a
-			@note: Output a buffer upto a size
+		@return: n/a
+		@note: Output a buffer upto a size
 	*/
 	public fn 		printsz(const string buff, int sz);
 
 	/*
 		@DOC
 			@param arr 		Array of strings to output
-
-			@return: n/a
-			@note: Output an array of strings
+		@return: n/a
+		@note: Output an array of strings
 	*/
 	public fn 		print_args(sArr arr);
 
@@ -256,9 +253,8 @@ int 	get_args(char* argv[]);
 		@DOC
 			@param p 		Pointer to copy
 			@param size 	Size for allocation
-
-			@returns: new ptr
-			@note: Copy a memory chunk to a new heap block
+		@returns: new ptr
+		@note: Copy a memory chunk to a new heap block
 	*/
 	public ptr		to_heap(ptr p, i32 sz);
 
@@ -267,9 +263,8 @@ int 	get_args(char* argv[]);
 			@param msg 		panic message
 			@param file 	file that panic
 			@param line		line that panic
-
-			@return: n/a
-			@note: Display a panic message and exit with code 1.
+		@return: n/a
+		@note: Display a panic message and exit with code 1.
 					use marco: fsl_panic() instead
 	*/
 	public fn		__fsl_panic(string msg, string file, int line);
@@ -284,9 +279,8 @@ int 	get_args(char* argv[]);
 		@DOC
 			@param p		The pointer to zero
 			@param size		Amount to zero
-
-			@return: n/a
-			@note: Zero an entire memery block
+		@return: n/a
+		@note: Zero an entire memery block
 	*/
 	public fn 		memzero(any p, size_t size);
 
@@ -295,9 +289,8 @@ int 	get_args(char* argv[]);
 			@param src		Pointer to compare
 			@param p		Pointer to compare
 			@param size		Max size to compare
-
-			@return: int
-			@note: Compare 2 memory block to match
+		@return: int
+		@note: Compare 2 memory block to match
 	*/
 	public int 		mem_cmp(any src, any p, size_t size);
 
@@ -306,9 +299,8 @@ int 	get_args(char* argv[]);
 			@param dest		Pointer to copy to
 			@param src		Pointer to copy from
 			@param size		Max size to copy
-
-			@return: n/a
-			@note: Copy an entire memory block to another
+		@return: n/a
+		@note: Copy an entire memory block to another
 	*/
 	public fn 		mem_cpy(any dest, any src, size_t size);
 
@@ -327,9 +319,8 @@ int 	get_args(char* argv[]);
 		@DOC
 			@param dest		Pointer to set user input content
 			@param count	Max count of byte to set
-
-			@return: n/a
-			@note: Get user input
+		@return: n/a
+		@note: Get user input
 	*/
 	public int 		get_input(string dest, len_t count);
 #endif
@@ -494,18 +485,16 @@ int 	get_args(char* argv[]);
 			@param filename Filename or path to file
 			@param mode 	Open Mode
 			@param flags 	flags
-
-			@return: >0 on sucess, -1 on fail
-			@note: Open a file stream
+		@return: >0 on sucess, -1 on fail
+		@note: Open a file stream
 	*/
 	public fd_t		open_file(const string filename, FILE_MODE mode, int flags);
 
 	/*
 		@DOC
 			@param fd 		File Descriptor
-
-			@return: >0 on success, -1 on fail
-			@note: Retrieve file size
+		@return: >0 on success, -1 on fail
+		@note: Retrieve file size
 	*/
 	public int		file_content_size(fd_t fd);
 
@@ -514,9 +503,8 @@ int 	get_args(char* argv[]);
 			@param fd 		File descriptor
 			@param buffer	The buffer to add input to
 			@param size 	max size of the buffer
-
-			@return: >0 on scuess, <=0 on fail
-			@note: Read file content
+		@return: >0 on scuess, <=0 on fail
+		@note: Read file content
 	*/
 	public int		file_read(fd_t fd, string buffer, int sz);
 
