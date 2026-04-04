@@ -64,7 +64,7 @@ compile_asm:
 # Merge clib+ built-in lib for the compiler and another for external use with other compilers
 #
 compile:
-	$(COMPILER) -m32 $(FLAGS) $(FILES)
+	$(COMPILER) $(FLAGS) $(FILES)
 	rm -rf $(BUILD)/$(LIB)
 	rm -rf $(BUILD)/$(OBJ)
 	ar rcs $(BUILD)/$(LIB) *.o
@@ -75,10 +75,10 @@ compile:
 # clean-up
 #
 cloader:
-	gcc -c -m32 ../fsl/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
-	gcc -c -m32 ../fsl/fsl.c -o $(GBASE_OBJ) -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
+	gcc -c ../fsl/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
+	gcc -c ../fsl/fsl.c -o $(GBASE_OBJ) -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
 # 	cp $(BUILD)/fsl.o cpy.o
-	ld -m elf_i386 --gc-sections -o $(GBASE_EXEC) $(GBASE_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
+	ld --gc-sections -o $(GBASE_EXEC) $(GBASE_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
 
 #"-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
 
