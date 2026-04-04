@@ -3,6 +3,7 @@
 #include <fsl.h>
 #define STR_LEN 7
 #define _PRESTRING_ "Testing"
+
 fn test_fake_realloc()
 {
 	string n = allocate(0, 1);

@@ -61,7 +61,7 @@ public fn printi(i32 num)
 public fn _printi(int num)
 {
     int temp = num, c = 0;
-    char buff[150] = {0};
+    char buff[180] = {0};
     while(temp)
     {
         buff[c++] = '0' + (temp % 10);
