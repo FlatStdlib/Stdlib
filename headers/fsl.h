@@ -197,6 +197,9 @@ int 	get_args(char* argv[]);
 	*/
 	public fn		printc(const char ch);
 
+
+	public fn _printi_(i32 num);
+
 	/*
 		@DOC
 			@param num		int to output
@@ -308,7 +311,7 @@ int 	get_args(char* argv[]);
 		@DOC
 			@param p		Pointer to change
 			@param ch		New char to set
-			@param size 	Max size to change
+			@param size		Max size to change
 
 			@return: n/a
 			@note: Set a value to the whole memory block
@@ -608,11 +611,13 @@ int 	get_args(char* argv[]);
 		bool		running;
 	} gthread;
 
-	public gthread		init_group_thread();
-	public bool			append_thread(gthread *g, thread_t t);
+	public gthread 		*init_thread_group();
+	public bool 		thread_append(gthread *gt, thread *t);
+	public fn 			pool_run(gthread *gt);
 
 	public bool 		run_thread(thread *t, int wait);
 
-	public thread 		start_thread(handler_t fnc, ptr p, int wait);
+	public thread 		create_thread(handler_t fnc, ptr p, int wait);
+	public fn 			start_thread(thread t);
 	public fn			thread_kill(thread_t t);
 #endif

@@ -29,24 +29,52 @@ static void sig_restorer(void)
     );
 }
 
-public thread start_thread(handler_t fnc, ptr p, int wait)
+public thread create_thread(handler_t fnc, ptr p, int wait)
 {
 	if(!fnc)
 		return (thread){0};
 
-	thread t = {
+	// thread t =
+	return (thread){
 		.fnc = fnc,
 		.arguments = p,
 		.wait = wait,
 		.running = 0,
 		.finished = 0,
-		.pid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_FORK),
+		.pid = 0,
 		.ttid = 0
 	};
 
-    if(t.pid == 0)
+    // if(t.pid == 0)
+	// {
+	// 	p ? fnc(p) : fnc();
+	// 	__exit(0);
+	// } else if(t.pid > 0) {
+	// 	t.running = 1;
+	// 	t.ttid = t.pid;
+	// 	if(__FSL_DEBUG__) {
+	// 		print("Executed: "), _printi(t.pid), print("\n");
+	// 	}
+
+	// 	if(wait)
+	// 	{
+    // 		__syscall__(t.pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
+	// 		t.running = 0;
+	// 		t.finished = 1;
+	// 	}
+	// } else {
+	// 	println("fork error");
+	// }
+
+	// return t;
+}
+
+public fn start_thread(thread t)
+{
+	t.pid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_FORK);
+	if(t.pid == 0)
 	{
-		p ? fnc(p) : fnc();
+		t.arguments ? t.fnc(t.arguments) : t.fnc();
 		__exit(0);
 	} else if(t.pid > 0) {
 		t.running = 1;
@@ -55,7 +83,7 @@ public thread start_thread(handler_t fnc, ptr p, int wait)
 			print("Executed: "), _printi(t.pid), print("\n");
 		}
 
-		if(wait)
+		if(t.wait)
 		{
     		__syscall__(t.pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
 			t.running = 0;
@@ -64,8 +92,6 @@ public thread start_thread(handler_t fnc, ptr p, int wait)
 	} else {
 		println("fork error");
 	}
-
-	return t;
 }
 
 public bool run_thread(thread *t, int wait)

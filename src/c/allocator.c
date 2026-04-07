@@ -31,7 +31,7 @@ public fn init_mem(void) {
     mem_set(_HEAP_, 1, _HEAP_PAGE_);
 
     if (HEAP_DEBUG || __FSL_DEBUG__)
-        print("[ + ] Heap initialized!\n");
+        print("[ALLOCATOR]: Heap initialized!\n");
 }
 
 private int find_space(int space)
@@ -75,7 +75,7 @@ public any allocate(int sz, int len) {
 	{
 		char buff[100];
 		ptr_to_str(ptr, buff);
-		print("[ + ] Allocated "), _printi(sz ? sz * len : len), print(" to "), println(buff);
+		print("[ALLOCATOR]: Allocated "), _printi(sz ? sz * len : len), print(" to "), println(buff);
         int n = sz ? sz * len : len;
 	}
 
@@ -130,14 +130,14 @@ public fn pfree(any ptr, int clean)
 	{
     	char buff[100];
     	ptr_to_str(m, buff);
-    	print("[ + ] Freeing memory block @ "), println(buff);
+    	print("[ALLOCATOR]: Freeing memory block @ "), println(buff);
     }
 }
 
 public fn uninit_mem(void)
 {
 	if(HEAP_DEBUG || __FSL_DEBUG__)
-		println("[ + ] Uninitializing");
+		println("[ALLOCATOR]: Uninitializing");
         
 	__syscall__((long)_HEAP_, _HEAP_PAGE_, 0, 0, 0, 0, _SYS_MUNMAP);
 }

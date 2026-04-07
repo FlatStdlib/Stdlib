@@ -48,6 +48,14 @@ public fn printc(const char ch)
 
 public fn printi(i32 num)
 {
+	if(num > 9)
+		_printi(num);
+	else
+		_printi_(num);
+}
+
+public fn _printi_(i32 num)
+{
 	if(num == 0)
 	{
 		print("0");
