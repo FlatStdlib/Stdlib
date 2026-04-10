@@ -1,24 +1,21 @@
 #include <fsl.h>
 
-void *thread_fn(void *t)
+public fn *thread_fn(void *t)
 {
 	_printf("%p %s\n", t, t);
-	char *dick = "arg_1";
 	struct sleep_t ts = {0, 500000000};
 	for(int i = 0; i < 5; i++) {
 		int *n = to_heap((void *)&i, sizeof(int));
-		printi(i), print_args((string []){": Theaded Arg ->", dick, "\n", 0});
+		printi(i), print_args((string []){": Theaded Arg -> ", t, "\n", 0});
 		__syscall__((long)&ts, 0, 0, 0, 0, 0, _SYS_NANOSLEEP);
 		pfree(n, 1);
 	}
 
 	execute("/bin/touch", (string []){"/bin/touch", "fag.txt", NULL});
-	// t->finished = 1;
-	// thread_kill(t);
     __exit(0);
 }
 
-void thread_test()
+public fn thread_test()
 {
 	thread first = create_thread(thread_fn, "arg_1", 0);
 	thread second = create_thread(thread_fn, "arg_2", 0);
