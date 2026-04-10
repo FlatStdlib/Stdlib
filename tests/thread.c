@@ -1,9 +1,8 @@
 #include <fsl.h>
 
-void *thread_fn(thread *t)
+void *thread_fn(void *t)
 {
-	println("HERE\n");
-	_printf("%p\n", t->arguments);
+	_printf("%p %s\n", t, t);
 	char *dick = "arg_1";
 	struct sleep_t ts = {0, 500000000};
 	for(int i = 0; i < 5; i++) {
@@ -43,12 +42,9 @@ int entry()
 	toggle_debug_mode();
 	gthread *gt = init_thread_group();
 
-	
 	thread t = create_thread(thread_fn, "dick", 0);
-	// t.arguments = (void *[]){&t, "dick"};
-	_printf("%p\n", t.arguments);
 	_thread *thr = to_heap(&t, sizeof(_thread) + 1);
-	_printf("%p\n", thr);
+	_printf("%p\n", thr->arguments);
 	thread_append(gt, thr);
 
 	pool_run(gt);
