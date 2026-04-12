@@ -45,6 +45,8 @@ int entry()
 	thread_append(gt, thr);
 
 	pool_run(gt);
+	struct sleep_t ts = {30, 500000000};
+		__syscall__((long)&ts, 0, 0, 0, 0, 0, _SYS_NANOSLEEP);
 	return 0;
 }
 
