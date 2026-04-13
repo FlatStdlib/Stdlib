@@ -583,6 +583,8 @@ int 	get_args(char* argv[]);
 	public string 		sock_read(sock_t sock);
 	public int 			parse_ipv4(const char* ip, u32 *out);
 	public string 		convert_ip(u32 ip);
+	public u8 			_ntohs(unsigned short x);
+	public u32			_ntohl(unsigned int x);
 	public u16			_htons(u16 x);
 	public u32			_htonl(u32 x);
 	public fn 			sock_close(sock_t);

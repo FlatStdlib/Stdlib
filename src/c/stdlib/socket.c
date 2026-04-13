@@ -130,7 +130,6 @@ public int parse_ipv4(const char *ip, unsigned int *out)
     return 1;
 }
 
-
 public string convert_ip(unsigned int ip) {
     static char buf[16];
 
@@ -141,6 +140,17 @@ public string convert_ip(unsigned int ip) {
 
     __sprintf(buf, "%u.%u.%u.%u", &b1, &b2, &b3, &b4);
     return buf;
+}
+
+public u8 _ntohs(unsigned short x) {
+    return (x >> 8) | (x << 8);
+}
+
+public u32 _ntohl(unsigned int x) {
+    return ((x >> 24) & 0xff) |
+           ((x >> 8)  & 0xff00) |
+           ((x << 8)  & 0xff0000) |
+           ((x << 24) & 0xff000000);
 }
 
 public unsigned short _htons(unsigned short x)
