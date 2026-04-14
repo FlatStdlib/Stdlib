@@ -4,6 +4,7 @@
 
 int __FSL_DEBUG__ = 0;
 char _OUTPUT_[1024] = {0};
+char _EXTERNAL_[1024] = {0};
 
 public fn toggle_debug_mode()
 { __FSL_DEBUG__ = __FSL_DEBUG__ ? 0 : 1; }

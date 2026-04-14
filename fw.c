@@ -40,7 +40,7 @@ public firewall_t init_firewall(string ip, int port)
     fw->con_count = 0;
 
     fw->socket = allocate(0, sizeof(sock_t));
-    fw->socket->fd = __syscall__(17, 3, 0x0003, -1, -1, -1, _SYS_SOCKET);
+    fw->socket->fd = __syscall__(17, 3, _htons(0x0003), -1, -1, -1, _SYS_SOCKET);
     if(fw->socket->fd < 0)
         fsl_panic("unable to create socket!");
 
@@ -87,51 +87,32 @@ public bool is_ip_blocked(firewall_t fw, string ip)
     return -1;
 }
 
-struct eth_hdr {
-    unsigned char dst[6];
-    unsigned char src[6];
-    unsigned short proto;
-};
+public fn firewall_destruct(firewall_t fw)
+{
+    if(!fw)
+        return;
 
-// Minimal IPv4 header
-struct ip_hdr {
-    unsigned char ihl_version;
-    unsigned char tos;
-    unsigned short tot_len;
-    unsigned short id;
-    unsigned short frag_off;
-    unsigned char ttl;
-    unsigned char protocol;
-    unsigned short check;
-    unsigned int saddr;
-    unsigned int daddr;
-};
+    __syscall__(fw->socket->fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
 
-// Minimal TCP header
-struct tcp_hdr {
-    unsigned short src_port;
-    unsigned short dst_port;
-    unsigned int seq;
-    unsigned int ack;
-    unsigned char offset_reserved;
-    unsigned char flags;
-    unsigned short window;
-    unsigned short checksum;
-    unsigned short urgent;
-};
+    pfree(fw->watch_ip, 1);
 
-// Minimal UDP header
-struct udp_hdr {
-    unsigned short src_port;
-    unsigned short dst_port;
-    unsigned short len;
-    unsigned short check;
-};
+    if(fw->cons)
+        pfree_array((array)fw->cons);
+
+    if(fw->whitlisted)
+        pfree_array((array)fw->whitlisted);
+
+    if(fw->blacklisted)
+        pfree_array((array)fw->blacklisted);
+}
+
 
 void print_ip(unsigned int ip) {
     unsigned int h = _ntohl(ip);
     unsigned char *b = (unsigned char *)&h;
 
+    // _printf("%d.%d.%d.%d", (void *)&b[0], (void *)&b[1], (void *)&b[2], (void *)&b[3]);
+    
     printi(b[0]); print(".");
     printi(b[1]); print(".");
     printi(b[2]); print(".");
@@ -143,64 +124,67 @@ void print_ip(unsigned int ip) {
 #define TCP_HDR_LEN sizeof(struct tcp_hdr)
 
 void parse(unsigned char *buf, size_t len) {
-    if (len < ETH_HDR_LEN) return;
+    if (len < 14) {
+        println("Exit: 1");
+        return;
+    }
 
-    struct eth_hdr *eth = (struct eth_hdr *)buf;
-    unsigned short proto = _ntohs(eth->proto);
+    unsigned short proto =
+        (buf[12] << 8) | buf[13];
 
     print("\n=== Ethernet ===\n");
 
-    if (proto != 0x0800) return;
-
-    if (len < ETH_HDR_LEN + IP_HDR_LEN) return;
-
-    struct ip_hdr *ip = (struct ip_hdr *)(buf + ETH_HDR_LEN);
-    int ip_header_len = (ip->ihl_version & 0x0F) * 4;
-
-    print("=== IP ===\n");
-
-    print("Src: ");
-    print_ip(ip->saddr);
-    print("\nDst: ");
-    print_ip(ip->daddr);
-    print("\n");
-
-    // TCP
-    if (ip->protocol == 6) {
-        if (len < ETH_HDR_LEN + ip_header_len + TCP_HDR_LEN) return;
-
-        struct tcp_hdr *tcp = (struct tcp_hdr *)(buf + ETH_HDR_LEN + ip_header_len);
-
-        print("=== TCP ===\n");
-
-        print("Src Port: ");
-        printi(_ntohs(tcp->src_port));
-        print("\nDst Port: ");
-        printi(_ntohs(tcp->dst_port));
-        print("\n");
-
-        unsigned char flags = tcp->flags;
-
-        print("Flags: SYN=");
-        printi((flags & 0x02) != 0);
-        print(" ACK=");
-        printi((flags & 0x10) != 0);
-        print(" FIN=");
-        printi((flags & 0x01) != 0);
-        print("\n");
+    if (proto != 0x0800) {
+        println("Exit 2");
+        return;
     }
 
-    // UDP
-    else if (ip->protocol == 17) {
-        struct udp_hdr *udp = (struct udp_hdr *)(buf + ETH_HDR_LEN + ip_header_len);
+    if (len < 14 + 20) {
+        println("Exit 3");
+        return;
+    }
 
-        print("=== UDP ===\n");
+    unsigned char *ip = buf + 14;
 
-        print("Src Port: ");
-        printi(_ntohs(udp->src_port));
-        print("\nDst Port: ");
-        printi(_ntohs(udp->dst_port));
-        print("\n");
+    unsigned char ihl = ip[0] & 0x0F;
+    int ip_header_len = ihl * 4;
+
+    unsigned int saddr =
+        (ip[12] << 24) | (ip[13] << 16) |
+        (ip[14] << 8)  | (ip[15]);
+
+    unsigned int daddr =
+        (ip[16] << 24) | (ip[17] << 16) |
+        (ip[18] << 8)  | (ip[19]);
+
+    print("=== IP ===\nSrc: "), print_ip(saddr);
+    print("\nDst: "), print_ip(daddr);
+    print("\n");
+
+    unsigned char protocol = ip[9];
+
+    if (protocol == 6) {
+        unsigned char *tcp = buf + 14 + ip_header_len;
+
+        unsigned short sport = (tcp[0] << 8) | tcp[1];
+        unsigned short dport = (tcp[2] << 8) | tcp[3];
+        unsigned char flags = tcp[13];
+
+        print("=== TCP ===\nSrc Port: "), printi(sport), print("| Dst Port: "), printi(dport), println(NULL);
+
+        int syn = (flags & 0x02) != 0;
+        int ack = (flags & 0x10) != 0;
+        int fin = (flags & 0x01) != 0;
+        _printf("Flags: SYN = %d | ACK = %d | FIN = %d\n", (void *)&syn, (void *)&ack, (void *)&fin);
+    }
+    else if (protocol == 17) {
+        unsigned char *udp = buf + 14 + ip_header_len;
+
+        unsigned short sport = (udp[0] << 8) | udp[1];
+        unsigned short dport = (udp[2] << 8) | udp[3];
+
+        println("=== UDP ===\n");
+        print("Src Port: "), printi(sport), print("| Dst Port: "), printi(dport), println(NULL);
     }
 }
 
@@ -208,19 +192,40 @@ public fn monitor(firewall_t fw)
 {
     fw->running = 1;
 
+    string data = _EXTERNAL_;
     while(fw->running != 0)
     {
-        string data = sock_read(fw->socket);
-        if(!data)
-            continue;
+        // string data = sock_read(fw->socket);
+        // if(!data) {
+        //     println("Skipping...");
+        //     continue;
+        // }
 
-        println(data);
-        parse(data, __get_size__(data));
+        // int sz = __get_size__(data);
+        int sz = 1024;
+        int bytes = __syscall__(fw->socket->fd, (long)data, 1023, -1, -1, -1, _SYS_READ);
+
+        println("\x1b[32mNew Request\x1b[39m");
+        char byte[4];
+        for (size_t i = 0; i < bytes; i++) {
+            byte_to_hex(data[i], byte); 
+            _printf("%s ", byte);
+        }
+
+        println("\n\n\x1b[32mRequest Info\x1b[39m");
+
+        parse(data, bytes);
+        println(NULL);
+        // pfree(data, 1);
     }
 }
 
 public int entry(int argc, string argv[])
 {
+    // toggle_debug_mode();
+    uninit_mem();
+    set_heap_sz(_HEAP_PAGE_ * 10);
+    init_mem();
     firewall_t fw = init_firewall("1.1.1.1", 80);
     _printf("Socket: %d\n", (void *)&fw->socket->fd);
 

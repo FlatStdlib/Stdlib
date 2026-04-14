@@ -7,7 +7,7 @@
 */
 #pragma once
 
-extern char _OUTPUT_[1024];
+extern char _OUTPUT_[1024], _EXTERNAL_[1024];
 extern int __FSL_DEBUG__;
 #ifndef __FSL__
 	#define __FSL__
