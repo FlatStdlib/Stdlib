@@ -162,8 +162,19 @@ void parse(unsigned char *buf, size_t len) {
     print("\n");
 
     unsigned char protocol = ip[9];
+    if(protocol == 1) {
+        unsigned char *icmp = buf + 14 + ip_header_len;
 
-    if (protocol == 6) {
+        unsigned char type = icmp[0];
+        unsigned char code = icmp[1];
+
+        print("=== ICMP ===\n");
+
+        print("Type: "), printi(type);
+        print("| Code: "), printi(code), println(NULL);
+
+        print("\n");
+    } else if(protocol == 6) {
         unsigned char *tcp = buf + 14 + ip_header_len;
 
         unsigned short sport = (tcp[0] << 8) | tcp[1];
@@ -177,7 +188,7 @@ void parse(unsigned char *buf, size_t len) {
         int fin = (flags & 0x01) != 0;
         _printf("Flags: SYN = %d | ACK = %d | FIN = %d\n", (void *)&syn, (void *)&ack, (void *)&fin);
     }
-    else if (protocol == 17) {
+    else if(protocol == 17) {
         unsigned char *udp = buf + 14 + ip_header_len;
 
         unsigned short sport = (udp[0] << 8) | udp[1];
@@ -205,7 +216,7 @@ public fn monitor(firewall_t fw)
         int sz = 1024;
         int bytes = __syscall__(fw->socket->fd, (long)data, 1023, -1, -1, -1, _SYS_READ);
 
-        println("\x1b[32mNew Request\x1b[39m");
+        _printf("\x1b[32mNew Request, Byte Size: %d\x1b[39m\n", (void *)&bytes);
         char byte[4];
         for (size_t i = 0; i < bytes; i++) {
             byte_to_hex(data[i], byte); 
