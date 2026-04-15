@@ -106,8 +106,23 @@ public fn firewall_destruct(firewall_t fw)
         pfree_array((array)fw->blacklisted);
 }
 
+public string ip_to_str(unsigned int ip) {
+    unsigned int h = _ntohl(ip);
+    unsigned char *b = (unsigned char *)&h;
+    
+    string n = allocate(0, 16);
+    str_append_int(n, b[0]);
+    str_append(n, ".");
+    str_append_int(n, b[1]);
+    str_append(n, ".");
+    str_append_int(n, b[2]);
+    str_append(n, ".");
+    str_append_int(n, b[3]);
 
-void print_ip(unsigned int ip) {
+    return n;
+}
+
+public fn print_ip(unsigned int ip) {
     unsigned int h = _ntohl(ip);
     unsigned char *b = (unsigned char *)&h;
 
@@ -123,25 +138,25 @@ void print_ip(unsigned int ip) {
 #define IP_HDR_LEN sizeof(struct ip_hdr)
 #define TCP_HDR_LEN sizeof(struct tcp_hdr)
 
-void parse(unsigned char *buf, size_t len) {
+public bool parse(unsigned char *buf, size_t len) {
     if (len < 14) {
-        println("Exit: 1");
-        return;
+        println("Exit Op: 1");
+        return 0;
     }
 
     unsigned short proto =
         (buf[12] << 8) | buf[13];
 
-    print("\n=== Ethernet ===\n");
+    print("=== Ethernet ===\n");
 
     if (proto != 0x0800) {
-        println("Exit 2");
-        return;
+        println("Exit Op: 2");
+        return 0;
     }
 
     if (len < 14 + 20) {
-        println("Exit 3");
-        return;
+        println("Exit Op: 3");
+        return 0;
     }
 
     unsigned char *ip = buf + 14;
@@ -156,6 +171,12 @@ void parse(unsigned char *buf, size_t len) {
     unsigned int daddr =
         (ip[16] << 24) | (ip[17] << 16) |
         (ip[18] << 8)  | (ip[19]);
+
+    string sip = ip_to_str(saddr);
+    string dip = ip_to_str(daddr);
+
+    pfree(sip, 1);
+    pfree(dip, 1);
 
     print("=== IP ===\nSrc: "), print_ip(saddr);
     print("\nDst: "), print_ip(daddr);
@@ -197,6 +218,16 @@ void parse(unsigned char *buf, size_t len) {
         println("=== UDP ===\n");
         print("Src Port: "), printi(sport), print("| Dst Port: "), printi(dport), println(NULL);
     }
+
+    char byte[4];
+    println("\x1b[32mRequest Info\x1b[39m");
+    for (size_t i = 0; i < len; i++) {
+        byte_to_hex(buf[i], byte); 
+        _printf("%s ", byte);
+    }
+    println("\n");
+
+    return 1;
 }
 
 public fn monitor(firewall_t fw)
@@ -217,16 +248,7 @@ public fn monitor(firewall_t fw)
         int bytes = __syscall__(fw->socket->fd, (long)data, 1023, -1, -1, -1, _SYS_READ);
 
         _printf("\x1b[32mNew Request, Byte Size: %d\x1b[39m\n", (void *)&bytes);
-        char byte[4];
-        for (size_t i = 0; i < bytes; i++) {
-            byte_to_hex(data[i], byte); 
-            _printf("%s ", byte);
-        }
-
-        println("\n\n\x1b[32mRequest Info\x1b[39m");
-
         parse(data, bytes);
-        println(NULL);
         // pfree(data, 1);
     }
 }
