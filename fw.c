@@ -1,5 +1,15 @@
 #include <fsl.h>
 
+#define HEAP_USED
+
+struct pollfd {
+    int fd;
+    short events;
+    short revents;
+};
+
+#define POLLIN 0x001
+
 typedef struct
 {
     string      src_ip;
@@ -20,11 +30,8 @@ typedef struct
     int         watch_port;
 
     /* Monitor Stats */
-    array       cons;
-    int         con_count;
-
-    conn_arr_t  whitlisted;
-    conn_arr_t  blacklisted;
+    array       whitlisted;
+    array       blacklisted;
 
     /* Monitor Settings */
     int         running;
@@ -36,8 +43,9 @@ public firewall_t init_firewall(string ip, int port)
     firewall_t fw = allocate(0, sizeof(firewall));
     fw->watch_ip = str_dup(ip);
     fw->watch_port = port;
-    fw->cons = init_array();
-    fw->con_count = 0;
+
+    fw->blacklisted = init_array();
+    fw->whitlisted = init_array();
 
     fw->socket = allocate(0, sizeof(sock_t));
     fw->socket->fd = __syscall__(17, 3, _htons(0x0003), -1, -1, -1, _SYS_SOCKET);
@@ -50,37 +58,59 @@ public firewall_t init_firewall(string ip, int port)
     return fw;
 }
 
-public bool append_ip(firewall_t fw, conn_t con)
+public bool whitlist_ip(firewall_t fw, string ip)
 {
-    if(!fw || !con)
-        return -1;
+    if(!fw || !ip)
+        return 0;
 
-    fw->cons = array_append(fw->cons, con);
+    fw->whitlisted = array_append(fw->whitlisted, ip);
     return 1;
 }
 
+public bool blacklist_ip(firewall_t fw, string ip)
+{
+    if(!fw || !ip)
+        return 0;
+
+    fw->blacklisted = array_append(fw->blacklisted, ip);
+    return 1;
+}
+
+/* 
+    Check if an IP Address is already whitlisted 
+
+    NOTE: IPs here can never be blocked during an attack
+*/
 public bool is_ip_whitlisted(firewall_t fw, string ip)
 {
     if(!fw || !ip)
         return -1;
 
-    for(int i = 0; i < fw->con_count; i++)
+    for(int i = 0; i < __get_size__(fw->whitlisted); i++)
     {
-        if(str_cmp(((connection **)fw->cons)[i]->dest_ip, ip))
+        if(!((string *)fw->whitlisted)[i])
+            break;
+
+        if(str_cmp(((string *)fw->whitlisted)[i], ip))
             return i;
     }
 
     return -1;
 }
-
-public bool is_ip_blocked(firewall_t fw, string ip)
+/* 
+    Check if an IP Address is already blacklisted
+*/
+public bool is_ip_blacklisted(firewall_t fw, string ip)
 {
     if(!fw || !ip)
         return -1;
 
-    for(int i = 0; i < fw->con_count; i++)
+    for(int i = 0; i < __get_size__(fw->blacklisted); i++)
     {
-        if(str_cmp(((connection **)fw->cons)[i]->dest_ip, ip))
+        if(!((string *)fw->blacklisted)[i])
+            break;
+
+        if(str_cmp(((string *)fw->blacklisted)[i], ip))
             return i;
     }
 
@@ -96,9 +126,6 @@ public fn firewall_destruct(firewall_t fw)
 
     pfree(fw->watch_ip, 1);
 
-    if(fw->cons)
-        pfree_array((array)fw->cons);
-
     if(fw->whitlisted)
         pfree_array((array)fw->whitlisted);
 
@@ -106,6 +133,7 @@ public fn firewall_destruct(firewall_t fw)
         pfree_array((array)fw->blacklisted);
 }
 
+HEAP_USED
 public string ip_to_str(unsigned int ip) {
     unsigned int h = _ntohl(ip);
     unsigned char *b = (unsigned char *)&h;
@@ -126,8 +154,6 @@ public fn print_ip(unsigned int ip) {
     unsigned int h = _ntohl(ip);
     unsigned char *b = (unsigned char *)&h;
 
-    // _printf("%d.%d.%d.%d", (void *)&b[0], (void *)&b[1], (void *)&b[2], (void *)&b[3]);
-    
     printi(b[0]); print(".");
     printi(b[1]); print(".");
     printi(b[2]); print(".");
@@ -138,26 +164,14 @@ public fn print_ip(unsigned int ip) {
 #define IP_HDR_LEN sizeof(struct ip_hdr)
 #define TCP_HDR_LEN sizeof(struct tcp_hdr)
 
-public bool parse(unsigned char *buf, size_t len) {
-    if (len < 14) {
-        println("Exit Op: 1");
-        return 0;
-    }
+HEAP_USED
+public bool parse(firewall_t fw, unsigned char *buf, len_t len) {
+    if (len < 14) return 0;
 
-    unsigned short proto =
-        (buf[12] << 8) | buf[13];
+    unsigned short proto = (buf[12] << 8) | buf[13];
 
-    print("=== Ethernet ===\n");
-
-    if (proto != 0x0800) {
-        println("Exit Op: 2");
-        return 0;
-    }
-
-    if (len < 14 + 20) {
-        println("Exit Op: 3");
-        return 0;
-    }
+    if (proto != 0x0800) return 0;
+    if (len < 14 + 20) return 0;
 
     unsigned char *ip = buf + 14;
 
@@ -175,9 +189,19 @@ public bool parse(unsigned char *buf, size_t len) {
     string sip = ip_to_str(saddr);
     string dip = ip_to_str(daddr);
 
+    if(!sip || !dip)
+        return 0;
+
+    if(is_ip_whitlisted(fw, sip) > -1)
+        return 0;
+
+    if(is_ip_whitlisted(fw, dip) > -1)
+        return 0;
+
     pfree(sip, 1);
     pfree(dip, 1);
 
+    _printf("\x1b[32mNew Request, Byte Size: %d\x1b[39m\n", (void *)&len);
     print("=== IP ===\nSrc: "), print_ip(saddr);
     print("\nDst: "), print_ip(daddr);
     print("\n");
@@ -189,10 +213,10 @@ public bool parse(unsigned char *buf, size_t len) {
         unsigned char type = icmp[0];
         unsigned char code = icmp[1];
 
-        print("=== ICMP ===\n");
+        print("\x1b[33m=== ICMP ===\x1b[39m\n");
 
         print("Type: "), printi(type);
-        print("| Code: "), printi(code), println(NULL);
+        print(" | Code: "), printi(code), println(NULL);
 
         print("\n");
     } else if(protocol == 6) {
@@ -202,7 +226,7 @@ public bool parse(unsigned char *buf, size_t len) {
         unsigned short dport = (tcp[2] << 8) | tcp[3];
         unsigned char flags = tcp[13];
 
-        print("=== TCP ===\nSrc Port: "), printi(sport), print("| Dst Port: "), printi(dport), println(NULL);
+        print("\x1b[31m=== TCP ===\x1b[39m\nSrc Port: "), printi(sport), print(" | Dst Port: "), printi(dport), println(NULL);
 
         int syn = (flags & 0x02) != 0;
         int ack = (flags & 0x10) != 0;
@@ -215,8 +239,8 @@ public bool parse(unsigned char *buf, size_t len) {
         unsigned short sport = (udp[0] << 8) | udp[1];
         unsigned short dport = (udp[2] << 8) | udp[3];
 
-        println("=== UDP ===\n");
-        print("Src Port: "), printi(sport), print("| Dst Port: "), printi(dport), println(NULL);
+        println("\x1b[32m=== UDP ===\x1b[39m\n");
+        print("Src Port: "), printi(sport), print(" | Dst Port: "), printi(dport), println(NULL);
     }
 
     char byte[4];
@@ -235,32 +259,36 @@ public fn monitor(firewall_t fw)
     fw->running = 1;
 
     string data = _EXTERNAL_;
+    
     while(fw->running != 0)
     {
-        // string data = sock_read(fw->socket);
-        // if(!data) {
-        //     println("Skipping...");
-        //     continue;
-        // }
-
-        // int sz = __get_size__(data);
         int sz = 1024;
         int bytes = __syscall__(fw->socket->fd, (long)data, 1023, -1, -1, -1, _SYS_READ);
 
-        _printf("\x1b[32mNew Request, Byte Size: %d\x1b[39m\n", (void *)&bytes);
-        parse(data, bytes);
-        // pfree(data, 1);
+        if(bytes > 0) {
+            parse(fw, data, bytes);
+        }
     }
 }
 
+char arg_ip[1024];
+
 public int entry(int argc, string argv[])
 {
-    // toggle_debug_mode();
+    int len = 0;
+    if(argc > 1) {
+        len = str_len(argv[1]);
+        mem_cpy(arg_ip, argv[1], len);
+    }
+
     uninit_mem();
-    set_heap_sz(_HEAP_PAGE_ * 10);
+    set_heap_sz(526870912);
     init_mem();
     firewall_t fw = init_firewall("1.1.1.1", 80);
     _printf("Socket: %d\n", (void *)&fw->socket->fd);
+
+    if(len > 2)
+        whitlist_ip(fw, arg_ip);
 
     monitor(fw);
     return 0;

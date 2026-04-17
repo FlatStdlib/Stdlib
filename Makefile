@@ -28,7 +28,7 @@ GBASE_OBJ	= fsl.o
 GBASE_PATH 	= /bin/fsl	# Final Executable Path
 
 # Compilation flags and files
-FLAGS 		= -c -nostdlib -nostdinc
+FLAGS 		= -c -nostdlib -nostdinc ${DEBUG}
 FILES 		= src/c/*.c \
 			  src/c/stdlib/*.c \
 

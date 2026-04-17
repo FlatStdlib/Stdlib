@@ -24,6 +24,10 @@ struct sleep_t {
     long sec, nsec;
 };
 
+struct timeval {
+    long tv_sec, tv_usec;
+};
+
 #if defined(__x86__) || defined(__i386__)
 	#define __x86__
 	#include "architectures/x86.h"
