@@ -1,3 +1,8 @@
+/*
+    Dependencies:
+        sudo apt install iptables -y
+        sudo apt install conntrack -y
+*/
 #include <fsl.h>
 
 #define HEAP_USED
@@ -25,27 +30,38 @@ typedef struct
     /* Raw Socket Info */
     sock_t      socket;
 
-    /* Protection */
+    /* Protection Info */
     string      watch_ip;
     int         watch_port;
 
-    /* Monitor Stats */
     array       whitlisted;
     array       blacklisted;
 
+
+    /* Monitor Stats */
+    int         ticks;
+    int         pps;
+
     /* Monitor Settings */
+    int         enable_protection;
+    int         auto_reset_ips;
     int         running;
+    
+    array       blocked;
 } firewall;
 
 typedef firewall *firewall_t;
-public firewall_t init_firewall(string ip, int port)
+public firewall_t init_firewall(string ip, int port, int protection)
 {
     firewall_t fw = allocate(0, sizeof(firewall));
     fw->watch_ip = str_dup(ip);
     fw->watch_port = port;
+    fw->enable_protection = protection;
 
     fw->blacklisted = init_array();
     fw->whitlisted = init_array();
+
+    fw->blocked = init_array();
 
     fw->socket = allocate(0, sizeof(sock_t));
     fw->socket->fd = __syscall__(17, 3, _htons(0x0003), -1, -1, -1, _SYS_SOCKET);
@@ -186,17 +202,36 @@ public bool parse(firewall_t fw, unsigned char *buf, len_t len) {
         (ip[16] << 24) | (ip[17] << 16) |
         (ip[18] << 8)  | (ip[19]);
 
+
+    /* TODO; Move protection into a new function */
     string sip = ip_to_str(saddr);
     string dip = ip_to_str(daddr);
 
     if(!sip || !dip)
         return 0;
 
+    /* Skip whitlisted/protected IPs */
     if(is_ip_whitlisted(fw, sip) > -1)
         return 0;
 
     if(is_ip_whitlisted(fw, dip) > -1)
         return 0;
+
+    if(fw->enable_protection)
+    {
+        if(is_ip_blacklisted(fw, sip) > -1)
+        {
+            /*
+                - ENSURE IP IS NOT ALREADY BLOCKED
+                - BLOCK IP
+
+                DROP IP CONNECTIONS; conntrack -D -s 1.2.3.4
+                BLOCK FUTURE IP REQ; 
+                    iptables -A INPUT -s 1.2.3.4 -j DROP
+                    iptables -A OUTPUT -d 1.2.3.4 -j DROP
+            */
+        }
+    }
 
     pfree(sip, 1);
     pfree(dip, 1);
@@ -268,6 +303,8 @@ public fn monitor(firewall_t fw)
         if(bytes > 0) {
             parse(fw, data, bytes);
         }
+
+        fw->ticks++;
     }
 }
 
