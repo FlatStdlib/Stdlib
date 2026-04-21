@@ -21,6 +21,9 @@ typedef struct
     int         src_port;
     string      dest_ip;
     int         dest_port;
+
+    string      buffer;
+    len_t       length;
 } connection;
 
 typedef connection *conn_t;
@@ -204,37 +207,9 @@ public bool parse(firewall_t fw, unsigned char *buf, len_t len) {
 
 
     /* TODO; Move protection into a new function */
-    string sip = ip_to_str(saddr);
-    string dip = ip_to_str(daddr);
-
-    if(!sip || !dip)
+    conn_t c;
+    if(!check_request(fw, c, buf))
         return 0;
-
-    /* Skip whitlisted/protected IPs */
-    if(is_ip_whitlisted(fw, sip) > -1)
-        return 0;
-
-    if(is_ip_whitlisted(fw, dip) > -1)
-        return 0;
-
-    if(fw->enable_protection)
-    {
-        if(is_ip_blacklisted(fw, sip) > -1)
-        {
-            /*
-                - ENSURE IP IS NOT ALREADY BLOCKED
-                - BLOCK IP
-
-                DROP IP CONNECTIONS; conntrack -D -s 1.2.3.4
-                BLOCK FUTURE IP REQ; 
-                    iptables -A INPUT -s 1.2.3.4 -j DROP
-                    iptables -A OUTPUT -d 1.2.3.4 -j DROP
-            */
-        }
-    }
-
-    pfree(sip, 1);
-    pfree(dip, 1);
 
     _printf("\x1b[32mNew Request, Byte Size: %d\x1b[39m\n", (void *)&len);
     print("=== IP ===\nSrc: "), print_ip(saddr);
@@ -287,6 +262,48 @@ public bool parse(firewall_t fw, unsigned char *buf, len_t len) {
     println("\n");
 
     return 1;
+}
+
+public bool check_request(firewall_t fw, conn_t c)
+{
+    
+    unsigned char *ip = c->buffer + 14;
+    
+    string sip = ip_to_str((ip[12] << 24) | (ip[13] << 16) | (ip[14] << 8)  | (ip[15]));
+    string dip = ip_to_str((ip[16] << 24) | (ip[17] << 16) | (ip[18] << 8)  | (ip[19]));
+
+    if(!sip || !dip)
+        return 0;
+
+    /* Skip whitlisted/protected IPs */
+    if(is_ip_whitlisted(fw, sip) > -1)
+        return 1;
+
+    if(is_ip_whitlisted(fw, dip) > -1)
+        return 1;
+
+    if(!fw->enable_protection)
+        return -1;
+        
+    if(is_ip_blacklisted(fw, sip) > -1)
+    {
+        /*
+            - ENSURE IP IS NOT ALREADY BLOCKED
+            - BLOCK IP
+
+            DROP IP CONNECTIONS; conntrack -D -s 1.2.3.4
+            BLOCK FUTURE IP REQ; 
+                iptables -A INPUT -s 1.2.3.4 -j DROP
+                iptables -A OUTPUT -d 1.2.3.4 -j DROP
+        */
+    }
+
+    // More protction checks
+
+    pfree(sip, 1);
+    pfree(dip, 1);
+
+    return 0;
 }
 
 public fn monitor(firewall_t fw)
