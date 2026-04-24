@@ -5,7 +5,17 @@
 */
 #include <fsl.h>
 
-#define HEAP_USED
+// IP: [3]
+#define DROP_IP_CMD { "conntrack", "-D", "-s", "[IP]", NULL }
+string create_drop_cmd(string ip) {
+    // string cmd = init_str();
+}
+
+// IP: [4]
+#define BLOCK_INPUT_REQ { "iptables", "-A", "INPUT", "-s", "[IP]", "-j", "DROP", NULL }
+
+// IP: [4]
+#define BLOCK_OUTPUT_REQ { "iptables", "-A", "OUTPUT", "-s", "[IP]", "-j", "DROP", NULL }
 
 struct pollfd {
     int fd;
@@ -50,6 +60,7 @@ typedef struct
     int         auto_reset_ips;
     int         running;
     
+    /* This array stores all IPs currently temporarily blocked, including blacklisted IPs */
     array       blocked;
 } firewall;
 
@@ -269,6 +280,11 @@ public bool check_request(firewall_t fw, conn_t c)
     
     unsigned char *ip = c->buffer + 14;
     
+    /*
+        for incoming request, the format is:
+            - Inbound (sip): Client IP
+            - Outbount (dip): Device IP
+    */
     string sip = ip_to_str((ip[12] << 24) | (ip[13] << 16) | (ip[14] << 8)  | (ip[15]));
     string dip = ip_to_str((ip[16] << 24) | (ip[17] << 16) | (ip[18] << 8)  | (ip[19]));
 
@@ -287,16 +303,23 @@ public bool check_request(firewall_t fw, conn_t c)
         
     if(is_ip_blacklisted(fw, sip) > -1)
     {
-        /*
-            - ENSURE IP IS NOT ALREADY BLOCKED
-            - BLOCK IP
+        /* ENSURE IP IS NOT ALREADY BLOCKED (fw->blocked) */
+        if(!array_contains_str(fw->blocked, sip))
+        {
+            /*
+                - BLOCK IP
 
-            DROP IP CONNECTIONS; conntrack -D -s 1.2.3.4
-            BLOCK FUTURE IP REQ; 
-                iptables -A INPUT -s 1.2.3.4 -j DROP
-                iptables -A OUTPUT -d 1.2.3.4 -j DROP
-        */
+                DROP IP CONNECTIONS; conntrack -D -s 1.2.3.4
+                BLOCK FUTURE IP REQ; 
+                    iptables -A INPUT -s 1.2.3.4 -j DROP
+                    iptables -A OUTPUT -d 1.2.3.4 -j DROP
+            */
+        }
+
+        return 0;
     }
+
+    
 
     // More protction checks
 
@@ -338,7 +361,7 @@ public int entry(int argc, string argv[])
     uninit_mem();
     set_heap_sz(526870912);
     init_mem();
-    firewall_t fw = init_firewall("1.1.1.1", 80);
+    firewall_t fw = init_firewall("1.1.1.1", 80, 1);
     _printf("Socket: %d\n", (void *)&fw->socket->fd);
 
     if(len > 2)

@@ -172,7 +172,6 @@ public len_t str_len(const string buffer)
 	return count;
 }
 
-//this here work for any size
 public bool str_cmp(const string src, const string needle)
 {
 	if (!src || !needle) return false;

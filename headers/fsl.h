@@ -76,6 +76,7 @@ typedef void* 				any;
 
 #define public
 #define private static
+#define HEAP_USED
 typedef void 				fn;
 typedef void* 				(*handler_t)();
 
@@ -257,7 +258,7 @@ int 	get_args(char* argv[]);
 			@param p 		Pointer to copy
 			@param size 	Size for allocation
 		@returns: new ptr
-		@note: Copy a memory chunk to a new heap block
+		@note: Copy a `ory chunk to a new heap block
 	*/
 	public ptr		to_heap(ptr p, i32 sz);
 
@@ -414,6 +415,13 @@ int 	get_args(char* argv[]);
 	[ src/stdlib/string.c ]
 */
 #ifdef _FSL_STR_H
+
+	typedef struct {
+		string p;
+		len_t len;
+	} _str;
+
+	typedef _str str_t;
 	#define __sprintf(dest, format, ...) \
 			_sprintf(dest, format, (void *[]){__VA_ARGS__, 0});
 
