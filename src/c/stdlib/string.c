@@ -174,7 +174,7 @@ public len_t str_len(const string buffer)
 
 public bool str_cmp(const string src, const string needle)
 {
-	if (!src || !needle) return false;
+	if (!src || !needle) return 1;
 
 	return mem_cmp(src, needle, str_len(src));
 }
