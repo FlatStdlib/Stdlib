@@ -77,6 +77,8 @@ typedef void* 				any;
 #define public
 #define private static
 #define HEAP_USED
+#define HEAP_MODIFIED
+#define RETURN_HEAP
 typedef void 				fn;
 typedef void* 				(*handler_t)();
 
