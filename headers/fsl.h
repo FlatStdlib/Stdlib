@@ -455,6 +455,11 @@ int 	get_args(char* argv[]);
 	public int 		array_contains_str(array arr, string needle);
 #endif
 
+
+/*
+	 		map
+	[ src/stdlib/map.c ]
+*/
 #ifdef _FSL_MAP_H
 	typedef struct {
 		string key;
@@ -480,6 +485,10 @@ int 	get_args(char* argv[]);
 	public fn 		map_destruct(map_t map);
 #endif
 
+/*
+	 		file
+	[ src/stdlib/file.c ]
+*/
 #ifdef _FSL_FILE_H
 	typedef u32 fd_t;
 
@@ -545,6 +554,10 @@ int 	get_args(char* argv[]);
 	public fn		file_close(fd_t fd);
 #endif
 
+/*
+	 		socket
+	[ src/stdlib/socket.c ]
+*/
 #ifdef _FSL_SOCKET_H
 	#define AF_INET         2
 	#define SOL_SOCKET      1
@@ -600,6 +613,10 @@ int 	get_args(char* argv[]);
 	public fn 			sock_close(sock_t);
 #endif
 
+/*
+	 		thread
+	[ src/stdlib/thread.c ]
+*/
 #ifdef _FSL_THREAD_H
 	typedef struct
 	{
@@ -632,4 +649,12 @@ int 	get_args(char* argv[]);
 	public thread 		create_thread(handler_t fnc, ptr p, int wait);
 	public fn 			start_thread(thread t);
 	public fn			thread_kill(thread_t t);
+#endif
+
+/*
+	 	 OS-Internal
+	[ src/os/internal.c ]
+*/
+#ifdef _FSL_OS
+	public fn _sleep(int sec);
 #endif
