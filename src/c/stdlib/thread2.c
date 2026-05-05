@@ -26,7 +26,7 @@ _thread_ init_thread(handler_t fn, ptr p, bool s, bool wait)
     return t;
 }
 
-public bool _run_thread(_thread_ *t)
+public bool _run_thread(_thread_ *t, bool pass_thr_arg)
 {
     if(!t)
         return false;
@@ -38,8 +38,8 @@ public bool _run_thread(_thread_ *t)
     if(t->pid == 0)
     {
         if(t->arg) {
-            if(t->shared)
-                t->fnc(t->arg);
+            if(pass_thr_arg)
+                t->fnc(t, t->arg);
             else
                 t->fnc(t->arg);
         } else {
@@ -66,19 +66,31 @@ public bool _run_thread(_thread_ *t)
     return 0;
 }
 
-public fn _thread_kill(_thread_ *t, handler_t destructor)
+public fn _thread_kill(_thread_ *t, handler_t destructor, bool kill_in_thr)
 {
-    if(destructor)
-        destructor(t->arg);
+    if(kill_in_thr)
+        t->pid = __syscall__(0, 0, 0, 0, 0, 0, _SYS_GETPID);
 
 	if(!t || t->pid <= 0)
 		fsl_panic("Unable to kill thread!");
+
+    if(t->arg)
+    {
+        if(destructor)
+            destructor(t->arg);
+    }
 
 	if(__FSL_DEBUG__) {
         char output[100];
         _printf("Killing thread: %d\n", (void *)&t->pid);
 		print(output);
 	}
+
+    if(t->shared)
+    {
+        memzero(t->arg, _HEAP_PAGE_);
+        __syscall__(t->arg, _HEAP_PAGE_, 0, 0, 0, 0, _SYS_MUNMAP);
+    }
 
 	__syscall__(t->pid, 9, 0, 0, 0, 0, _SYS_KILL);
 	__syscall__(t->pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
