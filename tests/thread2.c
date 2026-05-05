@@ -19,7 +19,7 @@ public int entry()
 
     // For Shared Buffer, Must use thr.arg from here on.
     // Or just set the new pointer to 'foo'
-    _thread_ thr = init_thread((handler_t)thr_test, dick, true, false);
+    _thread_ thr = init_thread((handler_t)thr_test, foo, true, false);
 
     // Enable passing the thread struct to the thread function so it can kill itself when done
     _run_thread(&thr, true);
