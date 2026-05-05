@@ -30,6 +30,7 @@ GBASE_PATH 	= /bin/fsl	# Final Executable Path
 # Compilation flags and files
 FLAGS 		= -c -nostdlib -nostdinc ${DEBUG}
 FILES 		= src/c/*.c \
+			  src/c/os/*.c \
 			  src/c/stdlib/*.c \
 
 .PHONY: all

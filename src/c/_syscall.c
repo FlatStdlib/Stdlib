@@ -1,7 +1,7 @@
 #include "../../headers/fsl.h"
 
 /* Following ABI Standards Here, A Universial user-space syscall */
-public long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, long sys)
+public long __syscall__(register long arg1, register long arg2, register long arg3, register long arg4, register long arg5, register long arg6, register long sys)
 {
 	register long ss asm(SYSCALL_REG) = sys;
     asm(EXECUTE_SYSCALL);

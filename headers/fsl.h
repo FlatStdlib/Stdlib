@@ -20,6 +20,7 @@ extern int __FSL_DEBUG__;
 		#define _FSL_MAP_H
 		#define _FSL_MEM_H
 		#define _FSL_FILE_H
+		#define _FSL_OS
 		#define _FSL_SOCKET_H
 		#define _FSL_THREAD_H
 		#define _FSL_INTERNAL_H
@@ -628,6 +629,18 @@ int 	get_args(char* argv[]);
 		i32			pid;
 		i32			ttid;
 	} _thread;
+
+	typedef struct 
+	{
+		handler_t   fnc;
+		ptr         arg;
+		bool        shared;
+		bool        wait;
+		bool        running;
+		bool        completed;
+		i32         pid;
+		i32         ttid;
+	} _thread_;
 	
 	typedef _thread 	thread;
 	typedef thread 		*thread_t;
