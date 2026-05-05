@@ -662,6 +662,10 @@ int 	get_args(char* argv[]);
 	public thread 		create_thread(handler_t fnc, ptr p, int wait);
 	public fn 			start_thread(thread t);
 	public fn			thread_kill(thread_t t);
+
+	_thread_ init_thread(handler_t fn, ptr p, bool s, bool wait);
+	public bool _run_thread(_thread_ *t);
+	public fn _thread_kill(_thread_ *t, handler_t destructor);
 #endif
 
 /*

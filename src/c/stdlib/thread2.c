@@ -85,13 +85,3 @@ public fn _thread_kill(_thread_ *t, handler_t destructor)
 	t->running = false;
 	t->completed = true;
 }
-
-public fn thr_test(string p)
-{
-    println((string)p);
-    _printf("[THREAD]: %p\n", p);
-    _sleep(5);
-
-    println((string)p);
-    _sleep(5);
-}
