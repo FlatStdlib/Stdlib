@@ -89,7 +89,7 @@ public fn _thread_kill(_thread_ *t, handler_t destructor, bool kill_in_thr)
     if(t->shared)
     {
         memzero(t->arg, _HEAP_PAGE_);
-        __syscall__(t->arg, _HEAP_PAGE_, 0, 0, 0, 0, _SYS_MUNMAP);
+        __syscall__((long)t->arg, _HEAP_PAGE_, 0, 0, 0, 0, _SYS_MUNMAP);
     }
 
 	__syscall__(t->pid, 9, 0, 0, 0, 0, _SYS_KILL);
