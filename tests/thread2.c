@@ -18,7 +18,7 @@ public int entry()
     string foo = str_dup("fag");
 
     // For Shared Buffer, Must use thr.arg from here on.
-    // Or just set the new pointer to 'foo'
+    // Or just set the new pointer to 'foo' (foo = thr.arg)
     _thread_ thr = init_thread((handler_t)thr_test, foo, true, false);
 
     // Enable passing the thread struct to the thread function so it can kill itself when done

@@ -673,5 +673,6 @@ int 	get_args(char* argv[]);
 	[ src/os/internal.c ]
 */
 #ifdef _FSL_OS
+	public fn _usleep(int usec);
 	public fn _sleep(int sec);
 #endif

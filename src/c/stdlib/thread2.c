@@ -86,6 +86,10 @@ public fn _thread_kill(_thread_ *t, handler_t destructor, bool kill_in_thr)
 		print(output);
 	}
 
+    char output[100];
+    _printf("Killing thread: %d\n", (void *)&t->pid);
+	print(output);
+
     if(t->shared)
     {
         memzero(t->arg, _HEAP_PAGE_);
@@ -96,4 +100,5 @@ public fn _thread_kill(_thread_ *t, handler_t destructor, bool kill_in_thr)
 	__syscall__(t->pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
 	t->running = false;
 	t->completed = true;
+    println("KILLED");
 }
