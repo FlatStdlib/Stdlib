@@ -622,10 +622,11 @@ int 	get_args(char* argv[]);
 	typedef struct
 	{
 		handler_t	fnc;
-		ptr			arguments;
+		ptr			arg;
+		bool        shared;
 		bool		wait;
 		bool		running;
-		bool		finished;
+		bool		completed;
 		i32			pid;
 		i32			ttid;
 	} _thread;
@@ -651,6 +652,7 @@ int 	get_args(char* argv[]);
 		threads_t	threads;
 		int			idx;
 		bool		running;
+		i32 		pid;
 	} gthread;
 
 	public gthread 		*init_thread_group();

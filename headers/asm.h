@@ -24,7 +24,7 @@ struct sleep_t {
     long sec, nsec;
 };
 
-struct timeval {
+struct _timeval {
     long tv_sec, tv_usec;
 };
 

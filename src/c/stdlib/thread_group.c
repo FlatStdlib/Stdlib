@@ -34,22 +34,19 @@ public fn pool_run(gthread *gt)
 		total_running = 0;
 		for(int i = 0; i < gt->idx; i++)
 		{
-			if(!gt->threads[i]->finished)
-			{
-				if(!gt->threads[i]->running)
-				{
-					println("EXECUTED...!");
-					gt->threads[i]->running = 1;
-					/* Wait here so parent process can deterministically mark completion. */
-					run_thread(gt->threads[i], 1);
-					gt->threads[i]->finished = 1;
-					gt->threads[i]->running = 0;
-				}
 
+			/* Thread already ran and finished */
+			if(gt->threads[i]->running && gt->threads[i]->completed)
+			{
+				thread_kill(gt->threads[i]);
+			} else if(!gt->threads[i]->running && !gt->threads[i]->completed) {
+				/* Added to pool but never started */
+				run_thread(gt->threads[i], 1);
 				total_running++;
 			}
 		}
-		_printf("Total Threads Running: %d\n", (void *)&total_running);
+		if(__FSL_DEBUG__)
+			_printf("Total Threads Running: %d\n", (void *)&total_running);
 
 		if(total_running == 0)
 			break;

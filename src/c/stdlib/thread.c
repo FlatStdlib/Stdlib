@@ -37,10 +37,10 @@ public thread create_thread(handler_t fnc, ptr p, int wait)
 	// thread t =
 	return (thread){
 		.fnc = fnc,
-		.arguments = p,
+		.arg = p,
 		.wait = wait,
 		.running = 0,
-		.finished = 0,
+		.completed = 0,
 		.pid = 0,
 		.ttid = 0
 	};
@@ -60,7 +60,7 @@ public thread create_thread(handler_t fnc, ptr p, int wait)
 	// 	{
     // 		__syscall__(t.pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
 	// 		t.running = 0;
-	// 		t.finished = 1;
+	// 		t.completed = 1;
 	// 	}
 	// } else {
 	// 	println("fork error");
@@ -74,7 +74,7 @@ public fn start_thread(thread t)
 	t.pid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_FORK);
 	if(t.pid == 0)
 	{
-		t.arguments ? t.fnc(t.arguments) : t.fnc();
+		t.arg ? t.fnc(t.arg) : t.fnc();
 		__exit(0);
 	} else if(t.pid > 0) {
 		t.running = 1;
@@ -87,7 +87,7 @@ public fn start_thread(thread t)
 		{
     		__syscall__(t.pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
 			t.running = 0;
-			t.finished = 1;
+			t.completed = 1;
 		}
 	} else {
 		println("fork error");
@@ -100,11 +100,11 @@ public bool run_thread(thread *t, int wait)
 		return 0;
 
 	t->running = 1;
-	t->finished = 0;
+	t->completed = 0;
 	t->pid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_FORK);
 	if(t->pid == 0)
     {
-        t->arguments ? t->fnc(t->arguments) : t->fnc();
+        t->arg ? t->fnc(t->arg) : t->fnc();
         __exit(0);
     } else if(t->pid > 0) {
 		t->ttid = t->pid;
@@ -116,7 +116,7 @@ public bool run_thread(thread *t, int wait)
         {
             __syscall__(t->pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
 			t->running = 0;
-			t->finished = 1;
+			t->completed = 1;
 		}
 
 		return 1;
@@ -141,5 +141,5 @@ public fn thread_kill(thread *t)
 	__syscall__(t->pid, 9, 0, 0, 0, 0, _SYS_KILL);
 	__syscall__(t->pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
 	t->running = 0;
-	t->finished = 1;
+	t->completed = 1;
 }
