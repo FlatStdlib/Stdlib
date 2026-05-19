@@ -443,12 +443,16 @@ int 	get_args(char* argv[]);
 	public sArr 	split_string(const string buffer, const char ch, int* idx);
 	public string 	get_sub_str(const string buffer, int start, int end);
 	public string 	get_substr_upto(const string buffer, char ch);
+	public bool 	is_number(string buffer);
 	public bool 	is_empty(string buffer);
 	public bool 	str_startswith(string buffer, string needle);
 	public bool 	str_endswith(string buffer, string needle);
 	public bool 	str_strip_idx_to_end(string buff, int idx);
 	public bool 	str_strip_start_to_idx(string buff, int idx);
 	public fn 		byte_to_hex(u8 byte, string out);
+	public bool 	str_join(string buffer, array arr, const char delim);
+	public bool 	is_str_lowercase(string buffer);
+	public bool 	is_str_uppercase(string buffer);
 	public bool 	str_strip(string buffer);
 	public string 	float_to_str(double n, char *out, int precision);
 #endif

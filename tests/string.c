@@ -2,9 +2,10 @@
 
 #define PRE_DATA "This is a test string...!"
 #define DATA_LEN str_len("This is a test string...!")
+
 int entry()
 {
-    string data = (string)init_array();
+    string data = allocate(0, 1024);
     
     /* str_append() */
     if(str_append(data, PRE_DATA)) {
@@ -45,5 +46,12 @@ int entry()
     } else {
         println("Failed needle to append to buffer!");
     }
+
+    string arr_test[] = {"arr", "test", NULL};
+    str_join(data, (array)arr_test, ' ');
+    _printf("str_join(): '%s'\n", data);
+
+    string sub = get_sub_str(data, pos, DATA_LEN - 1);
+    _printf("Substr: %s\n", sub);
     return 0;
 }

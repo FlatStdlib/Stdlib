@@ -199,16 +199,42 @@ public bool str_append_array(string buff, const array arr)
 public bool str_append(string buff, const string sub) {
 	if (!buff || !sub) return false;
 
-	int idx = 0;
-	if(__get_meta__(buff)->id == 0x7C)
-		idx = __get_size__(buff);
-	else
-		idx = str_len(buff);
+	int idx = str_len(buff);
 
 	for (int i = 0; sub[i] != '\0'; i++)
 		buff[idx++] = sub[i];
 
 	buff[idx] = '\0';
+	return true;
+}
+
+public bool is_str_lowercase(string buffer)
+{
+	if(!buffer)
+		return false;
+
+	int n = str_len(buffer);
+	for(int i = 0; i < n; i++)
+	{
+		if(buffer[i] < 'a' || buffer[i] > 'z')
+			return false;
+	}
+
+	return true;
+}
+
+public bool is_str_uppercase(string buffer)
+{
+	if(!buffer)
+		return false;
+
+	int n = str_len(buffer);
+	for(int i = 0; i < n; i++)
+	{
+		if(buffer[i] < 'A' || buffer[i] > 'Z')
+			return false;
+	}
+
 	return true;
 }
 
@@ -223,7 +249,7 @@ public pos_t find_string(const string buff, const string needle) {
 		for(int c = 0; c < nlen; c++)
 		{
 			if(buff[i + c] == needle[c] && c == nlen - 1)
-				return 1;
+				return i;
 
 			if(buff[i + c] != needle[c])
 				break;
@@ -362,6 +388,20 @@ public string get_substr_upto(const string buffer, char ch)
     return buff;
 }
 
+public bool is_number(string buffer)
+{
+	if(!buffer)
+		return false;
+
+	for(int i = 0; i != '\0'; i++)
+	{
+		if((buffer[i] + 0) < 0 && buffer[i] > 9)
+			return false;
+	}
+
+	return true;
+}
+
 public bool is_empty(string buffer)
 {
 	if(!buffer)
@@ -461,6 +501,24 @@ public bool str_strip_start_to_idx(string buff, int idx)
 	for(int i = 0; i != idx; i++)
 	{
 		buff[i] = '\0';
+	}
+
+	return true;
+}
+
+public bool str_join(string buffer, array arr, const char delim)
+{
+	if(!buffer || !arr)
+		return false;
+	
+	
+	for(int i = 0; arr[i] != NULL; i++)
+	{
+		char byte[2] = {0};
+		byte[0] = delim;
+
+		str_append(buffer, arr[i]);
+		str_append(buffer, byte);
 	}
 
 	return true;
