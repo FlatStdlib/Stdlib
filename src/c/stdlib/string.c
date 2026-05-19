@@ -174,9 +174,14 @@ public len_t str_len(const string buffer)
 
 public bool str_cmp(const string src, const string needle)
 {
-	if (!src || !needle) return 1;
+	if (!src || !needle) return false;
 
-	return mem_cmp(src, needle, str_len(src));
+	if(__get_meta__(src)->id == 0x7C)
+		return mem_cmp(src, needle, __get_size__(src));
+	else
+		return mem_cmp(src, needle, str_len(src));
+
+	return false;
 }
 
 public bool str_append_array(string buff, const array arr)
@@ -194,7 +199,12 @@ public bool str_append_array(string buff, const array arr)
 public bool str_append(string buff, const string sub) {
 	if (!buff || !sub) return false;
 
-	int idx = str_len(buff);
+	int idx = 0;
+	if(__get_meta__(buff)->id == 0x7C)
+		idx = __get_size__(buff);
+	else
+		idx = str_len(buff);
+
 	for (int i = 0; sub[i] != '\0'; i++)
 		buff[idx++] = sub[i];
 
@@ -341,6 +351,17 @@ public string get_sub_str(const string buffer, int start, int end)
 	return buff;
 }
 
+public string get_substr_upto(const string buffer, char ch)
+{
+    int pos = find_char(buffer, ch);
+
+    string buff = allocate(0, pos + 1);
+    for(int i = 0; i < pos; i++)
+        buff[i] = buffer[i];
+
+    return buff;
+}
+
 public bool is_empty(string buffer)
 {
 	if(!buffer)
@@ -403,6 +424,46 @@ public bool str_endswith(string buffer, string needle)
     }
 
     return true;
+}
+
+public bool str_strip_idx_to_end(string buff, int idx)
+{
+	if(!buff || idx == '\0')
+		return false;
+
+	int len = 0;
+	if(__get_meta__(buff)->id == 0x7C)
+		len = __get_size__(buff);
+	else
+		len = str_len(buff);
+
+	for(int i = idx; i < len; i++)
+	{
+		buff[i] = '\0';
+	}
+
+	return true;
+}
+
+public bool str_strip_start_to_idx(string buff, int idx)
+{	if(!buff || idx == '\0')
+		return false;
+
+	int len = 0;
+	if(__get_meta__(buff)->id == 0x7C)
+		len = __get_size__(buff);
+	else
+		len = str_len(buff);
+
+	if(idx > len)
+		return false;
+
+	for(int i = 0; i != idx; i++)
+	{
+		buff[i] = '\0';
+	}
+
+	return true;
 }
 
 public bool str_strip(string buffer)

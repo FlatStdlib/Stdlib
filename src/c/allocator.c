@@ -130,7 +130,7 @@ public fn pfree(any ptr, int clean)
 	{
     	char buff[100];
     	ptr_to_str(m, buff);
-    	print("[ALLOCATOR]: Freeing memory block @ "), println(buff);
+    	print("[ALLOCATOR]: Freeing "), printi(payload), print(" - memory block @ "), println(buff);
     }
 }
 

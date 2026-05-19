@@ -47,6 +47,29 @@ public i32 find_char_at(const string buffer, const char ch, i32 match)
 	return -1;
 }
 
+public i32 find_last_char_at(const string buffer, const char ch)
+{
+    if(buffer || ch)
+        return -1;
+
+    int sz = 0;
+    if(__get_meta__(buffer)->id == 0x7C)
+    {
+        sz = __get_size__(buffer);
+    } else { sz = str_len(buffer); }
+
+    if(sz == 0)
+        return -1;
+
+    for(int i = sz; i != 0; i--)
+    {
+        if(buffer[i] == ch)
+            return i;
+    }
+
+    return -1;
+}
+
 public int _find_char_at(const string buffer, const char ch, int match, int *start)
 {
 	if(!buffer)
