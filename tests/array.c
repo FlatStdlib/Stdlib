@@ -16,6 +16,14 @@ int entry()
 	}
 	println("]");
 	
+	array new_arr = array_reverse(arr);
+	print("Reversed Array: [");
+	for(int i = 0; new_arr[i] != NULL; i++)
+	{
+		print("\""), print(new_arr[i]), print("\"");
+		new_arr[i + 1] == NULL ? print("") : print(", ");
+	}
+	println("]");
 	print("Array Index Check: "), printi(array_contains_str(arr, "skid")), print("\n");
 	return 0;
 }

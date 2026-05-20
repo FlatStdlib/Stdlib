@@ -90,12 +90,12 @@ public array array_reverse(array arr)
 	if(!arr)
 		return NULL;
 
-	int size = __get_size__(arr);
-	array a = init_array();
-	for(int i = size, c = 0; i != 0; i--, c++)
-	{
-		a = array_append(a, arr[i]);
-	}
+	int size = __get_size__(arr) / sizeof(ptr);
+	array a = allocate(sizeof(ptr), size);
+	for(int i = 0, c = size - 1; arr[i] != NULL; i++, c--)
+		a[i] = str_dup(arr[c]);
+
+	a[size] = NULL;
 
 	return a;
 }
