@@ -129,6 +129,20 @@ public fn _sprintf(string buffer, string format, any* args)
 	buffer[idx] = '\0';
 }
 
+public bool is_str_ascii(string buffer)
+{
+	if(!buffer)
+		return false;
+
+	for(int i = 0; buffer[i] != '\0'; i++)
+	{
+		if(buffer[i] < 1 || buffer[i] > 255)
+			return false;
+	}
+
+	return true;
+}
+
 public fn str_append_int(string dest, int num)
 {
 	int temp = num, c = 0;
@@ -588,4 +602,26 @@ string float_to_str(double n, char *out, int precision)
     }
 
     out[i] = '\0';
+}
+
+public string str_remove_substr_idx(string buffer, int start, int end)
+{
+	if(!buffer)
+		return NULL;
+
+	if(start >= end)
+		return NULL;
+
+	int len = str_len(buffer);
+	int new_len = len - (end - start);
+	string n = allocate(0, new_len);
+	for(int i = 0; i < len; i++)
+	{
+		if(i > start || i < end)
+			continue;
+
+		n[i] = buffer[i];
+	}
+
+	return n;
 }

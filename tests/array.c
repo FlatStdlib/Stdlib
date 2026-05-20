@@ -5,7 +5,9 @@ int entry()
 	array arr = init_array();
 	arr = array_append(arr, "test");
 	arr = array_append(arr, "skid");
+	arr = array_append(arr, "pussy");
 
+	arr = array_append_insert(arr, "dick", 2);
 	print("Array: [");
 	for(int i = 0; arr[i] != NULL; i++)
 	{
@@ -13,7 +15,7 @@ int entry()
 		arr[i + 1] == NULL ? print("") : print(", ");
 	}
 	println("]");
-
+	
 	print("Array Index Check: "), printi(array_contains_str(arr, "skid")), print("\n");
 	return 0;
 }

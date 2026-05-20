@@ -9,10 +9,9 @@
 
 extern char _OUTPUT_[1024], _EXTERNAL_[1024];
 extern int __FSL_DEBUG__;
-#ifndef __FSL__
+#ifndef __NO_FSL__
 	#define __FSL__
 	
-	#ifndef _NO_FSL_LIBS_
 		#define _FSL_INT_H
 		#define _FSL_CHAR_H
 		#define _FSL_STR_H
@@ -25,7 +24,6 @@ extern int __FSL_DEBUG__;
 		#define _FSL_THREAD_H
 		#define _FSL_INTERNAL_H
 		#define _FSL_ALLOCATOR_H
-	#endif
 
 	
 	#define _printf(format, ...) \
@@ -432,6 +430,7 @@ int 	get_args(char* argv[]);
 	public fn 		ptr_to_str(ptr p, string out);
 	public string	int_to_str(int num);
 	public fn 		_sprintf(string buffer, string format, any* args);
+	public bool 	is_str_ascii(string buffer);
 	public fn 		str_append_int(string dest, int num);
 	public len_t 	str_len(string buffer);
 	public string 	str_dup(const string buffer);
@@ -455,13 +454,17 @@ int 	get_args(char* argv[]);
 	public bool 	is_str_uppercase(string buffer);
 	public bool 	str_strip(string buffer);
 	public string 	float_to_str(double n, char *out, int precision);
+	public string 	str_remove_substr_idx(string buffer, int start, int end);
 #endif
 
 #ifdef _FSL_ARR_H
 	public array 	init_array(void);
+	public array 	array_merge(array arr, array sub);
 	public array	array_append(array arr, ptr p);
+	public array 	array_append_insert(array arr, ptr p, int idx);
 	public int 		array_contains_ptr(array arr, ptr p);
 	public int 		array_contains_str(array arr, string needle);
+	public array 	array_reverse(array arr);
 #endif
 
 
