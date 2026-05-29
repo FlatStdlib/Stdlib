@@ -438,6 +438,20 @@ public fn byte_to_hex(u8 byte, string out) {
     out[2] = '\0';
 }
 
+public string string_reverse(string buffer)
+{
+	if(!buffer)
+		return NULL;
+
+	int len = str_len(buffer);
+	string a = allocate(0, len + 1);
+	for(int i = len - 1, c = 0; c < len; i--, c++) {
+		a[c] = buffer[i];
+	}
+
+	return a;
+}
+
 public bool str_startswith(string buffer, string needle)
 {
     if(!buffer || !needle)

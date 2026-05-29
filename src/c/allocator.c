@@ -105,6 +105,9 @@ public int __get_size__(any ptr)
 	return !info->size ? info->length : info->size * info->length;
 }
 
+public int __get_array_size__(any ptr)
+{ return __get_meta__(ptr)->length; }
+
 public fn pfree_array(array p)
 {
 	for(int i = 0; p[i] != NULL; i++)

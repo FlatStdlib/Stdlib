@@ -449,6 +449,7 @@ int 	get_args(char* argv[]);
 	public bool 	str_strip_idx_to_end(string buff, int idx);
 	public bool 	str_strip_start_to_idx(string buff, int idx);
 	public fn 		byte_to_hex(u8 byte, string out);
+	public string 	string_reverse(string buffer);
 	public bool 	str_join(string buffer, array arr, const char delim);
 	public bool 	is_str_lowercase(string buffer);
 	public bool 	is_str_uppercase(string buffer);

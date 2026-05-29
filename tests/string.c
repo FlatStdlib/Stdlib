@@ -53,5 +53,8 @@ int entry()
 
     string sub = get_sub_str(data, pos, DATA_LEN - 1);
     _printf("Substr: %s\n", sub);
+
+    string rev = string_reverse(data);
+    print("string_reverse(): "), println(rev);
     return 0;
 }
