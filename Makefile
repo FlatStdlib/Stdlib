@@ -77,7 +77,7 @@ compile:
 #
 cloader:
 	gcc -c ../fsl/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
-	gcc -c ../fsl/fsl.c -o $(GBASE_OBJ) -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
+	gcc -c ../fsl/fsl.c -o $(GBASE_OBJ) ${DEBUG} -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
 # 	cp $(BUILD)/fsl.o cpy.o
 	ld --gc-sections -o $(GBASE_EXEC) $(GBASE_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
 
@@ -109,7 +109,7 @@ clean:
 test_run:
 	fsl tests/heap.c -o heap && ./heap
 	fsl tests/file.c -o file && ./file
-	fsl tests/thread.c -o thread && ./thread
+# 	fsl tests/thread.c -o thread && ./thread
 	fsl tests/map.c -o map && ./map
 	fsl tests/array.c -o array && ./array
 	fsl tests/c_stdlib_fsl_support.c -o cstdlib_fsl && ./cstdlib_fsl

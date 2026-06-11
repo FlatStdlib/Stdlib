@@ -64,7 +64,10 @@ public any allocate(int sz, int len) {
         fsl_panic("Unable to find space!\n");
 
     any ptr = (char *)_HEAP_ + spot;
-    __meta__ c = { .size = sz, .length = len, .id = 0x7C };
+    __meta__ c;
+    c.size = sz;
+    c.length = len;
+    c.id = 0x7C;
 
     mem_cpy(ptr, &c, HEAP_META_SZ);
     mem_set(ptr + HEAP_META_SZ, 0, mem_needed - HEAP_META_SZ);
