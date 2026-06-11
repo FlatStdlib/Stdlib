@@ -32,7 +32,7 @@ sudo apt install git make -y
 git clone https://github.com/FlatStdlib/Stdlib.git	# FSL-Stdlib
 git clone https://github.com/FlatStdlib/fsl.git 	# FSL-GCC Toolchain
 cd Stdlib
-make # make tcc (for tcc (not complete, testing stage))
+sudo make # sets global lib and loader
 ```
 
 ### File Structure Information
