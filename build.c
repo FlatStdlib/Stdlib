@@ -3,41 +3,17 @@
 typedef struct
 {
     string  cc;
-    sArr    argv;
-    i32     argc;
+    array   argv;
 } _build;
 
 public _build *init_build(string cc)
 {
     _build *b = allocate(0, sizeof(_build));
     b->cc = str_dup(cc);
-    b->argv = allocate(0, sizeof(string) * 2);
-    b->argv[0] = str_dup(cc);
-    b->argc = 1;
+    b->argv = init_array();
+    b->argv = array_append(b->argv, str_dup(cc));
 
     return b;
-}
-
-public bool append_arg(_build *b, string arg)
-{
-    if(!b || !arg)
-        return false;
-
-    b->argv[b->argc++] = str_dup(arg);
-    b->argv = reallocate(b->argv, sizeof(string) * (b->argc + 1));
-
-    return true;
-}
-
-public bool append_args(_build *b, sArr args)
-{
-    if(!b || !args)
-        return false;
-
-    for(int i = 0; args[i] != NULL; i++)
-        append_arg(b, args[i]);
-
-    return true;
 }
 
 #if defined(__linux__)
