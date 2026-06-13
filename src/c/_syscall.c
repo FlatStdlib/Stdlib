@@ -7,7 +7,7 @@ public long __syscall__(register long arg1, register long arg2, register long ar
     asm(EXECUTE_SYSCALL);
 }
 
-static uint64_t udiv64(u64 a, u64 b) {
+static u64 udiv64(u64 a, u64 b) {
     u64 q = 0;
     u64 r = 0;
 
