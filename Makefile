@@ -79,7 +79,7 @@ cloader:
 	gcc -m32 -c ../fsl/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
 	gcc -m32 -c ../fsl/fsl.c -o $(GBASE_OBJ) ${DEBUG} -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
 # 	cp $(BUILD)/fsl.o cpy.o
-	ld --gc-sections -o $(GBASE_EXEC) $(GBASE_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
+	ld -m elf_i386 --gc-sections -o $(GBASE_EXEC) $(GBASE_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
 
 #"-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
 
