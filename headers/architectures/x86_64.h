@@ -1,3 +1,4 @@
+#define __FSL_x86_64__
 #define MAX_REGISTER 6
 #define SYSCALL_REG "rax"
 #define EXECUTE_SYSCALL "syscall"

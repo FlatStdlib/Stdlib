@@ -1,3 +1,4 @@
+#define __FSL_x86__
 #define MAX_REGISTER 6
 #define SYSCALL_REG "eax"
 #define EXECUTE_SYSCALL "int $0x80"
@@ -112,7 +113,7 @@
 #define _SYS_FCHOWN16        		95
 #define _SYS_GETPRIORITY     		96
 #define _SYS_SETPRIORITY     		97
-#define _UNIMPLEMENTED       		98
+// #define _UNIMPLEMENTED       		98
 #define _SYS_STATFS      			99
 #define _SYS_FSTATFS     			100
 #define _SYS_IOPERM      			101
@@ -126,14 +127,14 @@
 #define _SYS_UNAME       			109
 #define _SYS_IOPL        			110
 #define _SYS_VHANGUP     			111
-#define _UNIMPLEMENTED       		112
-#define _NOTFOUND        			113
+// #define _UNIMPLEMENTED       		112
+// #define _NOTFOUND        			113
 #define _SYS_WAIT4       			114
 #define _SYS_SWAPOFF     			115
 #define _SYS_SYSINFO     			116
 #define _SYS_IPC     				117
 #define _SYS_FSYNC       			118
-#define _NOTFOUND        			119
+// #define _NOTFOUND        			119
 #define _SYS_CLONE       			120
 #define _SYS_SETDOMAINNAME       	121
 #define _SYS_NEWUNAME        		122
@@ -141,29 +142,29 @@
 #define _SYS_ADJTIMEX_TIME32     	124
 #define _SYS_MPROTECT        		125
 #define _SYS_SIGPROCMASK     		126
-#define _UNIMPLEMENTED       		127
+// #define _UNIMPLEMENTED       		127
 #define _SYS_INIT_MODULE     		128
 #define _SYS_DELETE_MODULE       	129
-#define _UNIMPLEMENTED       		130
+// #define _UNIMPLEMENTED       		130
 #define _SYS_QUOTACTL        		131
 #define _SYS_GETPGID     			132
 #define _SYS_FCHDIR      			133
-#define _SYS_NI_SYSCALL      		134
+#define _SYS_BDFLUSH      		    134
 #define _SYS_SYSFS       			135
 #define _SYS_PERSONALITY     		136
-#define _UNIMPLEMENTED       		137
+// #define _UNIMPLEMENTED       		137
 #define _SYS_SETFSUID16      		138
 #define _SYS_SETFSGID16      		139
 #define _SYS_LLSEEK      			140
 #define _SYS_GETDENTS        		141
-#define _SYS_SELECT      			142
+#define _SYS_newSELECT      		142
 #define _SYS_FLOCK       			143
 #define _SYS_MSYNC       			144
 #define _SYS_READV       			145
 #define _SYS_WRITEV      			146
 #define _SYS_GETSID      			147
 #define _SYS_FDATASYNC       		148
-#define _SYS_NI_SYSCALL      		149
+#define _SYS_SYSCTL      		    149
 #define _SYS_MLOCK       			150
 #define _SYS_MUNLOCK     			151
 #define _SYS_MLOCKALL        		152
@@ -176,14 +177,14 @@
 #define _SYS_SCHED_GET_PRIORITY_MAX 159
 #define _SYS_SCHED_GET_PRIORITY_MIN 160
 #define _SYS_SCHED_RR_GET_INTERVAL_TIME 161
-#define _SYS_NANOSLEEP_TIME       	162
+#define _SYS_NANOSLEEP       	    162
 #define _SYS_MREMAP      			163
 #define _SYS_SETRESUID     			164
 #define _SYS_GETRESUID     			165
-#define _NOTFOUND        			166
-#define _UNIMPLEMENTED       		167
+// #define _NOTFOUND        			166
+// #define _UNIMPLEMENTED       		167
 #define _SYS_POLL        			168
-#define _UNIMPLEMENTED       		169
+// #define _UNIMPLEMENTED       		169
 #define _SYS_SETRESGID16     		170
 #define _SYS_GETRESGID16     		171
 #define _SYS_PRCTL       			172
@@ -202,10 +203,10 @@
 #define _SYS_CAPSET      			185
 #define _SYS_SIGALTSTACK     		186
 #define _SYS_SENDFILE        		187
-#define _UNIMPLEMENTED       		188
-#define _UNIMPLEMENTED       		189
+// #define _UNIMPLEMENTED       		188
+// #define _UNIMPLEMENTED       		189
 #define _SYS_VFORK       			190
-#define _SYS_GETRLIMIT       		191
+#define _SYS_UGETRLIMIT       		191
 #define _SYS_MMAP_PGOFF      		192
 #define _SYS_IA32_TRUNCATE64     	193
 #define _SYS_IA32_FTRUNCATE64       194
@@ -213,22 +214,22 @@
 #define _SYS_LSTAT64     			196
 #define _SYS_FSTAT64     			197
 #define _SYS_LCHOWN      			198
-#define _SYS_GETUID      			199
-#define _SYS_GETGID      			200
-#define _SYS_GETEUID     			201
-#define _SYS_GETEGID     			202
-#define _SYS_SETREUID        		203
-#define _SYS_SETREGID        		204
-#define _SYS_GETGROUPS       		205
-#define _SYS_SETGROUPS       		206
-#define _SYS_FCHOWN      			207
-#define _SYS_SETRESUID       		208
-#define _SYS_GETRESUID       		209
+#define _SYS_GETUID32      			199
+#define _SYS_GETGID32      			200
+#define _SYS_GETEUID32     			201
+#define _SYS_GETEGID32     			202
+#define _SYS_SETREUID32        		203
+#define _SYS_SETREGID32        		204
+#define _SYS_GETGROUPS32       		205
+#define _SYS_SETGROUPS32       		206
+#define _SYS_FCHOWN32      			207
+#define _SYS_SETRESUID32       		208
+#define _SYS_GETRESUID32       		209
 #define _SYS_SETRESGID       		210
 #define _SYS_GETRESGID       		211
-#define _SYS_CHOWN       			212
-#define _SYS_SETUID      			213
-#define _SYS_SETGID      			214
+#define _SYS_CHOWN32       			212
+#define _SYS_SETUID32      			213
+#define _SYS_SETGID32      			214
 #define _SYS_SETFSUID        		215
 #define _SYS_SETFSGID        		216
 #define _SYS_PIVOT_ROOT      		217
@@ -264,7 +265,7 @@
 #define _SYS_IO_CANCEL       		249
 #define _SYS_IA32_FADVISE64      	250
 #define _SYS_EXIT_GROUP      		252
-#define _NOTFOUND        			253
+// #define _NOTFOUND        			253
 #define _SYS_EPOLL_CREATE        	254
 #define _SYS_EPOLL_CTL       		255
 #define _SYS_EPOLL_WAIT      		256
@@ -284,7 +285,7 @@
 #define _SYS_TGKILL      			270
 #define _SYS_UTIMES_TIME32       	271
 #define _SYS_IA32_FADVISE64_64      272
-#define _UNIMPLEMENTED       		273
+// #define _UNIMPLEMENTED       		273
 #define _SYS_MBIND       			274
 #define _SYS_GET_MEMPOLICY       	275
 #define _SYS_SET_MEMPOLICY       	276

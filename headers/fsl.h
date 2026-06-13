@@ -29,8 +29,12 @@ extern int __FSL_DEBUG__;
 	#define _printf(format, ...) \
 			_sprintf(_OUTPUT_, format, (void *[]){__VA_ARGS__, 0}); \
 			print(_OUTPUT_);
+
 	#define nullptr_t ((void *)0)
 	#define emptyptr_t ((void *)-1)
+	
+	#define PANIC ((void *)0x01000010)
+	#define EXCEPTION ((void *)0x01000011)
 #endif
 
 /*
@@ -94,6 +98,8 @@ typedef i32					pos_t;
 
 /*
 	Compiler Detection - Disable GLIBC Shit
+
+	Why? Even though you dont use GLIBC includes, it will still to use it and error as conflicting types
 */
 #if defined(__TINYC__) || defined(__GNUC__)
 	/* 
@@ -359,7 +365,7 @@ int 	get_args(char* argv[]);
 	extern int                  _HEAP_SZ_;
 	extern int                  _HEAP_PAGE_SZ_;
 
-	typedef struct {
+	typedef struct __attribute__((packed)) {
 		int     size;
 		size_t  length;
 		int     id;

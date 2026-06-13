@@ -65,7 +65,7 @@ compile_asm:
 # Merge clib+ built-in lib for the compiler and another for external use with other compilers
 #
 compile:
-	$(COMPILER) $(FLAGS) $(FILES)
+	$(COMPILER) -m32 $(FLAGS) $(FILES)
 	rm -rf $(BUILD)/$(LIB)
 	rm -rf $(BUILD)/$(OBJ)
 	ar rcs $(BUILD)/$(LIB) *.o
@@ -76,8 +76,8 @@ compile:
 # clean-up
 #
 cloader:
-	gcc -c ../fsl/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
-	gcc -c ../fsl/fsl.c -o $(GBASE_OBJ) ${DEBUG} -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
+	gcc -m32 -c ../fsl/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
+	gcc -m32 -c ../fsl/fsl.c -o $(GBASE_OBJ) ${DEBUG} -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
 # 	cp $(BUILD)/fsl.o cpy.o
 	ld --gc-sections -o $(GBASE_EXEC) $(GBASE_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
 

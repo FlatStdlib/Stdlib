@@ -1,12 +1,12 @@
 <div align="center">
-	<h1>libbase</h1>
+	<h1>Flat Stdlib</h1>
 	<p>The official minimal C backend alternative to GLIBC</p>
 
 ● [Start-up](/README.md)
-| [Introduction](doc/intro.md)
+| [Introduction](docs/intro.md)
 | [Quick Doc](/quick_doc.md)
-| [Libraries](doc/libraries.md)
-| [Todo](doc/todo.md)
+| [Libraries](docs/libraries.md)
+| [Todo](docs/todo.md)
 </div>
 
 # Some Info
@@ -19,7 +19,7 @@
 
 - x86
 - x86_64
-- AMD
+- AMD (Untested)
 - RISC-V (Still in development)
 
 Note: The only confirmed working architecture is x86 and x86_64. Mainly on intel CPU!

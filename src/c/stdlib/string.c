@@ -407,9 +407,9 @@ public bool is_number(string buffer)
 	if(!buffer)
 		return false;
 
-	for(int i = 0; i != '\0'; i++)
+	for(int i = 0; buffer[i] != '\0'; i++)
 	{
-		if((buffer[i] + 0) < 0 && buffer[i] > 9)
+		if(buffer[i] < '0' || buffer[i] > '9')
 			return false;
 	}
 

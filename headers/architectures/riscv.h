@@ -1,6 +1,7 @@
 /*
     TODO; Needs to be tested!
 */
+#define __FSL_RISCV__
 #define MAX_REGISTER 8
 #define SYSCALL_REG "a7"
 #define EXECUTE_SYSCALL "ecall"

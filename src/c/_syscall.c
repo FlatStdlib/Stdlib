@@ -7,22 +7,22 @@ public long __syscall__(register long arg1, register long arg2, register long ar
     asm(EXECUTE_SYSCALL);
 }
 
-#if defined(__x86__)
-    __attribute__((naked)) long custom_mmap(long, long, long, long, long, long)
-    {
-        asm volatile(
-            "push ebp\n\t"
-            "mov eax, 0xc0\n\t"
-            "mov ebx, [esp+8]\n\t"
-            "mov ecx, [esp+12]\n\t"
-            "mov edx, [esp+16]\n\t"
-            "mov esi, [esp+20]\n\t"
-            "mov edi, [esp+24]\n\t"
-            "mov ebp, [esp+28]\n\t"
-            "int 0x80\n\t"
-            "pop ebp\n\t"
-            "ret\n\t");
-    }
+#if defined(__i386__) || defined(__x86__)
+    // __attribute__((naked)) long custom_mmap(long, long, long, long, long, long)
+    // {
+    //     asm volatile(
+    //         "push ebp\n\t"
+    //         "mov eax, 0xc0\n\t"
+    //         "mov ebx, [esp+8]\n\t"
+    //         "mov ecx, [esp+12]\n\t"
+    //         "mov edx, [esp+16]\n\t"
+    //         "mov esi, [esp+20]\n\t"
+    //         "mov edi, [esp+24]\n\t"
+    //         "mov ebp, [esp+28]\n\t"
+    //         "int 0x80\n\t"
+    //         "pop ebp\n\t"
+    //         "ret\n\t");
+    // }
     
     void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
     {
@@ -71,24 +71,24 @@ public long __syscall__(register long arg1, register long arg2, register long ar
         asm("int $0x80");
     }
 
-    // long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
-    // {
-    // 	register long sys asm("eax") = _SYS_MMAP;
-    //     register long a1 asm("ebx") = arg1;
-    //     register long a2 asm("ecx") = arg2;
-    //     register long a3 asm("edx") = arg3;
-    //     register long a4 asm("esi") = arg4;
-    //     register long a5 asm("edi") = arg5;
-    //     // register long a6 asm("ebp") = arg6;
-    //     asm("int $0x80");
+    long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
+    {
+    	register long sys asm("eax") = _SYS_MMAP;
+        register long a1 asm("ebx") = arg1;
+        register long a2 asm("ecx") = arg2;
+        register long a3 asm("edx") = arg3;
+        register long a4 asm("esi") = arg4;
+        register long a5 asm("edi") = arg5;
+        asm("int $0x80");
 
-    //     register long check asm("eax");
-    //     long ret = check;
-    //     if(check < 0)
-    //         _printi(ret);
+        long ret;
+        register long check asm("eax");
+        ret = check;
+        if(check < 0)
+            _printi(ret);
 
-    //     return ret;
-    // }
+        return ret;
+    }
 #elif defined(__x86_64__)
     void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
     {
