@@ -7,9 +7,9 @@ public long __syscall__(register long arg1, register long arg2, register long ar
     asm(EXECUTE_SYSCALL);
 }
 
-static uint64_t udiv64(uint64_t a, uint64_t b) {
-    uint64_t q = 0;
-    uint64_t r = 0;
+static uint64_t udiv64(u64 a, u64 b) {
+    u64 q = 0;
+    u64 r = 0;
 
     for (int i = 63; i >= 0; i--) {
         r <<= 1;
@@ -17,20 +17,20 @@ static uint64_t udiv64(uint64_t a, uint64_t b) {
 
         if (r >= b) {
             r -= b;
-            q |= ((uint64_t)1 << i);
+            q |= ((u64)1 << i);
         }
     }
 
     return q;
 }
 
-int64_t __divdi3(int64_t a, int64_t b) {
+i64 __divdi3(i64 a, i64 b) {
     int neg = 0;
 
     if (a < 0) { a = -a; neg ^= 1; }
     if (b < 0) { b = -b; neg ^= 1; }
 
-    int64_t res = (int64_t)udiv64((uint64_t)a, (uint64_t)b);
+    i64 res = (i64)udiv64((u64)a, (u64)b);
 
     return neg ? -res : res;
 }
