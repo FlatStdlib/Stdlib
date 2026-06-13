@@ -89,6 +89,34 @@ public long __syscall__(register long arg1, register long arg2, register long ar
 
         return ret;
     }
+
+    static uint64_t udiv64(uint64_t a, uint64_t b) {
+        uint64_t q = 0;
+        uint64_t r = 0;
+
+        for (int i = 63; i >= 0; i--) {
+            r <<= 1;
+            r |= (a >> i) & 1;
+
+            if (r >= b) {
+                r -= b;
+                q |= ((uint64_t)1 << i);
+            }
+        }
+
+        return q;
+    }
+
+    int64_t __divdi3(int64_t a, int64_t b) {
+        int neg = 0;
+
+        if (a < 0) { a = -a; neg ^= 1; }
+        if (b < 0) { b = -b; neg ^= 1; }
+
+        int64_t res = (int64_t)udiv64((uint64_t)a, (uint64_t)b);
+
+        return neg ? -res : res;
+    }
 #elif defined(__x86_64__)
     void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
     {
