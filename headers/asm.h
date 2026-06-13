@@ -28,7 +28,7 @@ struct _timeval {
     long tv_sec, tv_usec;
 };
 
-#if defined(__x86__) || defined(__i386__)
+#if defined(__i386__)
 	#define __x86__
 	#include "architectures/x86.h"
 #elif defined(__x86_64__)

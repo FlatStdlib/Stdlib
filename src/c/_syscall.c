@@ -35,7 +35,27 @@ i64 __divdi3(i64 a, i64 b) {
     return neg ? -res : res;
 }
 
-#if defined(__i386__) || defined(__x86__)
+long __sys_mmap32(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
+{
+	register long sys asm("eax") = _SYS_MMAP;
+    register long a1 asm("ebx") = arg1;
+    register long a2 asm("ecx") = arg2;
+    register long a3 asm("edx") = arg3;
+    register long a4 asm("esi") = arg4;
+    register long a5 asm("edi") = arg5;
+    asm("int $0x80");
+
+    long ret;
+    register long check asm("eax");
+    ret = check;
+    if(check < 0)
+        _printi(ret);
+
+    return ret;
+}
+
+#if defined(__i386__)
+    #define __sys_mmap __sys_mmap32
     // __attribute__((naked)) long custom_mmap(long, long, long, long, long, long)
     // {
     //     asm volatile(
@@ -97,25 +117,6 @@ i64 __divdi3(i64 a, i64 b) {
         }
 
         asm("int $0x80");
-    }
-
-    long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
-    {
-    	register long sys asm("eax") = _SYS_MMAP;
-        register long a1 asm("ebx") = arg1;
-        register long a2 asm("ecx") = arg2;
-        register long a3 asm("edx") = arg3;
-        register long a4 asm("esi") = arg4;
-        register long a5 asm("edi") = arg5;
-        asm("int $0x80");
-
-        long ret;
-        register long check asm("eax");
-        ret = check;
-        if(check < 0)
-            _printi(ret);
-
-        return ret;
     }
 #elif defined(__x86_64__)
     void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)

@@ -595,12 +595,8 @@ string float_to_str(double n, char *out, int precision)
 
     while (ip > 0)
     {
-        // tmp[j++] = (ip % 10) + '0';
-        // ip /= 10;
-		long long digit = __moddi3(ip, 10);
-		tmp[j++] = (char)(digit + '0');
-
-		ip = __divdi3(ip, 10);
+        tmp[j++] = (ip % 10) + '0';
+        ip /= 10;
     }
 
     while (j--)
