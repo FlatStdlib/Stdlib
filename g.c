@@ -1,29 +1,7 @@
 /*
     -fomit-frame-pointer
 */
-#include <fsl.h>
-
-#define SYS_mmap       9
-#define SYS_clone     56
-#define SYS_exit      60
-#define SYS_exit_group 231
-#define SYS_futex    202
-
-#define PROT_READ     0x1
-#define PROT_WRITE    0x2
-#define MAP_PRIVATE   0x02
-#define MAP_ANONYMOUS 0x20
-
-#define FUTEX_WAIT    0
-#define FUTEX_WAKE    1
-
-#define CLONE_VM      0x00000100
-#define CLONE_FS      0x00000200
-#define CLONE_FILES   0x00000400
-#define CLONE_SIGHAND 0x00000800
-#define CLONE_THREAD  0x00008000
-#define CLONE_SYSVSEM 0x00004000
-
+#include <architectures/x86_64.h>
 #define THREAD_CLONE_FLAGS (CLONE_VM | CLONE_FS | CLONE_FILES | \
                             CLONE_SIGHAND | CLONE_THREAD | CLONE_SYSVSEM)
 

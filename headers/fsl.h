@@ -640,6 +640,7 @@ int 	get_args(char* argv[]);
 	[ src/stdlib/thread.c ]
 */
 #ifdef _FSL_THREAD_H
+
 	typedef struct
 	{
 		handler_t	fnc;

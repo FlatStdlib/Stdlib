@@ -32,7 +32,7 @@ sudo apt install git make -y
 git clone https://github.com/FlatStdlib/Stdlib.git	# FSL-Stdlib
 git clone https://github.com/FlatStdlib/fsl.git 	# FSL-GCC Toolchain
 cd Stdlib
-sudo make # sets global lib and loader
+sudo make # sets global lib, loader and compiler!
 ```
 
 ### File Structure Information
@@ -48,6 +48,7 @@ sudo make # sets global lib and loader
     | - asm             ; Some ASM Wrappers
     | - c               ; Basic C Internals and Stdlib
         | - stdlib      ; Type(s) and Functionalities
+        | - os          ; OS Internals
 | - tests               ; Tests to run. Indicating Good for Production Use On the target host
 
 ```

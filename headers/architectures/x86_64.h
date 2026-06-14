@@ -4,22 +4,22 @@
 #define EXECUTE_SYSCALL "syscall"
 
 /* x86_64 C-ABIV Calling Convension */
-#define __RAX__ "rax"
-#define __RDI__ "rdi"
-#define __RSI__ "rsi"
-#define __RDX__ "rdx"
-#define __R10__ "r10"
-#define __R8__ "r8"
-#define __R9__ "r9"
-#define __RBX__ "rbx"
-#define __RCX__ "rcx"
-#define __RBP__ "rbp"
-#define __R15__ "r15"
-#define __R14__ "r14"
-#define __R13__ "r13"
-#define __R12__ "r12"
-#define __R11__ "r11"
-#define __RSP__ "rsp"
+#define __RAX__                 "rax"
+#define __RDI__                 "rdi"
+#define __RSI__                 "rsi"
+#define __RDX__                 "rdx"
+#define __R10__                 "r10"
+#define __R8__                  "r8"
+#define __R9__                  "r9"
+#define __RBX__                 "rbx"
+#define __RCX__                 "rcx"
+#define __RBP__                 "rbp"
+#define __R15__                 "r15"
+#define __R14__                 "r14"
+#define __R13__                 "r13"
+#define __R12__                 "r12"
+#define __R11__                 "r11"
+#define __RSP__                 "rsp"
 
 /* x86_64 syscalls */
 #define _SYS_READ                   0
@@ -359,5 +359,36 @@
 #define _RSEQ                       334
 #define _PKEY_MPROTECT2             335
 
-/* x86_64 syscall wrappers */
-long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
+/* CLONE FLAGS */
+#define CLONE_VM                    0x00000100
+#define CLONE_FS                    0x00000200
+#define CLONE_FILES                 0x00000400
+#define CLONE_SIGHAND               0x00000800
+#define CLONE_THREAD                0x00008000
+#define CLONE_SYSVSEM               0x00004000
+#define CLONE_PARENT_SETTID         0x00100000
+#define CLONE_CHILD_SETTID          0x01000000
+#define CLONE_CHILD_CLEARTID        0x00200000
+
+/* PROT FLAGS */
+#define PROT_READ   	            0x1
+#define PROT_WRITE		            0x2
+#define PROT_EXEC   	            0x4
+#define PROT_NONE   	            0x0
+
+/* MAP FLAGS */
+#define MAP_SHARED  	            0x01
+#define MAP_PRIVATE 	            0x02
+#define MAP_FIXED   	            0x10
+#define MAP_ANON 	                0x20
+#define MAP_STACK 		            0x20000
+#define MAP_ANON                    0x20
+#define MAP_GROWSDOWN               0x0100
+#define MAP_DENYWRITE               0x0800
+#define MAP_EXECUTABLE              0x1000
+#define MAP_LOCKED                  0x2000
+#define MAP_NORESERVE               0x4000
+#define MAP_POPULATE                0x8000
+#define MAP_STACK                   0x20000
+#define MAP_ANONYMOUS               MAP_ANON
+#define MAP_FAILED                  ((void *)-1)
