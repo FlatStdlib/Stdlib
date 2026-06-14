@@ -21,7 +21,12 @@ public fn set_heap_debug(void)
 { HEAP_DEBUG = 1; }
 
 public fn init_mem(void) {
-    long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+    long ret = 0;
+    #ifdef __i386__
+        ret = custom_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+    #elif defined(__x86_64__)
+        ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+    #endif
     if (ret <= 0)
         fsl_panic("mmap failed!");
 

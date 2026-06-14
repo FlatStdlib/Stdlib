@@ -11,11 +11,9 @@
 #define MAP_PRIVATE   0x02
 #define MAP_ANONYMOUS 0x20
 
-// futex ops
 #define FUTEX_WAIT    0
 #define FUTEX_WAKE    1
 
-// Thread clone flags
 #define CLONE_VM      0x00000100
 #define CLONE_FS      0x00000200
 #define CLONE_FILES   0x00000400
@@ -41,7 +39,6 @@ static struct stack_head *allocate_stack(long size)
     if (addr < 0)
         return 0;
 
-    // Return pointer to the top of the stack
     return (struct stack_head *)(addr + size) - 1;
 }
 
@@ -49,11 +46,11 @@ __attribute__((naked))
 static long do_clone(struct stack_head *stack)
 {
     __asm__ volatile (
-        "mov   %%rdi, %%rsi\n"           // child stack
-        "mov   %0, %%edi\n"              // flags
-        "mov   $56, %%eax\n"             // SYS_clone
+        "mov   %%rdi, %%rsi\n"
+        "mov   %0, %%edi\n"
+        "mov   $56, %%eax\n"
         "syscall\n"
-        "mov   %%rsp, %%rdi\n"           // pass stack_head to entry func
+        "mov   %%rsp, %%rdi\n"
         "ret\n"
         :
         : "i"(THREAD_CLONE_FLAGS)
