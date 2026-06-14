@@ -121,6 +121,7 @@ long __syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg
 long ___syscall__(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, long sys);
 static u64 udiv64(u64 a, u64 b);
 i64 __divdi3(i64 a, i64 b);
+long long __moddi3(long long a, long long b);
 
 // Get Start-up App Cmdline Arguments
 int 	get_args(char* argv[]);

@@ -35,7 +35,12 @@ i64 __divdi3(i64 a, i64 b) {
     return neg ? -res : res;
 }
 
-long __sys_mmap32(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
+long long __moddi3(long long a, long long b)
+{
+    return a % b;
+}
+
+__attribute__((optimize("omit-frame-pointer"), naked)) long __sys_mmap32(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
 {
 	register long sys asm("eax") = _SYS_MMAP;
     register long a1 asm("ebx") = arg1;
@@ -55,21 +60,24 @@ long __sys_mmap32(long arg1, long arg2, long arg3, long arg4, long arg5, long ar
 }
 
 #if defined(__i386__)
-    #define __sys_mmap __sys_mmap32
-    __attribute__((naked)) long custom_mmap(long, long, long, long, long, long)
+    __attribute__((optimize("omit-frame-pointer"), naked)) long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
     {
-        asm volatile(
-            "push ebp\n\t"
-            "mov eax, 0xc0\n\t"
-            "mov ebx, [esp+8]\n\t"
-            "mov ecx, [esp+12]\n\t"
-            "mov edx, [esp+16]\n\t"
-            "mov esi, [esp+20]\n\t"
-            "mov edi, [esp+24]\n\t"
-            "mov ebp, [esp+28]\n\t"
-            "int 0x80\n\t"
-            "pop ebp\n\t"
-            "ret\n\t");
+    	register long sys asm("eax") = _SYS_MMAP;
+        register long a1 asm("ebx") = arg1;
+        register long a2 asm("ecx") = arg2;
+        register long a3 asm("edx") = arg3;
+        register long a4 asm("esi") = arg4;
+        register long a5 asm("edi") = arg5;
+        register long a6 asm("ebp") = arg6;
+        asm("int $0x80");
+
+        long ret;
+        register long check asm("eax");
+        ret = check;
+        if(check < 0)
+            _printi(ret);
+
+        return ret;
     }
     
     void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)

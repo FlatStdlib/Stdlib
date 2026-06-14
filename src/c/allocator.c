@@ -21,11 +21,19 @@ public fn set_heap_debug(void)
 { HEAP_DEBUG = 1; }
 
 public fn init_mem(void) {
-    long ret = 0;
     #ifdef __i386__
-        ret = custom_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+        // ret = __sys_mmap32(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+        register long sys asm("eax") = _SYS_MMAP;
+        register long a1 asm("ebx") = 0;
+        register long a2 asm("ecx") = _HEAP_PAGE_;
+        register long a3 asm("edx") = 0x1|0x2;
+        register long a4 asm("esi") = 0x2|0x20;
+        register long a5 asm("edi") = -1;
+        asm("int $0x80");
+
+        register long ret asm("eax");
     #elif defined(__x86_64__)
-        ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+        long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
     #endif
     if (ret <= 0)
         fsl_panic("mmap failed!");

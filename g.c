@@ -1,3 +1,6 @@
+/*
+    -fomit-frame-pointer
+*/
 #include <fsl.h>
 
 #define SYS_mmap       9
@@ -42,20 +45,21 @@ static struct stack_head *allocate_stack(long size)
     return (struct stack_head *)(addr + size) - 1;
 }
 
-__attribute__((naked))
+//_attribute__((naked))
+__attribute__((optimize("omit-frame-pointer")))
 static long do_clone(struct stack_head *stack)
 {
-    __asm__ volatile (
-        "mov   %%rdi, %%rsi\n"
-        "mov   %0, %%edi\n"
-        "mov   $56, %%eax\n"
-        "syscall\n"
-        "mov   %%rsp, %%rdi\n"
-        "ret\n"
-        :
-        : "i"(THREAD_CLONE_FLAGS)
-        : "rax", "rcx", "rsi", "rdi", "r11", "memory"
-    );
+        __asm__ volatile (
+            "mov   %%rdi, %%rsi\n"
+            "mov   %0, %%edi\n"
+            "mov   $56, %%eax\n"
+            "syscall\n"
+            "mov   %%rsp, %%rdi\n"
+            "ret\n"
+            :
+            : "i"(THREAD_CLONE_FLAGS)
+            : "rax", "rcx", "rsi", "rdi", "r11", "memory"
+        );
 }
 
 static void thread_entry(struct stack_head *stack)
