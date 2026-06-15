@@ -348,16 +348,16 @@ int 	get_args(char* argv[]);
 		#define malloc allocate
 	#endif
 
-	#define PROT_READ   	0x1
-	#define PROT_WRITE		0x2
-	#define PROT_EXEC   	0x4
-	#define PROT_NONE   	0x0
+	// #define PROT_READ   	0x1
+	// #define PROT_WRITE		0x2
+	// #define PROT_EXEC   	0x4
+	// #define PROT_NONE   	0x0
 
-	#define MAP_SHARED  	0x01
-	#define MAP_PRIVATE 	0x02
-	#define MAP_FIXED   	0x10
-	#define MAP_ANONYMOUS 	0x20
-	#define MAP_STACK 		0x20000
+	// #define MAP_SHARED  	0x01
+	// #define MAP_PRIVATE 	0x02
+	// #define MAP_FIXED   	0x10
+	// #define MAP_ANONYMOUS 	0x20
+	// #define MAP_STACK 		0x20000
 
 	typedef void* heap_t;
 	extern heap_t               _HEAP_;
@@ -640,6 +640,16 @@ int 	get_args(char* argv[]);
 	[ src/stdlib/thread.c ]
 */
 #ifdef _FSL_THREAD_H
+	/* CLONE FLAGS */
+	// #define CLONE_VM                    0x00000100
+	// #define CLONE_FS                    0x00000200
+	// #define CLONE_FILES                 0x00000400
+	// #define CLONE_SIGHAND               0x00000800
+	// #define CLONE_THREAD                0x00008000
+	// #define CLONE_SYSVSEM               0x00004000
+	// #define CLONE_PARENT_SETTID         0x00100000
+	// #define CLONE_CHILD_SETTID          0x01000000
+	// #define CLONE_CHILD_CLEARTID        0x00200000
 
 	typedef struct
 	{

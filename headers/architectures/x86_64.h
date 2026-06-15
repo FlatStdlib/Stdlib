@@ -392,3 +392,6 @@
 #define MAP_STACK                   0x20000
 #define MAP_ANONYMOUS               MAP_ANON
 #define MAP_FAILED                  ((void *)-1)
+
+/* _syscall.c */
+long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);

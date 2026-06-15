@@ -22,16 +22,7 @@ public fn set_heap_debug(void)
 
 public fn init_mem(void) {
     #ifdef __i386__
-        // ret = __sys_mmap32(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
-        register long sys asm("eax") = _SYS_MMAP;
-        register long a1 asm("ebx") = 0;
-        register long a2 asm("ecx") = _HEAP_PAGE_;
-        register long a3 asm("edx") = 0x1|0x2;
-        register long a4 asm("esi") = 0x2|0x20;
-        register long a5 asm("edi") = -1;
-        asm("int $0x80");
-
-        register long ret asm("eax");
+        long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
     #elif defined(__x86_64__)
         long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
     #endif

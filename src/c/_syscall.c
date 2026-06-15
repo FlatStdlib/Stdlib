@@ -40,25 +40,6 @@ long long __moddi3(long long a, long long b)
     return a % b;
 }
 
-__attribute__((optimize("omit-frame-pointer"), naked)) long __sys_mmap32(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
-{
-	register long sys asm("eax") = _SYS_MMAP;
-    register long a1 asm("ebx") = arg1;
-    register long a2 asm("ecx") = arg2;
-    register long a3 asm("edx") = arg3;
-    register long a4 asm("esi") = arg4;
-    register long a5 asm("edi") = arg5;
-    asm("int $0x80");
-
-    long ret;
-    register long check asm("eax");
-    ret = check;
-    if(check < 0)
-        _printi(ret);
-
-    return ret;
-}
-
 #if defined(__i386__)
     __attribute__((optimize("omit-frame-pointer"), naked)) long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
     {

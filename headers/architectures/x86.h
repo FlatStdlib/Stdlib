@@ -455,3 +455,5 @@
 #define _SYS_PROCESS_MRELEASE       448
 #define _SYS_FUTEX_WAITV     		449
 #define _SET_MEMPOLICY_HOME_NOD		-1
+
+__attribute__((optimize("omit-frame-pointer"), naked)) long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
