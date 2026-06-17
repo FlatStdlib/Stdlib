@@ -41,6 +41,19 @@ long long __moddi3(long long a, long long b)
 }
 
 #if defined(__i386__)
+	__attribute__((optimize("omit-frame-pointer"))) long __syscall__(long a1, long a2, long a3, long a4, long a5, long a6, long sys)
+	{
+		register long syscall asm(__EAX__) = sys;
+		register long arg1 asm(__EBX__) = a1;
+		register long arg2 asm(__ECX__) = a2;
+		register long arg3 asm(__EDX__) = a3;
+		register long arg4 asm(__ESI__) = a4;
+		register long arg5 asm(__EDI__) = a5;
+		register long arg6 asm(__EBP__) = a6;
+		asm(EXECUTE_SYSCALL);
+	}
+
+
     __attribute__((optimize("omit-frame-pointer"), naked)) long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
     {
     	register long sys asm("eax") = _SYS_MMAP;

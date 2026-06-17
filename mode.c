@@ -2,6 +2,12 @@
 
 int __FSL_DEBUG__ = 1;
 
+void _mem_cpy(char *buffer, char *src, int sz)
+{ for(int i = 0; src[i] != '\0'; i++) buffer[i] = src[i]; }
+
+int _str_len(char *buffer)
+{ int count = 0; for(; buffer[count] != '\0'; count++); }
+
 __attribute__((optimize("omit-frame-pointer"))) long ___built_in_syscall__(long a1, long a2, long a3, long a4, long a5, long a6, long sys)
 {
 	register long syscall asm(__EAX__) = sys;
@@ -14,31 +20,20 @@ __attribute__((optimize("omit-frame-pointer"))) long ___built_in_syscall__(long 
 	asm(EXECUTE_SYSCALL);
 }
 
+static void __print(char *buff)
+{
+	___built_in_syscall__(1, (long)buff, _str_len(buff), -1, -1, -1, _SYS_WRITE);
+}
+
 long ___syscall__(long a1, long a2, long a3, long a4, long a5, long a6, long sys)
 {
 	___built_in_syscall__(a1, a2, a3, a4, a5, a6, sys);
 	if(__FSL_DEBUG__)
 	{
-		char OUTPUT[1024];
-		OUTPUT[0] = sys + '0';
-		OUTPUT[1] = ' ';
-		OUTPUT[2] = '|';
-		OUTPUT[3] = ' ';
-		OUTPUT[4] = !a1 ? '0' : a1 + '0';
-		OUTPUT[5] = ' ';
-		OUTPUT[6] = !a2 ? '0' : a2 + '0';
-		OUTPUT[7] = ' ';
-		OUTPUT[8] = !a3 ? '0' : a3 + '0';
-		OUTPUT[9] = ' ';
-		OUTPUT[10] = !a4 ? '0' : a4 + '0';
-		OUTPUT[11] = ' ';
-		OUTPUT[12] = !a5 ? '0' : a5 + '0';
-		OUTPUT[13] = ' ';
-		OUTPUT[14] = !a6 ? '0' : a6 + '0';
-		OUTPUT[15] = '\r';
-		OUTPUT[16] = '\n';
-		OUTPUT[17] = ' ';
-		___built_in_syscall__(1, (long)"Sys: ", 5, -1, -1, -1, _SYS_WRITE);
+		char OUTPUT[200];
+		_mem_cpy(OUTPUT, "Sys: ", 5);
+		OUTPUT[6] = sys + '0';
+		OUTPUT[7] = '\n';
 		___built_in_syscall__(1, (long)OUTPUT, 17, -1, -1, -1, _SYS_WRITE);
 	}
 }
