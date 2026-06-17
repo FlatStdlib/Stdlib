@@ -8,6 +8,12 @@ int used_mem 			= 0;
 int HEAP_DEBUG 			= 0;
 const int HEAP_META_SZ 	= sizeof(__meta__);
 
+#ifdef __i386__
+char _TEST_HEAP_[8192];
+#endif
+
+extern __attribute__((optimize("omit-frame-pointer"), naked)) long custom_mmap(long, long, long, long, long, long);
+
 public int __get_total_mem_used__(void) 
 { return used_mem; }
 
@@ -22,12 +28,22 @@ public fn set_heap_debug(void)
 
 public fn init_mem(void) {
     #ifdef __i386__
-        long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+		register long syscall asm(__EAX__) = _SYS_MMAP_PGOFF;
+		register long arg1 asm(__EBX__) = 0;
+		register long arg2 asm(__ECX__) = _HEAP_PAGE_;
+		register long arg3 asm(__EDX__) = 0x1|0x2;
+		register long arg4 asm(__ESI__) = 0x2|0x20;
+		register long arg5 asm(__EDI__) = -1;
+		register long arg6 asm(__EBP__) = 0;
+		asm(EXECUTE_SYSCALL);
+        long ret;
+        register long check asm(__EAX__);
+        ret = check;
     #elif defined(__x86_64__)
         long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+        if (ret <= 0)
+            fsl_panic("mmap failed!");
     #endif
-    if (ret <= 0)
-        fsl_panic("mmap failed!");
 
 	_HEAP_ = (ptr)ret;
 

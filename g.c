@@ -1,6 +1,7 @@
 /*
     -fomit-frame-pointer
 */
+#include <fsl.h>
 #include <architectures/x86_64.h>
 #define THREAD_CLONE_FLAGS (CLONE_VM | CLONE_FS | CLONE_FILES | \
                             CLONE_SIGHAND | CLONE_THREAD | CLONE_SYSVSEM)

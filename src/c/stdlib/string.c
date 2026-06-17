@@ -68,6 +68,20 @@ public string int_to_str(int num)
 	return str_dup(buff);
 }
 
+public bool is_str_ascii(string query)
+{
+	if(!query)
+		return false;
+
+	for(int i = 0; query[i] != '\0'; i++)
+	{
+		if(!is_ascii(query[i]))
+			return false;
+	}
+
+	return true;
+}
+
 public fn _sprintf(string buffer, string format, any* args)
 {
 	int arg = 0, idx = 0;
@@ -127,20 +141,6 @@ public fn _sprintf(string buffer, string format, any* args)
 	}
 
 	buffer[idx] = '\0';
-}
-
-public bool is_str_ascii(string buffer)
-{
-	if(!buffer)
-		return false;
-
-	for(int i = 0; buffer[i] != '\0'; i++)
-	{
-		if(buffer[i] < 1 || buffer[i] > 255)
-			return false;
-	}
-
-	return true;
 }
 
 public fn str_append_int(string dest, int num)

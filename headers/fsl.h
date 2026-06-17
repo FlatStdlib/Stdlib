@@ -438,8 +438,8 @@ int 	get_args(char* argv[]);
 
 	public fn 		ptr_to_str(ptr p, string out);
 	public string	int_to_str(int num);
+	public bool		is_str_ascii(string query);
 	public fn 		_sprintf(string buffer, string format, any* args);
-	public bool 	is_str_ascii(string buffer);
 	public fn 		str_append_int(string dest, int num);
 	public len_t 	str_len(string buffer);
 	public string 	str_dup(const string buffer);

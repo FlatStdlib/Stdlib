@@ -1,11 +1,13 @@
 #include "../../headers/fsl.h"
 
 /* Following ABI Standards Here, A Universial user-space syscall */
+#ifndef __i386__
 public long __syscall__(register long arg1, register long arg2, register long arg3, register long arg4, register long arg5, register long arg6, register long sys)
 {
 	register long ss asm(SYSCALL_REG) = sys;
     asm(EXECUTE_SYSCALL);
 }
+#endif 
 
 static u64 udiv64(u64 a, u64 b) {
     u64 q = 0;
@@ -51,28 +53,53 @@ long long __moddi3(long long a, long long b)
 		register long arg5 asm(__EDI__) = a5;
 		register long arg6 asm(__EBP__) = a6;
 		asm(EXECUTE_SYSCALL);
+        
+        long ret;
+        register long check asm(__EAX__);
+        ret = check;
+        if(check < 0)
+            _printi(ret);
+
+        return ret;
 	}
 
 
     __attribute__((optimize("omit-frame-pointer"), naked)) long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
     {
-    	register long sys asm("eax") = _SYS_MMAP;
-        register long a1 asm("ebx") = arg1;
-        register long a2 asm("ecx") = arg2;
-        register long a3 asm("edx") = arg3;
-        register long a4 asm("esi") = arg4;
-        register long a5 asm("edi") = arg5;
-        register long a6 asm("ebp") = arg6;
-        asm("int $0x80");
+        register long syscall asm(__EAX__) = _SYS_MMAP_PGOFF;
+		register long a1 asm(__EBX__) = arg1;
+		register long a2 asm(__ECX__) = arg2;
+		register long a3 asm(__EDX__) = arg3;
+		register long a4 asm(__ESI__) = arg4;
+		register long a5 asm(__EDI__) = arg5;
+		register long a6 asm(__EBP__) = arg6;
+		asm(EXECUTE_SYSCALL);
 
         long ret;
-        register long check asm("eax");
+        register long check asm(__EAX__);
         ret = check;
         if(check < 0)
             _printi(ret);
 
         return ret;
     }
+
+    __attribute__((naked)) long custom_mmap(long, long, long, long, long, long)
+    {
+        asm volatile(
+            "push %ebp\n\t"
+            "mov $0xC0, %eax\n\t"
+            "mov 8(%esp), %ebx\n\t"
+            "mov 12(%esp), %ecx\n\t"
+            "mov 16(%esp), %edx\n\t"
+            "mov 20(%esp), %esi\n\t"
+            "mov 24(%esp), %edi\n\t"
+            "mov 28(%esp), %ebp\n\t"
+            "int $0x80\n\t"
+            "pop %ebp\n\t"
+            "ret\n\t");
+    }
+    
     
     void __syscall(long syscall, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
     {
