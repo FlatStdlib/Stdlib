@@ -368,7 +368,11 @@ int 	get_args(char* argv[]);
 	extern int                  _HEAP_SZ_;
 	extern int                  _HEAP_PAGE_SZ_;
 
+	#if defined(_WIN32 ) || defined(_WIN64)
+	typedef struct {
+	#else
 	typedef struct __attribute__((packed)) {
+	#endif
 		int     size;
 		size_t  length;
 		int     id;

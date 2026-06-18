@@ -8,11 +8,9 @@ int used_mem 			= 0;
 int HEAP_DEBUG 			= 0;
 const int HEAP_META_SZ 	= sizeof(__meta__);
 
-#ifdef __i386__
+#if defined(_WIN32) ||  defined(_WIN64)
 char _TEST_HEAP_[8192];
 #endif
-
-extern __attribute__((optimize("omit-frame-pointer"), naked)) long custom_mmap(long, long, long, long, long, long);
 
 public int __get_total_mem_used__(void) 
 { return used_mem; }
@@ -27,6 +25,7 @@ public fn set_heap_debug(void)
 { HEAP_DEBUG = 1; }
 
 public fn init_mem(void) {
+    long ret;
     #ifdef __i386__
 		register long syscall asm(__EAX__) = _SYS_MMAP_PGOFF;
 		register long arg1 asm(__EBX__) = 0;
@@ -36,16 +35,20 @@ public fn init_mem(void) {
 		register long arg5 asm(__EDI__) = -1;
 		register long arg6 asm(__EBP__) = 0;
 		asm(EXECUTE_SYSCALL);
-        long ret;
         register long check asm(__EAX__);
         ret = check;
     #elif defined(__x86_64__)
-        long ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+        ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
         if (ret <= 0)
             fsl_panic("mmap failed!");
     #endif
 
-	_HEAP_ = (ptr)ret;
+
+    #if defined(_WIN32) || defined(_WIN64)
+        _HEAP_ = (heap_t)_TEST_HEAP_;
+    #else
+        _HEAP_ = (heap_t)ret;
+    #endif
 
     // Clear the heap to mark all memory as free
     mem_set(_HEAP_, 1, _HEAP_PAGE_);
@@ -160,6 +163,7 @@ public fn pfree(any ptr, int clean)
     }
 }
 
+#if !defined(_WIN32) && !defined(_WIN64)
 public fn uninit_mem(void)
 {
 	if(HEAP_DEBUG || __FSL_DEBUG__)
@@ -167,3 +171,4 @@ public fn uninit_mem(void)
         
 	__syscall__((long)_HEAP_, _HEAP_PAGE_, 0, 0, 0, 0, _SYS_MUNMAP);
 }
+#endif

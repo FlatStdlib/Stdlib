@@ -39,7 +39,8 @@ struct _timeval {
 	#include "architectures/aarch64.h"
 #elif defined(__arm__)
 	#include "architectures/arm.h"
-#elif defined(_WIN64)
+#elif defined(_WIN32) || defined(_WIN64)
+	#define NULL 	((void *)0)
 	#include "architectures/win64.h"
 #else
 	#error "Invalid architecture"
