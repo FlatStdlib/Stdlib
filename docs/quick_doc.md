@@ -3,8 +3,8 @@
 	<p>The official minimal C backend alternative to GLIBC</p>
 
  [Start-up](../README.md)
-| ● [Introduction](docs/intro.md)
-| [Quick Doc](quick_doc.md)
+|  [Introduction](intro.md)
+| ● [Quick Doc](quick_doc.md)
 | [Libraries](docs/libraries.md)
 | [Todo](docs/todo.md)
 </div>
