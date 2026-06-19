@@ -24,6 +24,11 @@ public fn mem_cpy(any dest, any src, size_t size)
 	}
 }
 
+/* Required for variable zero '= {0};' */
+#if defined(__TINYC__) || defined(__clang__)
+	public fn memset(void *p, char ch, size_t size) { mem_set(p, ch, size); }
+#endif
+
 public fn mem_set(any p, char ch, size_t size)
 {
 	for(int i = 0; i < size; i++)

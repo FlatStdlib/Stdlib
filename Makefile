@@ -1,37 +1,30 @@
+# 32BIT : -m32 -fno-stack-protector -fomit-frame-pointer
 ###
 #
-#       Libbase
+#       Flat Stdlib
 #
 ###
-# Compiler
-COMPILER 	= gcc
 
-# Build Path
-BUILD 		= build
+# Default Compiler
+COMPILER = gcc
 
-# Library Filename & External Library Path
-# Header file default path
-LIB			= libfsl.a
-LIB_PATH	= /usr/lib
-HEADER_PATH = /usr/local/include
+# Filename(s)
+FGCC = fsl						# FSL-GCC COMPILER
+FGCC_OBJ = fsl_gcc.o   			# FSL-GCC COMPILER
+FGCC_SYSTEM_PATH = /bin/fsl		# FSL-GCC COMPILER
+LIB = libfsl.a					# FSL
+OBJ = fsl.o						# FSL
 
-# Object Filename and Path
-OBJ			= libfsl.o
-OBJ_PATH	= $(BUILD)
-
-#
-# Base-GCC Executable (DO NOT CHANGE)
-# Compile and Link sources with fsl
-#
-GBASE_EXEC 	= fsl
-GBASE_OBJ	= fsl.o
-GBASE_PATH 	= /bin/fsl	# Final Executable Path
+# Path(s)
+BUILD = build
+SYSTEM_LIB_DIR = /usr/lib
+SYSTEM_HDR_DIR = /usr/include
+OBJ_PATH = $(BUILD)
 
 # Compilation flags and files
-FLAGS 		= -c -nostdlib -nostdinc ${DEBUG}
-FILES 		= src/c/*.c \
-			  src/c/os/*.c \
-			  src/c/stdlib/*.c \
+FLAGS = -c -nostdlib -nostdinc ${DEBUG} ${CFLAGS}
+FGCC_FLAGS = -c -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections ${DEBUG} ${CFLAGS}
+FILES = src/c/*.c src/c/os/*.c src/c/stdlib/*.c
 
 .PHONY: all
 
@@ -64,8 +57,9 @@ compile_asm:
 # Compile clib+
 # Merge clib+ built-in lib for the compiler and another for external use with other compilers
 #
+
 compile:
-	$(COMPILER) $(FLAGS) -m32 -fno-stack-protector -fomit-frame-pointer $(FILES)
+	$(COMPILER) $(FLAGS) $(FILES)
 	rm -rf $(BUILD)/$(LIB)
 	rm -rf $(BUILD)/$(OBJ)
 	ar rcs $(BUILD)/$(LIB) *.o
@@ -76,10 +70,10 @@ compile:
 # clean-up
 #
 cloader:
-	gcc -m32 -fno-stack-protector -fomit-frame-pointer -ggdb -c ../fsl/loader.c -o $(BUILD)/loader.o -nostdlib -ffunction-sections -Wl,--gc-sections
-	gcc -m32 -fno-stack-protector -fomit-frame-pointer -ggdb -c ../fsl/fsl.c -o $(GBASE_OBJ) ${DEBUG} -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections
+	gcc ${FGCC_FLAGS} ${DEBUG} ../fsl/loader.c -o $(BUILD)/loader.o
+	gcc ${FGCC_FLAGS} ${DEBUG} ../fsl/fsl.c -o $(FGCC_OBJ)
 # 	cp $(BUILD)/fsl.o cpy.o
-	ld -m elf_i386 --gc-sections -o $(GBASE_EXEC) $(GBASE_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
+	ld --gc-sections -o $(FGCC) $(FGCC_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
 
 #"-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
 
@@ -90,18 +84,18 @@ cloader:
 # Set executable perms
 #
 move:
-	cp -r headers/* $(HEADER_PATH)
-	cp $(BUILD)/$(LIB) $(LIB_PATH)
-	cp $(BUILD)/loader.o $(LIB_PATH)
-	cp $(GBASE_EXEC) $(GBASE_PATH) 
-	chmod +x $(GBASE_PATH)
+	cp -r headers/* $(SYSTEM_HDR_DIR)
+	cp $(BUILD)/$(LIB) $(SYSTEM_LIB_DIR)
+	cp $(BUILD)/loader.o $(SYSTEM_LIB_DIR)
+	cp $(FGCC) $(FGCC_SYSTEM_PATH) 
+	chmod +x $(FGCC_SYSTEM_PATH)
 
 #
 # Delete obj file
 #
 clean:
 	rm -rf *.o
-	rm $(GBASE_EXEC)
+	rm $(FGCC)
 
 #
 # Test all test files in 'tests/'

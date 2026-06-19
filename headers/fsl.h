@@ -108,7 +108,6 @@ typedef i32					pos_t;
 	*/
 	#undef __GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION
 	#define NULL                    ((void *)0)
-
 	// Redeclaring from stddef.h exactly the same to avoid name confliction
 	typedef unsigned long int		size_t;
 	typedef unsigned long int		uintptr_t;

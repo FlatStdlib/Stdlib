@@ -1,20 +1,12 @@
 #include <fsl.h>
 
-typedef struct
-{
-    string  cc;
-    array   argv;
-} _build;
+extern i32 __ARGC__;
+extern string __ARGV__[50];
 
-public _build *init_build(string cc)
-{
-    _build *b = allocate(0, sizeof(_build));
-    b->cc = str_dup(cc);
-    b->argv = init_array();
-    b->argv = array_append(b->argv, str_dup(cc));
-
-    return b;
-}
+string FSL_STDLIBS[] = {
+	"/usr/lib/libfsl.a",
+	"/usr/lib/libfsl_x86.a"
+};
 
 #if defined(__linux__)
     #define CC "gcc"
@@ -23,10 +15,14 @@ public _build *init_build(string cc)
 #endif
 
 const string FLAGS[] = {
+    "/usr/bin/gcc",
+    "-ffunction-sections",
+    "-fdata-sections",  
+    "-Wl,--gc-sections",
+    "-nostdlib",
+    "-ffreestanding",
     "-c",
     "-nostdlib",
-    "-nostdinc",
-    "-ffreestanding",
     NULL
 };
 
@@ -49,7 +45,7 @@ const string FILES[] = {
     NULL
 };
 
-int entry(int argc, char *argv[])
+int entry()
 {
     return 0;
 }
