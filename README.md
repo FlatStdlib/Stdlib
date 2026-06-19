@@ -41,6 +41,12 @@ sudo make # sets global lib, loader and compiler!
 - TCC
 - CLANG
 
+You can install with different compilers by doing
+
+```bash
+sudo make COMPILER=<compiler>
+```
+
 ### File Structure Information
 ```
 | - Stdlib              ; Stdlib
