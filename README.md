@@ -35,6 +35,12 @@ cd Stdlib
 sudo make # sets global lib, loader and compiler!
 ```
 
+### Supported Compilers
+
+- GCC
+- TCC
+- CLANG
+
 ### File Structure Information
 ```
 | - Stdlib              ; Stdlib
