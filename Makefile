@@ -23,8 +23,15 @@ OBJ_PATH = $(BUILD)
 
 # Compilation flags and files
 FLAGS = -c -nostdlib -nostdinc ${DEBUG} ${CFLAGS}
+LDFLAGS = --gc-sections
 FGCC_FLAGS = -c -nostdlib -ffunction-sections -Wl,--gc-sections -fdata-sections ${DEBUG} ${CFLAGS}
 FILES = src/c/*.c src/c/os/*.c src/c/stdlib/*.c
+
+# Variables Used For Arguments
+# CFLAGS
+# LDFLAGS
+# DEBUG
+# COMPILER
 
 .PHONY: all
 
@@ -66,22 +73,16 @@ compile:
 	ar rcs $(BUILD)/$(OBJ) *.o
 
 #
-# Compile linker and loader for clib+
-# clean-up
+# Compile linker and loader for FSL
 #
 cloader:
 	gcc ${FGCC_FLAGS} ${DEBUG} ../fsl/loader.c -o $(BUILD)/loader.o
 	gcc ${FGCC_FLAGS} ${DEBUG} ../fsl/fsl.c -o $(FGCC_OBJ)
-# 	cp $(BUILD)/fsl.o cpy.o
-	ld --gc-sections -o $(FGCC) $(FGCC_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
+	ld ${LDFLAGS} -o $(FGCC) $(FGCC_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
 
-#"-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
 
 #
-# Set header files in /usr/local/include/
-# Set library binary in /usr/lib
-# Set compiler-linker in /bin/
-# Set executable perms
+# Set system libs, headers and fsl-gcc executable
 #
 move:
 	cp -r headers/* $(SYSTEM_HDR_DIR)
@@ -91,7 +92,7 @@ move:
 	chmod +x $(FGCC_SYSTEM_PATH)
 
 #
-# Delete obj file
+# Delete obj file(s)
 #
 clean:
 	rm -rf *.o

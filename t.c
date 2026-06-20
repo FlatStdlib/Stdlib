@@ -3,6 +3,7 @@
 
 int entry()
 {
-    println("Hi");
+	char s[] = "Hello World!";
+    _printf("%s\n", s);
     return 0;
 }
