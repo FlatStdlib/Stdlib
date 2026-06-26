@@ -396,6 +396,8 @@ int 	get_args(char* argv[]);
 	public fn 			_pfree(any ptr);
 	public fn        	pfree(any ptr, int clean);
 	public __meta__* 	__get_meta__(any ptr);
+
+	#define AUTOF __attribute__((cleanup(_pfree)))
 #endif
 
 /*
