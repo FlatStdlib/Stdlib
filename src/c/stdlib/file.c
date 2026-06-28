@@ -25,6 +25,9 @@ public int file_content_size(fd_t fd)
 	long size = __syscall__(fd, 0, 2, -1, -1, -1, _SYS_LSEEK);
 
 	__syscall__(fd, 0, 0, -1, -1, -1, _SYS_LSEEK);
+	if(size == -1)
+		fsl_panic("Failed to get size!");
+		
 	return size;
 }
 
