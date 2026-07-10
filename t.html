@@ -16,12 +16,10 @@
     --glow: rgba(167, 139, 250, 0.35);
 }
 
-/* RESET */
 html, body {
     margin: 0;
 }
 
-/* BODY — NO vertical centering (IMPORTANT) */
 body {
     min-height: 100vh;
     font-family: system-ui, sans-serif;
@@ -34,7 +32,6 @@ body {
     padding: 40px 0;
 }
 
-/* CONTAINER */
 .container {
     width: 100%;
     max-width: 1200px;
@@ -44,7 +41,6 @@ body {
     gap: 32px;
 }
 
-/* CARD */
 .card {
     background: linear-gradient(180deg, #14142a, var(--card));
     border-radius: 18px;
@@ -57,7 +53,6 @@ body {
     overflow: hidden;
 }
 
-/* GLOW BORDER */
 .card::before {
     content: "";
     position: absolute;
@@ -74,14 +69,12 @@ body {
     pointer-events: none;
 }
 
-/* HERO */
 .hero {
     display: grid;
     grid-template-columns: 40% 60%;
     gap: 24px;
 }
 
-/* LEFT */
 .hero-left {
     padding: 32px;
     display: flex;
@@ -115,7 +108,6 @@ body {
     color: var(--muted);
 }
 
-/* RIGHT */
 .hero-right {
     padding: 32px;
 }
@@ -129,7 +121,6 @@ body {
     line-height: 1.6;
 }
 
-/* SOCIALS */
 .socials {
     display: flex;
     flex-wrap: wrap;
@@ -166,7 +157,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* DEV SECTION (THIS IS WHAT GROWS THE PAGE) */
 .dev {
     padding: 40px;
 }
@@ -182,7 +172,6 @@ body {
     max-width: 900px;
 }
 
-/* RESPONSIVE */
 @media (max-width: 900px) {
     .hero {
         grid-template-columns: 1fr;
@@ -194,13 +183,11 @@ body {
 <body>
 
 <div class="container">
-
-    <!-- HERO (TOP 2 BOXES) -->
     <div class="hero">
 
         <div class="card hero-left">
             <div class="avatar">
-                <img src="https://images-ext-1.discordapp.net/external/ddQFgG3kuUHgzCK3DUayWxpymC11zcMRR-nKjT3SFwY/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/1440844781218431029/622ecd1d186aeb37a9ecfa24e8496282.png?format=webp&quality=lossless" alt="Avatar">
+                <img src="https://images-ext-1.discordapp.net/external/KUx6cMT0264Ytyp6dAk9P6s2FMOF4xLswffvOMubMHs/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/1440844781218431029/10095d311fc763a577941429898638df.png?format=webp&quality=lossless" alt="Avatar">
             </div>
             <h1>@Algo</h1>
             <span>Low-Level Software Engineer</span>
@@ -208,15 +195,15 @@ body {
 
         <div class="card hero-right">
             <div class="socials">
-                <a href="#">
+                <a href="https://x.com/algo1337">
                     <img style="display: inline-block; vertical-align: middle;" src="https://abs.twimg.com/favicons/twitter.3.ico">
                     <p class="social_text">@Algo1337</p>
                 </a>
-                <a href="#">
+                <a href="https://discord.gg/skidville">
                     <img class="social_ico" src="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/6266bc493fb42d4e27bb8393_847541504914fd33810e70a0ea73177e.ico">
                     <p class="social_text">heineken_t</p>
                 </a>
-                <a href="#">
+                <a href="https://www.youtube.com/@Algo1337">
                     <img class="social_ico" src="https://www.youtube.com/s/desktop/af4a6a17/img/favicon.ico">
                     <p class="social_text">@Algo1337</p>
                 </a>
@@ -224,12 +211,12 @@ body {
 
             <h2>Bio</h2>
             <p>
+                A low level developer focused in UEFI, Kernels, Compilers, Software/Computer Architecture and Design
             </p>
         </div>
 
     </div>
 
-    <!-- DEV (BOTTOM EXPANDING BOX) -->
     <div class="card dev">
         <h3>About Me</h3>
         <p>

@@ -1,13 +1,7 @@
-t
-*.o
-*.a
 *.swp
 build/*
-loader/*.o
-*.save
-a.out
 *.a
-p
+*.o
 t
 fsl
-thread
+a.out

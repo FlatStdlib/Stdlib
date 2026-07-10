@@ -43,7 +43,7 @@ long ___syscall__(long a1, long a2, long a3, long a4, long a5, long a6, long sys
 __attribute__((optimize("no-stack-protector"))) void _start()
 {
 	char n[5];
-	__builtin_memcpy(n, "test\n", 5);
+	_mem_cpy(n, "test\n", 5);
 	___syscall__(1, (long)n, 5, -1, -1, -1, _SYS_WRITE);
 	long r = ___syscall__((long)"output.txt", 0, 0, -1, -1, -1, _SYS_OPEN);
 	if(r < 0)

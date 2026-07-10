@@ -25,7 +25,8 @@ int get_symbol_comments(_hdr_ hdr, int idx)
 
 _hdr_ open_hdr_file(string name, string query)
 {
-	_hdr_ hdr = {0};
+	_hdr_ hdr;
+	memzero(&hdr, sizeof(_hdr_));
 	// mem_set(&hdr, 0, sizeof(_hdr_));
 	hdr.handle = open_file(name, 0, 0);
 	if(!hdr.handle)	
@@ -35,7 +36,7 @@ _hdr_ open_hdr_file(string name, string query)
 	if(size == 0)
 		fsl_panic("empty header file....!");
 	
-	_printf("File Size: %d\n", (void *)&size);
+	// _printf("File Size: %d\n", (void *)&size);
 	hdr.content = allocate(0, size + 1);
 	if(__get_size__(hdr.content) != size + 1)
 		fsl_panic("Unable to allocate data...!");
@@ -44,8 +45,6 @@ _hdr_ open_hdr_file(string name, string query)
 
 	int line_c = 0;
 	hdr.lines = split_lines(hdr.content, &line_c);
-
-	_printf("File Lines %d\n", (void *)&line_c);
 
 	for(int i = 0; i < line_c; i++) {
 		if(find_string(hdr.lines[i], query) > -1) {
@@ -59,6 +58,11 @@ _hdr_ open_hdr_file(string name, string query)
 
 			print("\x1b[32mSymbol:\x1b[39m\n\t");
 			/* print("["), printi(i), print("]: "), */ println(hdr.lines[i]);
+
+			if(line_c > 0)
+			{
+				println("\n\x1b[31m========================================\x1b[39m\n");
+			}
 		}
 	}
 
@@ -81,12 +85,12 @@ public int entry(int argc, string argv[])
 	mem_cpy(search_query, argv[1], str_len(argv[1]));
 	// toggle_debug_mode();
 	uninit_mem();
-	set_heap_sz(_HEAP_PAGE_ * 8);
+	set_heap_sz(_HEAP_PAGE_ * 15);
 	init_mem();
 
 	if(!__is_heap_init__())
 		fsl_panic("Heap not initialized!");
 
-	_hdr_ hdr = open_hdr_file("/usr/local/include/fsl.h", search_query);
+	_hdr_ hdr = open_hdr_file("/usr/include/fsl.h", search_query);
 	return 0;
 }

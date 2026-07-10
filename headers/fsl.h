@@ -180,7 +180,7 @@ int 	get_args(char* argv[]);
 
 	/*
 		@DOC
-			@param app 		App Execution
+			@param app		App Execution
 			@param args 	Argument for app including the app at the beginning of the array
 
 			@return: n/a
