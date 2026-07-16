@@ -3,7 +3,7 @@
 @echo off 2> $null
 
 # DO STUFF IN THE PARATHENSIS AS FUNCTION ( WINDOWS IGNORES THIS )
-ls /bin >nul 2>&1; $(touch test.file); exit 0
+ls /bin >nul 2>&1; $(make); exit 0
 
 if "%OS%"=="Windows_NT" call :myFunction
 goto :eof

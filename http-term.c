@@ -2,7 +2,7 @@
 
 string HTTP_DATA = "HTTP/1.1 200 OK\r\n"
 					"Content-type: html\r\n"
-					"Content-length: 15\r\n\r\nHello World\r\n\r\n";
+					"Content-length: 13\r\n\r\nHello World\r\n";
 
 
 map_t headers;
@@ -33,9 +33,7 @@ void parse_request(string req)
 	{
 		string line = lines[i];
 		if(!line) break;
-		i32 sz = __get_size__(line);
 
-//		_printf("[%d] %d:%d | %s\n", (ptr)&i, (ptr)&sz, (ptr)&stop_headers, line);
 		if(line[1] == '\0') {
 			stop_headers = 1;
 			continue;
@@ -59,6 +57,8 @@ void parse_request(string req)
 		_pfree(line);
 	}
 
+	pfree(lines, 0);
+	pfree_array((array)args);
 	_printf("Body: \n%s\n", _body);
 }
 
