@@ -39,11 +39,16 @@ sudo make # sets global lib, loader and compiler!
 
 This installation is still being developed
 
-File: ``test.bat``
+File: ``setup.bat``
 Language: Polyglot - Bash / Batch
 ```
-# Linux Use: null=/dev/null bash test.bat
-# Windows Use: cmd /c test.bat
+# Linux Use: 
+
+$ null=/dev/null bash test.bat
+
+# Windows Use: 
+
+$ cmd /c test.bat
 ```
 
 ### Supported Compilers
