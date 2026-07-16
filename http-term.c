@@ -13,7 +13,7 @@ typedef struct {
 	map_t 	GET;		// GET Params
 	map_t 	POST;		// POST Params/Data
 
-	string 	body;	// Request Body (Holding POST data)
+	string 	body;		// Request Body (Holding POST data)
 	sArr 	lines;
 } cwr_t;
 
@@ -26,25 +26,26 @@ cwr_t parse_request(string req)
 		return empty;
 
 	i32 argc = 0;
-	sArr lines = split_string(req, '\n', &argc);
-	if(argc <= 1 || !lines)
+	r.lines = split_string(req, '\n', &argc);
+	if(argc <= 1 || !r.lines)
 		return empty;
 
 	_printf("Lines: %d\n", (ptr)&argc);
 	i32 arg_c = 0;
-	sArr args = split_string(lines[0], ' ', &arg_c);
+	sArr args = split_string(r.lines[0], ' ', &arg_c);
 	if(arg_c < 3 || !args)
 		return empty;
 
 	print_args((string []){"Request: ", args[0], " ", args[1], " ", args[2], "\n", NULL});
+	pfree_array((array)args);
 
-	string _body = allocate(0, 4096);
-	// r.headers = init_map();
+	r.body = allocate(0, 4096);
+	r.headers = init_map();
 	int stop_headers = 0;
 	int i = 0;
 	for(i = 1; i < argc; i++)
 	{
-		string line = lines[i];
+		string line = r.lines[i];
 		if(!line) break;
 
 		if(line[1] == '\0') {
@@ -62,23 +63,30 @@ cwr_t parse_request(string req)
 			line[pos] ='\0';
 
 			string value = line + pos + 2;
-			_printf("Key: %s | Value: %s\n", key, value);
-
+			map_append(r.headers, key, value);
 			continue;
 		}
 
-		str_append(_body, line);
-		_pfree(line);
+		str_append(r.body, line);
 	}
 
+	_printf("Body: \n%s\n", r.body);
+	if(r.headers->len > 0)
+		return r;
 
-	pfree(lines, 0);
-	pfree_array((array)args);
-	_printf("Body: \n%s\n", _body);
-
-	/* Temporary */
-	_pfree(_body);
 	return empty;
+}
+
+void req_destruct(cwr_t *r)
+{
+	if(r->body)
+		_pfree(r->body);
+
+	if(r->headers)
+		map_destruct(r->headers);
+
+	if(r->lines)
+		pfree_array((array)r->lines);
 }
 
 public int entry()
@@ -104,9 +112,11 @@ public int entry()
 		int bytes = __get_size__(buff);
 		_printf("Size: %d\n", (ptr)&bytes);
 
-		parse_request(buff);
+		cwr_t r = parse_request(buff);
+		req_destruct(&r);
 
 		sock_write(client, HTTP_DATA);
+
 		pfree(buff, 1);
 		sock_close(client);
 	}
