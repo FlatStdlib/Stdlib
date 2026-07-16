@@ -13,15 +13,35 @@ typedef struct {
 	map_t 	GET;		// GET Params
 	map_t 	POST;		// POST Params/Data
 
-	string 	body;	// Request Body (Holding POST data)
+	string 	body;		// Request Body (Holding POST data)
 	sArr 	lines;
 } cwr_t;
 
+typedef struct {
+	sock_t	con;
+} cws_t;
+
 cwr_t parse_request(string req)
 {
-	cwr_t r = {}, empty = {};
+	cwr_t r, empty = {};
+	memzero(&r, sizeof(cwr_t));
+
 	if(!req)
 		return empty;
+
+	if(mem_cmp(req, "GET ", 4))
+	{
+
+	} else if(mem_cmp(req, "POST ", 5))
+	{
+
+	} else if(mem_cmp(req, "HEAD ", 5))
+	{
+
+	} else {
+		println("Malformed Request");
+		return empty;
+	}
 
 	i32 argc = 0;
 	sArr lines = split_string(req, '\n', &argc);
@@ -34,14 +54,10 @@ cwr_t parse_request(string req)
 	if(arg_c < 3 || !args)
 		return empty;
 
-	if(str_contains(args[0], "GET"))
-	{
-
-	} else if(str_contains(args[0], "POST"))
 	print_args((string []){"Request: ", args[0], " ", args[1], " ", args[2], "\n", NULL});
 
 	string _body = allocate(0, 4096);
-	headers = init_map();
+	r.headers = init_map();
 	int stop_headers = 0;
 	int i = 0;
 	for(i = 1; i < argc; i++)
@@ -65,6 +81,7 @@ cwr_t parse_request(string req)
 
 			string value = line + pos + 2;
 			_printf("Key: %s | Value: %s\n", key, value);
+			map_append(r.headers, key, value);
 
 			continue;
 		}
@@ -76,6 +93,10 @@ cwr_t parse_request(string req)
 	pfree(lines, 0);
 	pfree_array((array)args);
 	_printf("Body: \n%s\n", _body);
+
+	if(r.headers->len > 0)
+		return r;
+
 	return empty;
 }
 
