@@ -11,8 +11,9 @@ public sock_t listen_tcp(const string ip, int port, int concurrent)
 
     /* reuse address */
     int reuse = 1;
+    int preuse = 1;
     long cc = __syscall__(sock, SOL_SOCKET, SO_REUSEADDR, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
-    __syscall__(sock, SOL_SOCKET, 15, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
+    __syscall__(sock, SOL_SOCKET, 15, (long)&preuse, sizeof(preuse), 0, _SYS_SETSOCKOPT);
     //if (cc < 0)
 	//	fsl_panic("unable to reuse addr...!");
 

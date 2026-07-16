@@ -4,33 +4,42 @@ string HTTP_DATA = "HTTP/1.1 200 OK\r\n"
 					"Content-type: html\r\n"
 					"Content-length: 15\r\n\r\nHello World\r\n\r\n";
 
+
+map_t headers;
+
 void parse_request(string req)
 {
 	if(!req)
 		return;
 
 	i32 argc = 0;
-	sArr lines = split_lines(req, &argc);
+	sArr lines = split_string(req, '\n', &argc);
 	if(argc <= 1 || !lines)
 		return;
 
+	_printf("Lines: %d\n", (ptr)&argc);
 	i32 arg_c = 0;
 	sArr args = split_string(lines[0], ' ', &arg_c);
-
 	if(arg_c < 3 || !args)
 		return;
 
-	print_args((string []){args[0], " ", args[1], " ", args[2], " ", NULL});
+	print_args((string []){"Request: ", args[0], " ", args[1], " ", args[2], "\n", NULL});
 
-	map_t headers = init_map();
-	string body = allocate(0, 1024);
+	string _body = allocate(0, 4096);
+	headers = init_map();
 	int stop_headers = 0;
-	for(int i = 1; i < argc; i++)
+	int i = 0;
+	for(i = 1; i < argc; i++)
 	{
 		string line = lines[i];
+		if(!line) break;
+		i32 sz = __get_size__(line);
 
-		if(line[i] == ' ' && line[i + 1] == ' ')
+//		_printf("[%d] %d:%d | %s\n", (ptr)&i, (ptr)&sz, (ptr)&stop_headers, line);
+		if(line[1] == '\0') {
 			stop_headers = 1;
+			continue;
+		}
 
 		if(!stop_headers)
 		{
@@ -46,15 +55,19 @@ void parse_request(string req)
 			continue;
 		}
 
-		str_append(body, line);
+		str_append(_body, line);
+		_pfree(line);
 	}
 
-	pfree_array((array)lines);
-	_printf("Body: \n%s\n", body);
+	_printf("Body: \n%s\n", _body);
 }
 
 public int entry()
 {
+	uninit_mem();
+	set_heap_sz(_HEAP_PAGE_ * 5);
+	init_mem();
+
 	sock_t n = listen_tcp(NULL, 80, 999);
 	if(n->fd <= 0)
 		fsl_panic("Unable to create socket...");
@@ -65,10 +78,13 @@ public int entry()
 		sock_t client = sock_accept(n, 1024);
 
 		string buff = sock_read(client);
-		print(buff);
-		parse_request(buff);
-		sock_write(client, HTTP_DATA);
+		int bytes = __get_size__(buff);
+		_printf("Size: %d\n", (ptr)&bytes);
 
+		parse_request(buff);
+
+		sock_write(client, HTTP_DATA);
+		pfree(buff, 1);
 		sock_close(client);
 	}
 	return 0;

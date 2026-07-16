@@ -29,18 +29,18 @@ public bool map_append(map_t map, string key, string value)
 	return true;
 }
 
-public string find_key(map_t map, string key)
+public int find_key(map_t map, string key)
 {
 	if(!map || !key)
-		return NULL;
+		return -1;
 
 	for(int i = 0; i < map->len; i++)
 	{
 		if(mem_cmp(map->fields[i]->key, key, str_len(key)))
-			return map->fields[i]->value;
+			return i;
 	}
 
-	return NULL;
+	return -1;
 }
 
 public fn field_destruct(field_t field)
