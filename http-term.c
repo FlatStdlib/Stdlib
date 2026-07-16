@@ -7,22 +7,37 @@ string HTTP_DATA = "HTTP/1.1 200 OK\r\n"
 
 map_t headers;
 
-void parse_request(string req)
+typedef struct {
+	map_t 	headers;	// Header(s) map
+	map_t 	cookies;	// Cookie(s) map
+	map_t 	GET;		// GET Params
+	map_t 	POST;		// POST Params/Data
+
+	string 	body;	// Request Body (Holding POST data)
+	sArr 	lines;
+} cwr_t;
+
+cwr_t parse_request(string req)
 {
+	cwr_t r = {}, empty = {};
 	if(!req)
-		return;
+		return empty;
 
 	i32 argc = 0;
 	sArr lines = split_string(req, '\n', &argc);
 	if(argc <= 1 || !lines)
-		return;
+		return empty;
 
 	_printf("Lines: %d\n", (ptr)&argc);
 	i32 arg_c = 0;
 	sArr args = split_string(lines[0], ' ', &arg_c);
 	if(arg_c < 3 || !args)
-		return;
+		return empty;
 
+	if(str_contains(args[0], "GET"))
+	{
+
+	} else if(str_contains(args[0], "POST"))
 	print_args((string []){"Request: ", args[0], " ", args[1], " ", args[2], "\n", NULL});
 
 	string _body = allocate(0, 4096);
@@ -50,6 +65,7 @@ void parse_request(string req)
 
 			string value = line + pos + 2;
 			_printf("Key: %s | Value: %s\n", key, value);
+
 			continue;
 		}
 
@@ -60,6 +76,7 @@ void parse_request(string req)
 	pfree(lines, 0);
 	pfree_array((array)args);
 	_printf("Body: \n%s\n", _body);
+	return empty;
 }
 
 public int entry()

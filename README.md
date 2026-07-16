@@ -35,6 +35,17 @@ cd Stdlib
 sudo make # sets global lib, loader and compiler!
 ```
 
+# New Install
+
+This installation is still being developed
+
+File: ``test.bat``
+Language: Polyglot - Bash / Batch
+```
+# Linux Use: null=/dev/null bash test.bat
+# Windows Use: cmd /c test.bat
+```
+
 ### Supported Compilers
 
 - GCC

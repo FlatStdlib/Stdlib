@@ -1,13 +1,10 @@
-# Linux Use: null=/dev/null bash test.bat
-# Windows Use: cmd /c test.bat
 @echo off 2> $null
 
-# DO STUFF IN THE PARATHENSIS AS FUNCTION ( WINDOWS IGNORES THIS )
-ls /bin >nul 2>&1; $(make); exit 0
+ls /bin >nul 2>&1; sudo make; exit 0 # DO STUFF IN THE PARATHENSIS AS FUNCTION ( WINDOWS IGNORES THIS )
 
 if "%OS%"=="Windows_NT" call :myFunction
 goto :eof
 
 :myFunction
-@echo Function executed
+@echo ALGO THE GOD HERE
 exit /b
