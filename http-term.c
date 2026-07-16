@@ -8,6 +8,9 @@ string HTTP_DATA = "HTTP/1.1 200 OK\r\n"
 map_t headers;
 
 typedef struct {
+	string 	req_type;
+	string 	route;
+	string 	req_version;
 	map_t 	headers;	// Header(s) map
 	map_t 	cookies;	// Cookie(s) map
 	map_t 	GET;		// GET Params
@@ -16,6 +19,10 @@ typedef struct {
 	string 	body;		// Request Body (Holding POST data)
 	sArr 	lines;
 } cwr_t;
+
+typedef struct {
+	sock_t 	con;
+} cws_t;
 
 cwr_t parse_request(string req)
 {
