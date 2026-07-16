@@ -1,3 +1,6 @@
+/*
+    Windows TEST
+*/
 #include <windows.h>
 #define ID_BTN 1
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
