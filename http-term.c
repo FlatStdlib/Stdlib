@@ -4,9 +4,6 @@ string HTTP_DATA = "HTTP/1.1 200 OK\r\n"
 					"Content-type: html\r\n"
 					"Content-length: 13\r\n\r\nHello World\r\n";
 
-
-map_t headers;
-
 typedef struct {
 	string 	req_type;
 	string 	route;
@@ -21,7 +18,17 @@ typedef struct {
 } cwr_t;
 
 typedef struct {
-	sock_t 	con;
+	string name;
+	string route;
+	// req_t type; 		// Acceptable request types
+	string content; 	// Loaded Content - Editable
+} route_t;
+
+typedef route_t **router_t;
+
+typedef struct {
+	sock_t 		con;
+	router_t 	router;
 } cws_t;
 
 cwr_t parse_request(string req)
