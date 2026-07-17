@@ -69,6 +69,9 @@ static void __execute(char *app, char **args)
 	}
 }
 
+bool validate_c_file(string q, int sz)
+{ return (q[sz - 2] == '.' && q[sz - 1] == 'c'); }
+
 char BUILD_COMMAND[2048];
 char LINK_COMMAND[2048];
 public int entry(int argc, string argv[])
@@ -79,7 +82,6 @@ public int entry(int argc, string argv[])
         return 1;
     }
 
-    string *args = argv;
     memzero(BUILD_COMMAND, 2048);
     
     /* Add Default Command */
@@ -88,51 +90,39 @@ public int entry(int argc, string argv[])
     string executable[50];
     memzero(executable, 50);
 
-    if(mem_cmp(args[1], "-o", 2)) // fsl -o final script.c
-    {
-        int sz = str_len(args[3]);
-        if(args[3][sz - 2] != '.' || args[3][sz - 1] != 'c')
-        {
-            println("Invalid C Script provided!");
-            return 1;
-        }
-        mem_cpy(executable, argv[2], str_len(argv[2]));
-        for(int i = 1; i < 4; i++) str_append(BUILD_COMMAND, argv[i]), str_append(BUILD_COMMAND, " ");
-        args += 2;
-    } else if(mem_cmp(args[2], "-o", 2)) // fsl script.c -o final
-    {
-        int sz = str_len(args[1]);
-        if(args[1][sz - 2] != '.' || args[1][sz - 1] != 'c')
-        {
-            println("Invalid C Script provided!");
-            return 1;
-        }
-        mem_cpy(executable, argv[3], str_len(argv[3]));
-        for(int i = 1; i < 4; i++) str_append(BUILD_COMMAND, argv[i]), str_append(BUILD_COMMAND, " ");
-        args += 2;
-    } else {
-        args += 1;
-    }
+    char *C_FILES[1024];
+    int _c_files = 0;
 
     /* Iterate Command Arguments */
-    int cflags = 0;
-    for(int i = 0; i < argc - 2; i++)
+    int cflags = 0, exec = 0;
+    for(int i = 0; i < argc; i++)
     {
-        int sz = str_len(args[i]);
-        if(args[i][sz - 2] == '.' && args[i][sz - 1] == 'c')
+        int sz = str_len(argv[i]);
+        if(validate_c_file(argv[i], sz))
         {
-            println(args[i]);
-            str_append(BUILD_COMMAND, args[i]), str_append(BUILD_COMMAND, " ");
+            str_append(BUILD_COMMAND, argv[i]), str_append(BUILD_COMMAND, " ");
+            C_FILES[_c_files] = argv[i];
+            C_FILES[_c_files][sz - 1] = 'o';
+            _c_files++;
         }
 
-        if(mem_cmp(args[i], "--cflags", 8))
+        if(mem_cmp(argv[i], "-o", 2))
+            exec = i + 1;
+
+        if(mem_cmp(argv[i], "--cflags", 8))
             cflags = i + 1;
     }
 
-    array p = (array)args + cflags;
-    str_join(BUILD_COMMAND, p, ' ');
+    /* Add C Flags Upon --cflags */
+    if(cflags > 0)
+    {
+        array p = (array)argv + cflags;
+        str_join(BUILD_COMMAND, p, ' ');
+    }
+
     BUILD_COMMAND[str_len(BUILD_COMMAND) - 1] = '\0';
 
+    /* Compilation Arguments */
     int cmd_argc = 0;
     sArr cmd_args = split_string(BUILD_COMMAND, ' ', &cmd_argc);
 
@@ -143,8 +133,9 @@ public int entry(int argc, string argv[])
     }
 
     __execute(cmd_args[0], cmd_args);
-    /* Detect Object File Request '-c' */
-    if(array_contains_str((array)args, "-c") > -1)
+
+    /* Exit Upon Object File Flag Request '-c' */
+    if(array_contains_str((array)argv, "-c") > -1)
     {
         println("[ + ] Object File Created");
         return 1;
