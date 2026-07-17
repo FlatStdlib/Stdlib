@@ -106,10 +106,10 @@ public int entry(int argc, string argv[])
             _c_files++;
         }
 
-        if(mem_cmp(argv[i], "-o", 2))
+        if(str_cmp(argv[i], "-o"))
             exec = i + 1;
 
-        if(mem_cmp(argv[i], "--cflags", 8))
+        if(str_cmp(argv[i], "--cflags"))
             cflags = i + 1;
     }
 
