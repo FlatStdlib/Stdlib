@@ -174,7 +174,7 @@ public string str_dup(const string buff)
 public len_t str_len(const string buffer)
 {
 	if(__get_meta__(buffer)->id == 0x7C)
-		return __get_size__(buffer);
+		return __get_size__(buffer) - 1;
 
 	return _str_len(buffer);
 }

@@ -106,7 +106,7 @@ public int array_contains_str(array arr, string needle)
         return -1;
 
     for(int i = 0; arr[i] != 0; i++)
-        if(mem_cmp(arr[i], needle, str_len(arr[i])))
+        if(str_cmp(arr[i], needle))
             return i;
 
     return -1;
