@@ -165,19 +165,24 @@ public fn str_append_int(string dest, int num)
 
 public string str_dup(const string buff)
 {
-	int len = str_len(buff);
+	if(!buff)
+		return NULL;
 
-	string buffer = (string)allocate(0, len + 1);
-	mem_cpy(buffer, buff, len);
-
-	buffer[len] = '\0';
-	return buffer;
+	return to_heap(buff, str_len(buff));
 }
 
 public len_t str_len(const string buffer)
 {
+	if(__get_meta__(buffer)->id == 0x7C)
+		return __get_size__(buffer);
+
+	return _str_len(buffer);
+}
+
+public len_t _str_len(const string buffer)
+{
 	if (!buffer)
-		return 0;
+		return -1;
 
 	len_t count = 0;
 	for (len_t i = 0; buffer[i] != '\0'; i++)
@@ -190,12 +195,7 @@ public bool str_cmp(const string src, const string needle)
 {
 	if (!src || !needle) return false;
 
-	if(__get_meta__(src)->id == 0x7C)
-		return mem_cmp(src, needle, __get_size__(src));
-	else
-		return mem_cmp(src, needle, str_len(src));
-
-	return false;
+	return mem_cmp(src, needle, str_len(src));
 }
 
 public bool str_append_array(string buff, const array arr)
@@ -375,31 +375,32 @@ public sArr split_string(const string buffer, const char ch, int* idx)
 	return NULL;
 }
 
-public string get_sub_str(const string buffer, int start, int end)
+public bool get_sub_str(const string buffer, int start, int end, char *dest)
 {
-	int len = end - start;
-    string buff = allocate(0, end + 1);
-
-	int idx = 0;
+	if(!buffer)
+		return -1;
+		
+	int len = end - start, idx = 0;
     for(int i = 0; buffer[i] != '\0'; i++) {
     	if(i >= start && i <= end) {
-    		buff[idx++] = buffer[i];
+    		dest[idx++] = buffer[i];
 		}
 	}
 
-	buff[idx] = '\0';
-	return buff;
+	dest[idx] = '\0';
+	return 0;
 }
 
-public string get_substr_upto(const string buffer, char ch)
+public bool get_substr_upto(const string buffer, char ch, char *dest)
 {
+	if(!buffer)
+		return false;
+
     int pos = find_char(buffer, ch);
-
-    string buff = allocate(0, pos + 1);
     for(int i = 0; i < pos; i++)
-        buff[i] = buffer[i];
+        dest[i] = buffer[i];
 
-    return buff;
+    return true;
 }
 
 public bool is_number(string buffer)
@@ -438,18 +439,17 @@ public fn byte_to_hex(u8 byte, string out) {
     out[2] = '\0';
 }
 
-public string string_reverse(string buffer)
+public bool string_reverse(string buffer, char *dest)
 {
 	if(!buffer)
-		return NULL;
+		return false;
 
 	int len = str_len(buffer);
-	string a = allocate(0, len + 1);
 	for(int i = len - 1, c = 0; c < len; i--, c++) {
-		a[c] = buffer[i];
+		dest[c] = buffer[i];
 	}
 
-	return a;
+	return true;
 }
 
 public bool str_startswith(string buffer, string needle)
@@ -499,16 +499,9 @@ public bool str_strip_idx_to_end(string buff, int idx)
 	if(!buff || idx == '\0')
 		return false;
 
-	int len = 0;
-	if(__get_meta__(buff)->id == 0x7C)
-		len = __get_size__(buff);
-	else
-		len = str_len(buff);
-
+	int len = str_len(buff);
 	for(int i = idx; i < len; i++)
-	{
 		buff[i] = '\0';
-	}
 
 	return true;
 }
@@ -517,12 +510,7 @@ public bool str_strip_start_to_idx(string buff, int idx)
 {	if(!buff || idx == '\0')
 		return false;
 
-	int len = 0;
-	if(__get_meta__(buff)->id == 0x7C)
-		len = __get_size__(buff);
-	else
-		len = str_len(buff);
-
+	int len = str_len(buff);
 	if(idx > len)
 		return false;
 
@@ -618,17 +606,17 @@ string float_to_str(double n, char *out, int precision)
     out[i] = '\0';
 }
 
-public string str_remove_substr_idx(string buffer, int start, int end)
+public bool str_remove_substr_idx(string buffer, int start, int end)
 {
 	if(!buffer)
-		return NULL;
+		return false;
 
 	if(start >= end)
-		return NULL;
+		return false;
 
 	int len = str_len(buffer);
 	int new_len = len - (end - start);
-	string n = allocate(0, new_len);
+	char n[new_len];
 	for(int i = 0; i < len; i++)
 	{
 		if(i > start || i < end)
@@ -637,5 +625,7 @@ public string str_remove_substr_idx(string buffer, int start, int end)
 		n[i] = buffer[i];
 	}
 
-	return n;
+	n[new_len] = '\0';
+	mem_cpy(buffer, n, new_len);
+	return true;
 }

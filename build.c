@@ -45,7 +45,19 @@ const string FILES[] = {
     NULL
 };
 
-int entry()
+char BUILD_COMMAND[2048];
+public int entry(int argc, string argv[])
 {
+    if(argc < 3)
+    {
+        _printf("[ x ] Error, Invalid arguments provided\nUsage: %s <input_file> <opt> <output_file>", argv[0]);
+        return 1;
+    }
+
+    memzero(BUILD_COMMAND, 2048);
+
+    /* Add Default Command */
+    str_join(BUILD_COMMAND, (array)FLAGS, ' ');
+    println(BUILD_COMMAND);
     return 0;
 }

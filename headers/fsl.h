@@ -446,6 +446,8 @@ int 	get_args(char* argv[]);
 	public bool		is_str_ascii(string query);
 	public fn 		_sprintf(string buffer, string format, any* args);
 	public fn 		str_append_int(string dest, int num);
+	public len_t 	str_len(const string buffer);
+	public len_t 	_str_len(const string buffer);
 	public len_t 	str_len(string buffer);
 	public string 	str_dup(const string buffer);
 	public bool 	str_append_array(string buff, const array arr);
@@ -454,8 +456,8 @@ int 	get_args(char* argv[]);
 	public pos_t 	find_string(const string buff, const string needle);
 	public sArr 	split_lines(const string buffer, int* idx);
 	public sArr 	split_string(const string buffer, const char ch, int* idx);
-	public string 	get_sub_str(const string buffer, int start, int end);
-	public string 	get_substr_upto(const string buffer, char ch);
+	public bool 	get_sub_str(const string buffer, int start, int end, char *dest);
+	public bool 	get_substr_upto(const string buffer, char ch, char *dest);
 	public bool 	is_number(string buffer);
 	public bool 	is_empty(string buffer);
 	public bool 	str_startswith(string buffer, string needle);
@@ -463,13 +465,13 @@ int 	get_args(char* argv[]);
 	public bool 	str_strip_idx_to_end(string buff, int idx);
 	public bool 	str_strip_start_to_idx(string buff, int idx);
 	public fn 		byte_to_hex(u8 byte, string out);
-	public string 	string_reverse(string buffer);
+	public bool 	string_reverse(string buffer, char *dest);
 	public bool 	str_join(string buffer, array arr, const char delim);
 	public bool 	is_str_lowercase(string buffer);
 	public bool 	is_str_uppercase(string buffer);
 	public bool 	str_strip(string buffer);
 	public string 	float_to_str(double n, char *out, int precision);
-	public string 	str_remove_substr_idx(string buffer, int start, int end);
+	public bool 	str_remove_substr_idx(string buffer, int start, int end);
 #endif
 
 #ifdef _FSL_ARR_H

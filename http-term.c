@@ -274,7 +274,10 @@ cwr_t parse_request(string req, int sz)
 	return empty;
 }
 
-
+void send_response(StatusCode c0de, map_t headers, map_t cookies, string body)
+{
+	
+}
 
 void req_destruct(cwr_t *r)
 {
