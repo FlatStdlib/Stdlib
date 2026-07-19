@@ -274,9 +274,37 @@ cwr_t parse_request(string req, int sz)
 	return empty;
 }
 
-void send_response(StatusCode c0de, map_t headers, map_t cookies, string body)
+void send_response(sock_t sock, StatusCode c0de, map_t headers, map_t cookies, string body)
 {
-	
+	string response = allocate(0, 4096);
+	str_append(response, "HTTP/1.1 ");
+
+	str_append_int(response, c0de);
+	str_append(response, " ");
+	str_append(response, code_2_str(c0de));
+	str_append(response, "\r\n");
+
+	if(headers->len > 0)
+	{
+		for(int i = 0; i < headers->len; i++)
+		{
+			str_append(response, headers->fields[i]->key);
+			str_append(response, ": ");
+			str_append(response, headers->fields[i]->value);
+			str_append(response, "\r\n");
+		}
+
+		str_append(response, "\r\n");
+	}
+
+	if(body)
+	{
+		str_append(response, body);
+		str_append(response, "\r\n");
+	}
+
+	if(__syscall__(sock->fd, (long)response, _str_len(response), -1, -1, -1, _SYS_WRITE) <= 0)
+		println("Error, Failed to send data to client request!");
 }
 
 void req_destruct(cwr_t *r)
@@ -287,8 +315,8 @@ void req_destruct(cwr_t *r)
 	if(r->headers)
 		map_destruct(r->headers);
 
-	if(r->lines)
-		pfree_array((array)r->lines);
+//	if(r->lines)
+//		pfree_array((array)r->lines);
 }
 
 public int entry()
@@ -315,9 +343,16 @@ public int entry()
 		_printf("Size: %d\n", (ptr)&bytes);
 
 		cwr_t r = parse_request(buff, bytes);
-		req_destruct(&r);
+		if(!r.headers) {
+			_pfree(buff);
+			continue;
+		}
 
-		sock_write(client, HTTP_DATA);
+		map_t m = init_map();
+		map_append(m, "Content-type", "text/html");
+		map_append(m, "Content-length", "13");
+		send_response(client, OK, m, NULL, "Hello World");
+		req_destruct(&r);
 
 		pfree(buff, 1);
 		sock_close(client);

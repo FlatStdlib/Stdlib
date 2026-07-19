@@ -657,6 +657,11 @@ int 	get_args(char* argv[]);
 	// #define CLONE_PARENT_SETTID         0x00100000
 	// #define CLONE_CHILD_SETTID          0x01000000
 	// #define CLONE_CHILD_CLEARTID        0x00200000
+	struct stack_head {
+    	void (*entry)(struct stack_head *);
+    	int join_futex;
+	} __attribute__((aligned(16)));
+
 
 	typedef struct
 	{
@@ -704,7 +709,7 @@ int 	get_args(char* argv[]);
 	public fn 			start_thread(thread t);
 	public fn			thread_kill(thread_t t);
 
-	_thread_ 			init_thread(handler_t fn, ptr p, bool s, bool wait);
+	public thread 		init_thread(ptr (*fn)(), ptr arg);
 	public bool 		_run_thread(_thread_ *t, bool pass_thr_arg);
 	public fn 			_thread_kill(_thread_ *t, handler_t destructor, bool kill_in_thr);
 #endif

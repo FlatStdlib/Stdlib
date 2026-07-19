@@ -59,5 +59,5 @@ public fn map_destruct(map_t map)
 	for(int i = 0; i < map->len; i++)
 		field_destruct(map->fields[i]);
 
-	pfree(map, 1);
+	pfree(map, 0);
 }

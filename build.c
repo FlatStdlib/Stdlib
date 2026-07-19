@@ -17,7 +17,7 @@ string FSL_STDLIBS[] = {
 const string COMPILER_FLAGS[] = {
     "/usr/bin/gcc",
     "-ffunction-sections",
-    "-fdata-sections",  
+    "-fdata-sections",
     "-Wl,--gc-sections",
     "-nostdlib",
     "-ffreestanding",
@@ -138,7 +138,7 @@ public int entry(int argc, string argv[])
     if(array_contains_str((array)argv, "-c") > -1)
     {
         println("[ + ] Object File Created");
-        return 1;
+        return 0;
     }
 
     _printf("'%s'\n", BUILD_COMMAND);

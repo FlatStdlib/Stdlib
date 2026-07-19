@@ -1,3 +1,17 @@
+/*
+	[Stdlib] $ gcc -m32 -nostdlib -fomit-frame-pointer -fno-stack-protector mode.c -o t.o -c
+	[Stdlib] $ ld -m elf_i386 t.o -o t
+	[Stdlib] $ ./t
+	test
+	Sys: 4
+	Sys: 5
+	Sys: C
+	Sys: C
+	Sys: 3
+	Sys: 4
+	Sys: 6
+	[Stdlib] $ 
+*/
 #include <asm.h>
 
 int __FSL_DEBUG__ = 1;

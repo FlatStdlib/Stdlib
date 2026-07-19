@@ -41,12 +41,12 @@ public string int_to_str(int num)
 {
 	int temp = num, c = 0;
     char buff[150] = {0};
-	
+
 	if(num == 0) {
 		buff[0] = '0';
-		return to_heap(buff, 1);	
+		return to_heap(buff, 1);
 	}
-	
+
     while(temp)
     {
         buff[c++] = '0' + (temp % 10);
@@ -64,7 +64,7 @@ public string int_to_str(int num)
 	i++;
 	if(i != 150)
 		buff[i + 1] = '\0';
-		
+
 	return str_dup(buff);
 }
 
@@ -213,7 +213,7 @@ public bool str_append_array(string buff, const array arr)
 public bool str_append(string buff, const string sub) {
 	if (!buff || !sub) return false;
 
-	int idx = str_len(buff);
+	int idx = _str_len(buff);
 
 	for (int i = 0; sub[i] != '\0'; i++)
 		buff[idx++] = sub[i];
