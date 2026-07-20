@@ -657,23 +657,6 @@ int 	get_args(char* argv[]);
 	// #define CLONE_PARENT_SETTID         0x00100000
 	// #define CLONE_CHILD_SETTID          0x01000000
 	// #define CLONE_CHILD_CLEARTID        0x00200000
-	struct stack_head {
-    	void (*entry)(struct stack_head *);
-    	int join_futex;
-	} __attribute__((aligned(16)));
-
-
-	typedef struct
-	{
-		handler_t	fnc;
-		ptr			arg;
-		bool        shared;
-		bool		wait;
-		bool		running;
-		bool		completed;
-		i32			pid;
-		i32			ttid;
-	} _thread;
 
 	typedef struct 
 	{
@@ -686,8 +669,8 @@ int 	get_args(char* argv[]);
 		i32         pid;
 		i32         ttid;
 	} _thread_;
-	
-	typedef _thread 	thread;
+
+	typedef _thread_ 	thread;
 	typedef thread 		*thread_t;
 	typedef thread 		**threads_t;
 
@@ -698,20 +681,6 @@ int 	get_args(char* argv[]);
 		bool		running;
 		i32 		pid;
 	} gthread;
-
-	public gthread 		*init_thread_group();
-	public bool 		thread_append(gthread *gt, thread *t);
-	public fn 			pool_run(gthread *gt);
-
-	public bool 		run_thread(thread *t, int wait);
-
-	public thread 		create_thread(handler_t fnc, ptr p, int wait);
-	public fn 			start_thread(thread t);
-	public fn			thread_kill(thread_t t);
-
-	public thread 		init_thread(ptr (*fn)(), ptr arg);
-	public bool 		_run_thread(_thread_ *t, bool pass_thr_arg);
-	public fn 			_thread_kill(_thread_ *t, handler_t destructor, bool kill_in_thr);
 #endif
 
 /*
