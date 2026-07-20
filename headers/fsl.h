@@ -648,15 +648,15 @@ int 	get_args(char* argv[]);
 */
 #ifdef _FSL_THREAD_H
 	/* CLONE FLAGS */
-	// #define CLONE_VM                    0x00000100
-	// #define CLONE_FS                    0x00000200
-	// #define CLONE_FILES                 0x00000400
-	// #define CLONE_SIGHAND               0x00000800
-	// #define CLONE_THREAD                0x00008000
-	// #define CLONE_SYSVSEM               0x00004000
-	// #define CLONE_PARENT_SETTID         0x00100000
-	// #define CLONE_CHILD_SETTID          0x01000000
-	// #define CLONE_CHILD_CLEARTID        0x00200000
+	#define CLONE_VM                    0x00000100
+	#define CLONE_FS                    0x00000200
+	#define CLONE_FILES                 0x00000400
+	#define CLONE_SIGHAND               0x00000800
+	#define CLONE_THREAD                0x00008000
+	#define CLONE_SYSVSEM               0x00004000
+	#define CLONE_PARENT_SETTID         0x00100000
+	#define CLONE_CHILD_SETTID          0x01000000
+	#define CLONE_CHILD_CLEARTID        0x00200000
 
 	typedef struct 
 	{
@@ -681,6 +681,8 @@ int 	get_args(char* argv[]);
 		bool		running;
 		i32 		pid;
 	} gthread;
+	
+	long _start_thread(void (*fn)(void *), void *arg);
 #endif
 
 /*

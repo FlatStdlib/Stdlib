@@ -1,3 +1,8 @@
+/* 
+    fsl-gcc chain compiler v1.5 (Production Rewrite)
+
+    Original repo; https://github.com/FlatStdlib/fsl
+*/
 #include <fsl.h>
 
 extern i32 __ARGC__;
