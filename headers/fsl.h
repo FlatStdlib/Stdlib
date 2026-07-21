@@ -344,7 +344,8 @@ int 	get_args(char* argv[]);
 */
 #ifdef _FSL_ALLOCATOR_H
 	#if defined(_C_MALLOC_ALTERNATIVE)
-		#define malloc allocate
+		#define malloc(n) \
+			allocate(0, n)
 	#endif
 
 	// #define PROT_READ   	0x1
@@ -658,6 +659,11 @@ int 	get_args(char* argv[]);
 	#define CLONE_CHILD_SETTID          0x01000000
 	#define CLONE_CHILD_CLEARTID        0x00200000
 
+	typedef struct {
+		void (*fn)(void *);
+		void *arg;
+	} thread_ctx;
+
 	typedef struct 
 	{
 		handler_t   fnc;
@@ -682,7 +688,7 @@ int 	get_args(char* argv[]);
 		i32 		pid;
 	} gthread;
 	
-	long _start_thread(void (*fn)(void *), void *arg);
+	long run_thread(void *fnc, void *arg);
 #endif
 
 /*

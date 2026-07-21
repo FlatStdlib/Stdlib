@@ -3,7 +3,7 @@
 #define SYSCALL_REG "rax"
 #define EXECUTE_SYSCALL "syscall"
 
-/* x86_64 C-ABIV Calling Convension */
+/* x86_64 Registers */
 #define __RAX__                 "rax"
 #define __RDI__                 "rdi"
 #define __RSI__                 "rsi"

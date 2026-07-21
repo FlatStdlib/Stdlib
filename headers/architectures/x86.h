@@ -3,7 +3,7 @@
 #define SYSCALL_REG "eax"
 #define EXECUTE_SYSCALL "int $0x80"
 
-// C-ABIV Calling Conventions
+// C-ABI Registers
 #define __EAX__ "eax"
 #define __EBX__ "ebx"
 #define __ECX__ "ecx"
