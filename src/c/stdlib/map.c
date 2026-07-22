@@ -29,6 +29,17 @@ public bool map_append(map_t map, string key, string value)
 	return true;
 }
 
+public bool map_append_field(map_t map, field_t field)
+{
+	if(!map || !field)
+		return false;
+
+	map->fields[map->len++] = field;
+	map->fields = reallocate(map->fields, sizeof(_field) * (map->len + 1));
+
+	return true;
+}
+
 public int find_key(map_t map, string key)
 {
 	if(!map || !key)

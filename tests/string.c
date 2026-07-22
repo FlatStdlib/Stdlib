@@ -51,10 +51,12 @@ int entry()
     str_join(data, (array)arr_test, ' ');
     _printf("str_join(): '%s'\n", data);
 
-    string sub = get_sub_str(data, pos, DATA_LEN - 1);
+    string sub = allocate(0, str_len(data));
+    get_sub_str(data, pos, DATA_LEN, sub);
     _printf("Substr: %s\n", sub);
 
-    string rev = string_reverse(data);
-    print("string_reverse(): "), println(rev);
+    string rev = allocate(0, str_len(data));
+    if(string_reverse(data, rev))
+        print("string_reverse(): "), println(rev);
     return 0;
 }

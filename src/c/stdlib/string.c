@@ -397,6 +397,9 @@ public bool get_substr_upto(const string buffer, char ch, char *dest)
 		return false;
 
     int pos = find_char(buffer, ch);
+	if(pos == -1)
+		return false;
+		
     for(int i = 0; i < pos; i++)
         dest[i] = buffer[i];
 
@@ -628,4 +631,17 @@ public bool str_remove_substr_idx(string buffer, int start, int end)
 	n[new_len] = '\0';
 	mem_cpy(buffer, n, new_len);
 	return true;
+}
+
+public bool str_insert_char(string buffer, char ch, int pos)
+{
+	if(!buffer)
+		return false;
+
+	int len = str_len(buffer) + 1;
+	buffer = reallocate(buffer, len);
+	for(int i = 0; i < len; i++)
+	{
+		
+	}
 }

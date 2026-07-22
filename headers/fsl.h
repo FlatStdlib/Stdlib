@@ -510,6 +510,7 @@ int 	get_args(char* argv[]);
 
 	public map_t 	init_map(void);
 	public bool 	map_append(map_t map, string key, string value);
+	public bool 	map_append_field(map_t map, field_t field);
 	public int 		find_key(map_t map, string key);
 	public fn 		field_destruct(field_t field);
 	public fn 		map_destruct(map_t map);
