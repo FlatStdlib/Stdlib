@@ -62,7 +62,7 @@ public fn _printi_(i32 num)
 		print("0");
 		return;
 	}
-	char BUFF[5] = {0};
+	char BUFF[8] = {0};
 	BUFF[0] = '0' + num;
 	print(BUFF);
 }
@@ -71,21 +71,23 @@ public fn _printi(int num)
 {
     int temp = num, c = 0;
     char buff[180] = {0};
+
     while(temp)
     {
         buff[c++] = '0' + (temp % 10);
         temp /= 10;
     }
 
-	int i;
-    for(i = 0; i < c; i++)
+    int i;
+    for(i = 0; i < c / 2; i++)
     {
-        char t = buff[i], n = buff[--c];
-        buff[i] = n;
-        buff[c] = t;
+        char t = buff[i];
+        buff[i] = buff[c - i - 1];
+        buff[c - i - 1] = t;
     }
 
-	print_sz(buff, i + 1);
+    buff[c] = '\0';
+    print_sz(buff, c);
 }
 
 public fn print(const string buff)

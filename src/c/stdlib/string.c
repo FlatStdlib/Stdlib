@@ -466,7 +466,6 @@ public bool str_startswith(string buffer, string needle)
 	if(slen > len)
 		return false;
     
-    int start = len - slen;
     for(int i = 0; i < slen; i++)
     {
         if(buffer[i] != needle[i])

@@ -628,6 +628,7 @@ int 	get_args(char* argv[]);
 		int			buff_len;
 	} _sock_t;
 
+	typedef i32 __sock_t;
 	typedef _sock_t sock;
 	typedef _sock_t *sock_t;
 

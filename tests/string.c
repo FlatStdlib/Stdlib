@@ -1,3 +1,5 @@
+
+// #define __MEM_LEAK_FINDER__
 #include <fsl.h>
 
 #define PRE_DATA "This is a test string...!"
@@ -5,6 +7,7 @@
 
 int entry()
 {
+    toggle_debug_mode();
     string data = allocate(0, 1024);
     
     /* str_append() */
