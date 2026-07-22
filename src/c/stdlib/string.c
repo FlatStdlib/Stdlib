@@ -316,10 +316,12 @@ public sArr split_lines(const string buffer, int* idx)
     	LINE[_len] = '\0';
     }
 
-    if (*idx > 0)
-    return arr;
+	arr[(*idx)++] = str_dup(LINE);
+	arr[*idx] = NULL;
+    if (*idx > 1)
+		return arr;
 
-	pfree(arr, 1);
+	pfree_array((array)arr);
 	return NULL;
 }
 
@@ -368,10 +370,10 @@ public sArr split_string(const string buffer, const char ch, int* idx)
 	
 	arr[(*idx)++] = str_dup(LINE);
 	arr[*idx] = NULL;
-	if (*idx > 0)
+	if (*idx > 1)
 		return arr;
 
-	pfree(arr, 1);
+	pfree_array((array)arr);
 	return NULL;
 }
 

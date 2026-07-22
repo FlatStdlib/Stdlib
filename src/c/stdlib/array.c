@@ -37,7 +37,7 @@ public array array_append(array arr, ptr p)
 	array new_arr = to_heap(arr, sizeof(void *) * (c + 1));
 	new_arr[c] = NULL;
 
-	pfree(arr, 1);
+	pfree_array((array)arr);
 	return new_arr;
 }
 
@@ -106,8 +106,9 @@ public int array_contains_str(array arr, string needle)
         return -1;
 
     for(int i = 0; arr[i] != 0; i++)
-        if(str_cmp(arr[i], needle))
-            return i;
+		if(arr[i])
+			if(str_cmp(arr[i], needle))
+				return i;
 
     return -1;
 }

@@ -136,8 +136,16 @@ public int __get_array_size__(any ptr)
 
 public fn pfree_array(array p)
 {
+    if(!p)
+        return;
+
+    __meta__ *m = __get_meta__(p);
+    if(m->id != 0x7C)
+        fsl_panic("Invalid heap pointer!");
+
 	for(int i = 0; p[i] != NULL; i++)
-		pfree(p[i], 1);
+        if(p[i])
+		    pfree(p[i], 1);
 }
 
 public fn _pfree(any ptr) { pfree(ptr, 1); }
@@ -146,6 +154,8 @@ public fn pfree(any ptr, int clean)
     if (!ptr) return;
 
     __meta__ *m = __get_meta__(ptr);
+    if(m->id != 0x7C)
+        fsl_panic("Invalid heap pointer!");
 
     int payload = m->size ? m->size * m->length : m->length;
     int total   = payload + HEAP_META_SZ;
@@ -190,7 +200,7 @@ public fn uninit_mem(void)
                 int sz = __get_size__(start + sizeof(int));
                 char ptr[100];
                 ptr_to_str(info, ptr);
-                
+
                 if(last[0] == '\0')
                     print("Pointer: "), print(ptr), print("Size: "), printi(sz), print(" | Data: "), println(start + sizeof(int));
             }

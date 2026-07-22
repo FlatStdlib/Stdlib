@@ -67,8 +67,13 @@ public fn field_destruct(field_t field)
 
 public fn map_destruct(map_t map)
 {
-	for(int i = 0; i < map->len; i++)
-		field_destruct(map->fields[i]);
+	if(map->fields)
+	{
+		for(int i = 0; i < map->len; i++)
+			field_destruct(map->fields[i]);
 
-	pfree(map, 0);
+		pfree(map->fields, 1);
+	}
+
+	pfree(map, 1);
 }
