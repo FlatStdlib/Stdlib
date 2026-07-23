@@ -18,10 +18,7 @@ long run_thread(void *fnc, void *arg)
 
     if(ret == 0)
     {
-        pid_t pid = __syscall__(0, 0, 0, 0, 0, 0, _SYS_GETPID);
-        _printf("Child: %d\n", (ptr)&pid);
-        
-        __syscall__(0, -1, -1, -1, -1, -1, _SYS_EXIT);
+        println("Child!");
     }
 
     return ret;

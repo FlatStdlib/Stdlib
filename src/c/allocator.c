@@ -189,7 +189,6 @@ public fn uninit_mem(void)
         int found = 0;
         for(int i = 0; start < last; i++, start++)
         {
-
             if(start[0] == 0x7C)
             {
                 if(found > 0)
