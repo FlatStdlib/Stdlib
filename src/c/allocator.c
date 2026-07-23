@@ -53,7 +53,7 @@ public fn init_mem(void) {
     // Clear the heap to mark all memory as free
     mem_set(_HEAP_, 1, _HEAP_PAGE_);
 
-    if (HEAP_DEBUG || __FSL_DEBUG__)
+    if (__FSL_DEBUG__)
         print("[ALLOCATOR]: Heap initialized!\n");
 }
 
@@ -97,7 +97,7 @@ public any allocate(int sz, int len) {
 
     used_mem += mem_needed;
 
-	if(HEAP_DEBUG || __FSL_DEBUG__)
+	if(__FSL_DEBUG__)
 	{
 		char buff[100];
 		ptr_to_str(ptr, buff);
@@ -113,9 +113,17 @@ public any reallocate(any p, int sz)
     any new_p = allocate(0, sz + 1);
     if(!new_p)
         fsl_panic("Segfault");
-        
-    mem_cpy(new_p, p, __get_size__(p));
+    
+    int n = __get_size__(p);
+    mem_cpy(new_p, p, n);
     pfree(p, 1);
+
+    if(__FSL_DEBUG__)
+	{
+		char buff[100];
+		ptr_to_str(__get_meta__(p), buff);
+		print("[ALLOCATOR]: Reallocated "), println(buff); print(" from "), printi(n), print(" to "), printi(sz), print(" "), println(buff);
+	}
 
     return new_p;
 }
@@ -160,7 +168,7 @@ public fn pfree(any ptr, int clean)
     int payload = m->size ? m->size * m->length : m->length;
     int total   = payload + HEAP_META_SZ;
 
-	if(HEAP_DEBUG || __FSL_DEBUG__)
+	if(__FSL_DEBUG__)
 	{
     	char buff[100];
     	ptr_to_str(m, buff);
@@ -179,35 +187,37 @@ public fn pfree(any ptr, int clean)
 #if !defined(_WIN32) && !defined(_WIN64)
 public fn uninit_mem(void)
 {
-	if(HEAP_DEBUG || __FSL_DEBUG__) {
+	if(__FSL_DEBUG__) {
 		println("[ALLOCATOR]: Uninitializing");
 
-        // #ifdef __MEM_LEAK_FINDER__
-        ((string)_HEAP_)[_HEAP_PAGE_ - 1] = '\0';
-        string start = (string)_HEAP_;
-        string last = (((string)_HEAP_) + _HEAP_PAGE_);
-        int found = 0;
-        for(int i = 0; start < last; i++, start++)
-        {
-            if(start[0] == 0x7C)
+        if(HEAP_DEBUG) {
+            // #ifdef __MEM_LEAK_FINDER__
+            ((string)_HEAP_)[_HEAP_PAGE_ - 1] = '\0';
+            string start = (string)_HEAP_;
+            string last = (((string)_HEAP_) + _HEAP_PAGE_);
+            int found = 0;
+            for(int i = 0; start < last; i++, start++)
             {
-                if(found > 0)
-                    println("================");
+                if(start[0] == 0x7C)
+                {
+                    if(found > 0)
+                        println("================");
 
-                found = 1;
-                println("Memory block leak found!");
-                __meta__ *info = (__meta__ *)((char *)start - (sizeof(int) + sizeof(size_t)));
+                    found = 1;
+                    println("Memory block leak found!");
+                    __meta__ *info = (__meta__ *)((char *)start - (sizeof(int) + sizeof(size_t)));
 
-                string last = (start + sizeof(int) + (info->length - 1));
-                int sz = __get_size__(start + sizeof(int));
-                char ptr[100];
-                ptr_to_str(info, ptr);
+                    string last = (start + sizeof(int) + (info->length - 1));
+                    int sz = __get_size__(start + sizeof(int));
+                    char ptr[100];
+                    ptr_to_str(info, ptr);
 
-                if(last[0] == '\0')
-                    print("Pointer: "), print(ptr), print("Size: "), printi(sz), print(" | Data: "), println(start + sizeof(int));
+                    if(last[0] == '\0')
+                        print("Pointer: "), print(ptr), print("Size: "), printi(sz), print(" | Data: "), println(start + sizeof(int));
+                }
             }
+            // #endif
         }
-        // #endif
     }
         
 	__syscall__((long)_HEAP_, _HEAP_PAGE_, 0, 0, 0, 0, _SYS_MUNMAP);
