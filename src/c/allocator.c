@@ -160,17 +160,20 @@ public fn pfree(any ptr, int clean)
     int payload = m->size ? m->size * m->length : m->length;
     int total   = payload + HEAP_META_SZ;
 
-	if(clean)
-    	mem_set(m, 1, total);
-
-    used_mem -= total;
-
 	if(HEAP_DEBUG || __FSL_DEBUG__)
 	{
     	char buff[100];
     	ptr_to_str(m, buff);
     	print("[ALLOCATOR]: Freeing "), printi(payload), print(" - memory block @ "), println(buff);
     }
+
+    if(total == 0)
+        return;
+
+	if(clean)
+    	mem_set(m, 1, total);
+
+    used_mem -= total;
 }
 
 #if !defined(_WIN32) && !defined(_WIN64)
