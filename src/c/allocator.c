@@ -154,7 +154,7 @@ public fn pfree(any ptr, int clean)
     if (!ptr) return;
 
     __meta__ *m = __get_meta__(ptr);
-    if(m->id != 0x7C)
+    if(ptr < _HEAP_ && ptr >= (_HEAP_ + _HEAP_PAGE_))
         fsl_panic("Invalid heap pointer!");
 
     int payload = m->size ? m->size * m->length : m->length;

@@ -195,7 +195,17 @@ public bool str_cmp(const string src, const string needle)
 {
 	if (!src || !needle) return false;
 
-	return mem_cmp(src, needle, str_len(src));
+	int len = _str_len(src), slen = _str_len(needle);
+	if(len != slen)
+		return false;
+
+	for(int i = 0; i < len; i++)
+	{
+		if(src[i] != needle[i])
+			return false;
+	}
+
+	return true;
 }
 
 public bool str_append_array(string buff, const array arr)

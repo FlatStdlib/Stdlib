@@ -28,6 +28,7 @@ int entry()
     print("Data len: "), printi(data_sz), println(NULL);
 
     /* str_cmp() */
+    println(data);
     if(str_cmp(data, "This is a test string...!"))
         println("str_cmp() String Matched!");
 
