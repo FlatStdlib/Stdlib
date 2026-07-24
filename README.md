@@ -32,7 +32,13 @@ sudo apt install git make -y
 git clone https://github.com/FlatStdlib/Stdlib.git	# FSL-Stdlib
 git clone https://github.com/FlatStdlib/fsl.git 	# FSL-GCC Toolchain
 cd Stdlib
-sudo make # sets global lib, loader and compiler!
+
+# Sets global lib, loader and compiler!
+# 64 Bit Compilation
+sudo make 
+
+# 32 Bit Compilation
+sudo make DEBUG="-ggdb -m32 -fomit-frame-pointer -fno-stack-protector" LDFLAGS="-m elf_i386"
 ```
 
 # New Install

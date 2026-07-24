@@ -13,7 +13,7 @@ long run_thread(void *fnc, void *arg)
     *--sp = fnc;
     *--sp = arg;
 
-    register void *n asm("r13") = arg;
+    // register void *n asm("r13") = arg;
     long ret = __syscall__(0x10f00, (long)sp, 0, 0, 0, 0, _SYS_CLONE);
 
     if(ret == 0)

@@ -5,7 +5,7 @@
 ; TODO; Test this lib
 ;
 global x86_64_mem_set
-glball x86_64_mem_cpy
+global x86_64_mem_cpy
 
 section .bss
 	buffer resb 1024

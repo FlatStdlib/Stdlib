@@ -1,22 +1,24 @@
 /* x86_64 ASM Lib TEST */
-long __read__(int fd, char *buffer, int size);
-long __write__(int fd, char *buffer, int size);
-void __exit__(int code);
+#include <fsl_asm.h>
 
 void _start()
 {
 	char BUFF[100];
 
-	for(int i = 0; i < 5; i++)
+	int bytes;
+	while(1)
 	{
 		__write__(1, "> ", 2);
-		int bytes = __read__(0, BUFF, 100);
+		if((bytes = __read__(0, BUFF, 100)) <= 0)
+			continue;
 
 		if(BUFF[0] == 'q')
 			break;
 
 		if(BUFF[0] == 'h' && BUFF[1] == 'i')
 			__write__(1, "hi\n", 3);
+
+		BUFF[0] = '\0';
 	}
 	__write__(1, "dick\n", 5);
 	__exit__(0);

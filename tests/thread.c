@@ -11,7 +11,6 @@ void test_fn(void *x)
     _printf("received: %p\n", v);
     print(v);
     _printf("x ptr: %p\n", x);
-    println(x - 16);
 
     __syscall__(0, 0, 0, 0, 0, 0, _SYS_EXIT);
 }
