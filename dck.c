@@ -1,10 +1,10 @@
 #include <fsl.h>
 
-int entry()
+void entry()
 {
 	long long v = 0;
 	mem_cpy(&v, "Hello World!\n", 13);
 	((char *)&v)[12] = '\0';
 	_printf("-> %s", (ptr)&v);
-	return 0;
+	__syscall__(0, 0, 0, -1, -1, -1, _SYS_EXIT);
 }

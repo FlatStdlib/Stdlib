@@ -40,10 +40,14 @@ public fn init_mem(void) {
         register long check asm(__EAX__);
         ret = check;
     #elif defined(__x86_64__)
+        #warning "Compiling for x86_64"
         ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
         if (ret <= 0)
             fsl_panic("mmap failed!");
-    #elif defined(_WIN32) || defined(_WIN64)
+    #endif
+    
+    #if defined(_WIN32) || defined(_WIN64)
+        #warning "Using Windows Stack-Based-Heap!"
         _HEAP_ = (heap_t)_TEST_HEAP_;
     #else
         _HEAP_ = (heap_t)ret;

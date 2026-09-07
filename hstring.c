@@ -25,6 +25,7 @@ public bool increase_buffer(string_t *buffer, i64 more)
 	i64 len = get_string_size(*buffer);
 	string_t p = to_heap(get_original_string_pointer(*buffer), len + more);
 
+	*buffer = p;
 	return true;
 }
 
@@ -141,10 +142,20 @@ public bool is_string_uppercase(string_t buffer)
 	return true;
 }
 
+#define __macros_mem_cpy(dest, src, size) 	\
+	register void *rdi asm("rdi") = dest;	\
+	register void *rsi asm("rsi") = src;	\
+	register long rcx asm("rcx") = size;	\
+	asm("1:\n\t" 							\
+        "lodsb\n\t" 						\
+        "stosb\n\t" 						\
+        "dec %rcx\n\t" 						\
+        "jnz 1b\n\t");
+
 int entry()
 {
 	int old_size = used_mem;
-	toggle_debug_mode();
+	// toggle_debug_mode();
 	string_t n = create_string("testing");
 	println(n);
 
@@ -168,13 +179,7 @@ int entry()
 
 
 	string_t t = allocate(0, 14);
-	register char *rdi asm("rdi") = t;
-	register char *rsi asm("rsi") = n;
-	register long rcx asm("rcx") = sz;
-	asm("1:\n\t");
-	asm("lodsb\n\t");
-    asm("stosb\n\t");
-    asm("loop 1b\n\t");
+	__macros_mem_cpy(t, n, sz);
 
 	println(t);
 

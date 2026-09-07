@@ -39,5 +39,6 @@ call "%test%" -arch=x64
 
 :build
 cl /I"headers" /LD src/c/internal_win.c src/c/allocator.c src/c/memory.c src/c/stdlib/char.c src/c/stdlib/int.c /Fe:build/fsl.dll
-
+del *.obj
+echo [32mFSL Setup Complete![0m
 exit /b
