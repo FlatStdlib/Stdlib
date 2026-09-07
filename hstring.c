@@ -171,8 +171,8 @@ int entry()
 	int sz = get_string_size(n);
 	int len = _str_len(n);
 
-	print("Size: "), printi(sz), print(" '"), print_sz(n, sz), println("'");
-	print("Actual Size: "), printi(len), print(" '"), print_sz(n, sz), println("'");
+	print("Size: "), printi(sz), print(" '"), print_sz(n, sz - 1), println("'");
+	print("Actual Size: "), printi(len), print(" '"), print_sz(n, sz - 1), println("'");
 	print("Heap Used: "), printi(used_mem), print("/"), printi(_HEAP_PAGE_), println(NULL);
 	int new_size = used_mem;
 	print("Used: "), printi(new_size - old_size), println(NULL);

@@ -87,6 +87,10 @@ public int entry(int argc, string argv[])
         return 1;
     }
 
+    int DEBUG = 0;
+    if(array_contains_str((array)argv, "--debug") > -1)
+        DEBUG = 1;
+
     memzero(BUILD_COMMAND, 2048);
     
     /* Add Default Command */
@@ -99,6 +103,7 @@ public int entry(int argc, string argv[])
     int _c_files = 0;
 
     /* Iterate Command Arguments */
+    int output_pos = 0;
     int cflags = 0, exec = 0;
     for(int i = 0; i < argc; i++)
     {
@@ -106,13 +111,13 @@ public int entry(int argc, string argv[])
         if(validate_c_file(argv[i], sz))
         {
             str_append(BUILD_COMMAND, argv[i]), str_append(BUILD_COMMAND, " ");
-            C_FILES[_c_files] = argv[i];
+            C_FILES[_c_files] = str_dup(argv[i]);
             C_FILES[_c_files][sz - 1] = 'o';
             _c_files++;
         }
 
         if(str_cmp(argv[i], "-o"))
-            exec = i + 1;
+            exec = i + 1, output_pos = i + 1;
 
         if(str_cmp(argv[i], "--cflags"))
             cflags = i + 1;
@@ -127,17 +132,32 @@ public int entry(int argc, string argv[])
 
     BUILD_COMMAND[str_len(BUILD_COMMAND) - 1] = '\0';
 
+    /*
+        GCC Object Compilation Stage
+    */
+
     /* Compilation Arguments */
     int cmd_argc = 0;
     sArr cmd_args = split_string(BUILD_COMMAND, ' ', &cmd_argc);
 
-    for(int i = 0; i < cmd_argc; i++)
+    if(array_contains_str((array)argv, "-c") > -1)
     {
-        if(!cmd_args[i]) break;
-        _printf("[%d]: %s\r\n", (ptr)&i, cmd_args[i]);
+        println("[ + ] Compiling to object file(s)....");
+        __execute(cmd_args[0], cmd_args);
+        return 0;
     }
-
+    
     __execute(cmd_args[0], cmd_args);
+
+    /* Debug GCC Command */
+    if(DEBUG) {
+        _printf("\x1b[32mGCC:\x1b[0m '%s'\n", BUILD_COMMAND);
+        for(int i = 0; i < cmd_argc; i++)
+        {
+            if(!cmd_args[i]) break;
+            _printf("[%d]: %s\r\n", (ptr)&i, cmd_args[i]);
+        }
+    }
 
     /* Exit Upon Object File Flag Request '-c' */
     if(array_contains_str((array)argv, "-c") > -1)
@@ -146,6 +166,45 @@ public int entry(int argc, string argv[])
         return 0;
     }
 
-    _printf("'%s'\n", BUILD_COMMAND);
+    /*
+        LINKER STAGE 
+    */
+
+    str_join(LINK_COMMAND, (array)LD_LINKER_FLAGS, ' ');
+
+    str_append(LINK_COMMAND, argv[output_pos]);
+    str_append(LINK_COMMAND, " ");
+
+    for(int i = 0; i < _c_files; i++) {
+        str_append(LINK_COMMAND, C_FILES[i]);
+        str_append(LINK_COMMAND, " ");
+    }
+
+    str_append(LINK_COMMAND, "/usr/lib/libfsl.a ");
+    str_append(LINK_COMMAND, "/usr/lib/loader.o");
+
+    sArr ld_args = split_string(LINK_COMMAND, ' ', &cmd_argc);
+    __execute(ld_args[0], ld_args);
+
+    /* Debug Linker Command & Remove Object Files */
+    string rm[1024] = {0}; int len = 0;
+    if(DEBUG) _printf("\x1b[32mLinker:\x1b[0m '%s'\n", LINK_COMMAND);
+    rm[len++] = str_dup("/usr/bin/rm");
+    rm[len++] = str_dup("-rf");
+    for(int i = 0; i < cmd_argc; i++)
+    {
+        if(!ld_args[i]) break;
+        if(DEBUG) {
+            _printf("[%d]: %s\r\n", (ptr)&i, ld_args[i]);
+        }
+
+        if(str_endswith(ld_args[i], ".o"))
+            rm[len++] = str_dup(ld_args[i]);
+
+        rm[len] = NULL;
+    }
+
+    __execute(rm[0], rm);
+
     return 0;
 }
