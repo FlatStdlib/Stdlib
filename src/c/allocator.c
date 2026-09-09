@@ -47,7 +47,7 @@ public fn init_mem(void) {
     #endif
     
     #if defined(_WIN32) || defined(_WIN64)
-        #warning "Using Windows Stack-Based-Heap!"
+        // #warning "Using Windows Stack-Based-Heap!"
         _HEAP_ = (heap_t)_TEST_HEAP_;
     #else
         _HEAP_ = (heap_t)ret;

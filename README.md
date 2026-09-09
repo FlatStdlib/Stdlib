@@ -44,25 +44,7 @@ You can install with different compilers by doing
 ```bash
 sudo make COMPILER=<compiler>
 ```
-
-### Install
-
-Run the following commands to install the library!
-```bash
-sudo apt install git make -y
-git clone https://github.com/FlatStdlib/Stdlib.git	# FSL-Stdlib
-git clone https://github.com/FlatStdlib/fsl.git 	# FSL-GCC Toolchain
-cd Stdlib
-
-# Sets global lib, loader and compiler!
-# 64 Bit Compilation
-sudo make 
-
-# 32 Bit Compilation
-sudo make DEBUG="-ggdb -m32 -fomit-frame-pointer -fno-stack-protector" LDFLAGS="-m elf_i386"
-```
-
-# New Install
+# Install
 
 This installation is still being developed
 
@@ -78,6 +60,23 @@ Language: Polyglot - Bash / Batch
 
 [CMD] $ .\setup.bat
 [POWERSHELL] $ cmd /c .\setup.bat
+```
+
+### Linux Install
+
+Run the following commands to install the library!
+```bash
+sudo apt install git make -y
+git clone https://github.com/FlatStdlib/Stdlib.git	# FSL-Stdlib
+git clone https://github.com/FlatStdlib/fsl.git 	# FSL-GCC Toolchain
+cd Stdlib
+
+# Sets global lib, loader and compiler!
+# 64 Bit Compilation
+sudo make 
+
+# 32 Bit Compilation
+sudo make DEBUG="-ggdb -m32 -fomit-frame-pointer -fno-stack-protector" LDFLAGS="-m elf_i386"
 ```
 
 ### File Structure Information

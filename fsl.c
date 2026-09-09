@@ -57,21 +57,21 @@ const string FILES[] = {
     NULL
 };
 
-static void __execute(char *app, char **args)
-{
-	if(!app || !args)
-		return;
-
-	long pid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_FORK);
-
-	if(pid == 0)
-	{
-		__syscall__((long)app, (long)args, 0, -1, -1, -1, _SYS_EXECVE);
-	} else if(pid > 0) {
-		__syscall__(pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
-	} else {
-		__syscall__(1, (long)"fork error\n", 7, -1, -1, -1, _SYS_WRITE);
-	}
+static void __execute(char *app, char **args) 
+{ 
+	if(!app || !args) 
+		return; 
+ 
+	long pid = __syscall__(0, 0, 0, -1, -1, -1, _SYS_FORK); 
+ 
+	if(pid == 0) 
+	{ 
+		__syscall__((long)app, (long)args, 0, -1, -1, -1, _SYS_EXECVE); 
+	} else if(pid > 0) { 
+		long ret = __syscall__(pid, 0, 0, -1, -1, -1, _SYS_WAIT4);
+	} else { 
+		__syscall__(1, (long)"fork error\n", 7, -1, -1, -1, _SYS_WRITE); 
+	} 
 }
 
 bool validate_c_file(string q, int sz)
@@ -118,9 +118,6 @@ public int entry(int argc, string argv[])
 
         if(str_cmp(argv[i], "-o"))
             exec = i + 1, output_pos = i + 1;
-
-        if(str_cmp(argv[i], "--cflags"))
-            cflags = i + 1;
     }
 
     /* Add C Flags Upon --cflags */
@@ -176,8 +173,22 @@ public int entry(int argc, string argv[])
     str_append(LINK_COMMAND, " ");
 
     for(int i = 0; i < _c_files; i++) {
-        str_append(LINK_COMMAND, C_FILES[i]);
-        str_append(LINK_COMMAND, " ");
+        if(str_cmp(C_FILES[i], "/usr/lib/libfsl.a") || str_cmp(C_FILES[i], "/usr/lib/loader.o"))
+            break;
+
+        if(str_endswith(C_FILES[i], ".o")) {
+            if(find_char(C_FILES[i], '/') > -1) {
+                int cnt = count_char(C_FILES[i], '/');
+                int pos = 0, match = 0;
+			    while((pos = find_char_at(C_FILES[i], '/', pos + 1)) != -1) match = pos;
+                
+                str_append(LINK_COMMAND, C_FILES[i] + match);
+                str_append(LINK_COMMAND, " ");
+            } else {
+                str_append(LINK_COMMAND, C_FILES[i]);
+                str_append(LINK_COMMAND, " ");
+            }
+        }
     }
 
     str_append(LINK_COMMAND, "/usr/lib/libfsl.a ");
@@ -194,6 +205,9 @@ public int entry(int argc, string argv[])
     for(int i = 0; i < cmd_argc; i++)
     {
         if(!ld_args[i]) break;
+        if(str_cmp(ld_args[i], "/usr/lib/libfsl.a") || str_cmp(ld_args[i], "/usr/lib/loader.o"))
+            break;
+
         if(DEBUG) {
             _printf("[%d]: %s\r\n", (ptr)&i, ld_args[i]);
         }

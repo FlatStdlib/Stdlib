@@ -46,6 +46,9 @@ int entry() {
     return 0;
 }
 
+#ifdef __STDIO_H
+#define printf println
 int main() {
 	printf("Hi from GCC with clib+\n");
 }
+#endif
