@@ -92,9 +92,19 @@ public int entry(int argc, string argv[])
         DEBUG = 1;
 
     memzero(BUILD_COMMAND, 2048);
-    
-    /* Add Default Command */
-    str_join(BUILD_COMMAND, (array)COMPILER_FLAGS, ' ');
+
+	int pos = 0;
+	if((pos = array_contains_str((array)argv, "--cc")) == -1)
+	{
+	    /* Add Default Command */
+    	str_join(BUILD_COMMAND, (array)COMPILER_FLAGS, ' ');
+	} else {
+		pos++;
+        int len = __get_size__(argv[pos]) - 1;
+		mem_cpy(BUILD_COMMAND, argv[pos], len);
+        BUILD_COMMAND[len] = ' ';
+		str_join(BUILD_COMMAND, (array)COMPILER_FLAGS + 1, ' ');
+	}
 
     string executable[50];
     memzero(executable, 50);
@@ -148,6 +158,7 @@ public int entry(int argc, string argv[])
 
     /* Debug GCC Command */
     if(DEBUG) {
+        println("Raw Cmd: "), println(BUILD_COMMAND);
         _printf("\x1b[32mGCC:\x1b[0m '%s'\n", BUILD_COMMAND);
         for(int i = 0; i < cmd_argc; i++)
         {
@@ -157,7 +168,7 @@ public int entry(int argc, string argv[])
     }
 
     /* Exit Upon Object File Flag Request '-c' */
-    if(array_contains_str((array)argv, "-c") > -1)
+    if(array_contains_str((array)argv, "-c") > -1 || array_contains_str((array)argv, "--cc") > -1)
     {
         println("[ + ] Object File Created");
         return 0;
