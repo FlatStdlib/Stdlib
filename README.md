@@ -19,6 +19,8 @@ Update as of 9-5-26
 
 - This project is specifically for/used-on linux, Support for windows has started with limited features and continue to be worked on.
 
+- Any script(s) in the root of the repo could be something under development.
+
 ### Supported OS(s)
 
 - Debian / Ubuntu
