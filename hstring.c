@@ -1,71 +1,80 @@
 #include <fsl.h>
 
-typedef i8 *string_t;
-#define __STRING_METADATA_SZ__ sizeof(i64)
-
-public i64 get_string_size(string_t buffer)
-{ return *(i64 *)(buffer - __STRING_METADATA_SZ__ - 1); }
-
-public string_t get_original_string_pointer(string_t buffer)
-{ return (buffer - __STRING_METADATA_SZ__ - 1); }
-
-public string_t init_string(int len)
+typedef struct __attribute__((packed))
 {
-	string_t p = allocate(0, __STRING_METADATA_SZ__ + len + 2);
-	*((i64 *)p) = len;
+	i64 len;
+	char data[];
+} _string;
 
-	return p + __STRING_METADATA_SZ__ + 1;
+typedef _string *string_t;
+#define _STRING_META_SZ_ sizeof(_string)
+
+public i64 get_string_size(string buffer)
+{ return *(i64 *)(buffer - sizeof(i64)); }
+
+string_t get_original_string_pointer(string p)
+{ return (string_t)(p - sizeof(i64)); }
+
+public string init_string(int len)
+{
+	string_t p = allocate(0, sizeof(_string) + len);
+	p->len = len;
+
+	return p->data;
 }
 
-public bool increase_buffer(string_t *buffer, i64 more)
+public bool increase_buffer(string buffer, i64 more)
 {
 	if(!buffer || !more)
 		return false;
 
-	i64 len = get_string_size(*buffer);
-	string_t p = to_heap(get_original_string_pointer(*buffer), len + more);
+	string_t original = get_original_string_pointer(buffer);
+	i64 len = get_string_size(buffer);
 
-	*buffer = p;
+	string_t p = to_heap(original, len + more);
+	_pfree(p);
+	
 	return true;
 }
 
-public string_t create_string(string q)
+public string create_string(string q)
 {
-	i64 len = _str_len(q);
-	string_t p = (i8 *)allocate(0, __STRING_METADATA_SZ__ + len + 2);
-	*((i64 *)p) = len;
+	int len = _str_len(q);
+	string_t p = allocate(0, sizeof(_string) + len);
 
-	mem_cpy(p + __STRING_METADATA_SZ__ + 1, q, len);
-	return p + __STRING_METADATA_SZ__ + 1;
+	p->len = len;
+	mem_cpy(p->data, q, len);
+	p->data[len] = '\0';
+	
+	return p->data;
 }
 
-public bool string_append(string_t *buffer, string sub)
+public bool string_append(string *buffer, string sub)
 {
 	if(!buffer || !sub)
 		return false;
 
-	string_t original_p = get_original_string_pointer(*buffer);
-	i64 len = *(i64 *)original_p;
-	i64 slen = str_len(sub);
-
+	string_t p = get_original_string_pointer(*buffer);
+	i64 len = p->len;
+	i64 slen = _str_len(sub);
 	i64 new_len = len + slen;
-	string_t new_p = to_heap(original_p, new_len + __STRING_METADATA_SZ__ + 1);
-	*((i64 *)new_p) = new_len;
+	
+	string_t new_p = to_heap(p, sizeof(_string) + new_len);
+	new_p->len = new_len;
 
-	*buffer = new_p + __STRING_METADATA_SZ__ + 1;
-
-	mem_cpy((*buffer) + len, sub, slen);
-	_pfree(original_p);
+	_pfree(p);
+	mem_cpy(new_p->data + len, sub, slen);
+	*buffer = new_p->data;
 	return true;
 }
 
-public bool string_replace(string_t *buffer, string find, string replacement)
+public bool string_replace(string *buffer, string find, string replacement)
 {
 	if(!buffer || !find)
 		return false;
 
-	string_t original_p = get_original_string_pointer(*buffer);
-	i64 len = *(i64 *)original_p;
+	string_t original = get_original_string_pointer(*buffer);
+	i64 len = original->len;
 	i64 slen = _str_len(find);
 	i64 vlen = _str_len(replacement);
 
@@ -73,48 +82,47 @@ public bool string_replace(string_t *buffer, string find, string replacement)
 	{
 		for(int i = 0, idx = 0; i < len; i++)
 		{
-			if(mem_cmp((*buffer) + i, find, slen))
+			if(mem_cmp(original->data + i, find, slen))
 			{
-				mem_cpy((*buffer) + i, replacement, vlen);
+				mem_cpy(original->data + i, replacement, vlen);
 				idx += vlen;
 				i += vlen - 1;
 				continue;
 			}
 
-			(*buffer)[idx++] = (*buffer)[i];
+			original->data[idx++] = original->data[i];
 		}
 
 		return true;
 	} else {
 		int new_len = len + vlen - (vlen - slen);
-		string_t new_p = to_heap(original_p, new_len + sizeof(i64) + 2);
-		*((i64 *)new_p) = new_len;
+		string_t new_p = to_heap(original, new_len + sizeof(i64) + 2);
+		new_p->len = new_len;
 
-		string_t new_buff = new_p + __STRING_METADATA_SZ__ + 1;
 		int idx = 0;
 		for(int i = 0; i < len; i++)
 		{
-			if(mem_cmp((*buffer) + i, find, slen))
+			if(mem_cmp(original->data + i, find, slen))
 			{
-				mem_cpy(new_buff + idx, replacement, vlen);
+				mem_cpy(new_p->data + idx, replacement, vlen);
 				idx += vlen;
 				i += vlen;
 				continue;
 			}
 
-			new_buff[idx++] = (*buffer)[i];
+			new_p->data[idx++] = original->data[i];
 		}
 
-		new_buff[idx] = '\0';
-		_pfree(original_p);
-		*buffer = new_buff;
+		new_p->data[idx] = '\0';
+		_pfree(original);
+		*buffer = new_p->data;
 		return true;
 	}
 
 	return false;
 }
 
-public bool is_string_lowercase(string_t buffer)
+public bool is_string_lowercase(string buffer)
 {
 	if(!buffer)
 		return false;
@@ -128,7 +136,7 @@ public bool is_string_lowercase(string_t buffer)
 	return true;
 }
 
-public bool is_string_uppercase(string_t buffer)
+public bool is_string_uppercase(string buffer)
 {
 	if(!buffer)
 		return false;
@@ -156,7 +164,7 @@ int entry()
 {
 	int old_size = used_mem;
 	// toggle_debug_mode();
-	string_t n = create_string("testing");
+	string n = create_string("testing");
 	println(n);
 
 	string v = init_string(7);
@@ -167,6 +175,7 @@ int entry()
 
 	println(n);
 	string_replace(&n, "string", "char ptr");
+	println(n);
 
 	int sz = get_string_size(n);
 	int len = _str_len(n);
@@ -178,7 +187,7 @@ int entry()
 	print("Used: "), printi(new_size - old_size), println(NULL);
 
 
-	string_t t = allocate(0, 14);
+	string t = allocate(0, 14);
 	__macros_mem_cpy(t, n, sz);
 
 	println(t);
@@ -186,6 +195,7 @@ int entry()
 	int chk = is_string_lowercase(t + 9);
 	if(chk)
 		println("Lowercase");
+
 
 	return 0;
 }

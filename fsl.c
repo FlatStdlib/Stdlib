@@ -128,6 +128,9 @@ public int entry(int argc, string argv[])
 
         if(str_cmp(argv[i], "-o"))
             exec = i + 1, output_pos = i + 1;
+
+        if(str_cmp(argv[i], "--cflags"))
+            cflags = i + 1;
     }
 
     /* Add C Flags Upon --cflags */
