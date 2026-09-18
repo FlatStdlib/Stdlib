@@ -17,7 +17,7 @@ string_t get_original_string_pointer(string p)
 
 public string init_string(int len)
 {
-	string_t p = allocate(0, sizeof(_string) + len);
+	string_t p = allocate(0, sizeof(_string) + len + 1);
 	p->len = len;
 
 	return p->data;
@@ -31,7 +31,7 @@ public bool increase_buffer(string buffer, i64 more)
 	string_t original = get_original_string_pointer(buffer);
 	i64 len = get_string_size(buffer);
 
-	string_t p = to_heap(original, len + more);
+	string_t p = to_heap(original, sizeof(_string) + len + more + 1);
 	_pfree(p);
 	
 	return true;
@@ -40,12 +40,12 @@ public bool increase_buffer(string buffer, i64 more)
 public string create_string(string q)
 {
 	int len = _str_len(q);
-	string_t p = allocate(0, sizeof(_string) + len);
+	string_t p = allocate(0, sizeof(_string) + len + 1);
 
 	p->len = len;
 	mem_cpy(p->data, q, len);
 	p->data[len] = '\0';
-	
+
 	return p->data;
 }
 
@@ -59,7 +59,7 @@ public bool string_append(string *buffer, string sub)
 	i64 slen = _str_len(sub);
 	i64 new_len = len + slen;
 	
-	string_t new_p = to_heap(p, sizeof(_string) + new_len);
+	string_t new_p = to_heap(p, sizeof(_string) + new_len + 1);
 	new_p->len = new_len;
 
 	_pfree(p);
@@ -96,7 +96,7 @@ public bool string_replace(string *buffer, string find, string replacement)
 		return true;
 	} else {
 		int new_len = len + vlen - (vlen - slen);
-		string_t new_p = to_heap(original, new_len + sizeof(i64) + 2);
+		string_t new_p = to_heap(original, new_len + sizeof(i64) + 1);
 		new_p->len = new_len;
 
 		int idx = 0;
