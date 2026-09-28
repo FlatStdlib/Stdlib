@@ -2,7 +2,7 @@
 *
 *	[ clib+ ]
 *
-*	- A minimal alternative backend for FSL power by x86_64 NASM
+*	- A minimal alternative backend for FSL powered by x86_64 NASM
 *
 */
 long __read__();

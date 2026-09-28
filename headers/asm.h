@@ -6,7 +6,7 @@
 		  and use this for macros only
 	- Each architecture has the following definition for syscall
 
-	MAX_REGISTER 		| Used for the amount of arguments ABI takes for syscall
+	MAX_REGISTER 		| Used for the amount of arguments ABI takes
 	SYSCALL_REGISTER 	| Register for syscall number
 	EXECUTE_SYSCALL		| Syscall Execution
 

@@ -378,6 +378,8 @@ int 	get_args(char* argv[]);
 			allocate(0, n)
 	#endif
 
+	#define AUTO __attribute__((cleanup(__auto_free__)))
+
 	// #define PROT_READ   	0x1
 	// #define PROT_WRITE		0x2
 	// #define PROT_EXEC   	0x4
@@ -425,13 +427,12 @@ int 	get_args(char* argv[]);
 	public ptr  		reallocate(any p, int sz);
 	public int         	__get_size__(any ptr);
 	public int         	__is_heap_init__();
+	public fn 			__auto_free__(ptr p);
 	public fn 			pfree_array(array p);
 	public fn 			_pfree(any ptr);
 	public fn        	pfree(any ptr, int clean);
 	public __meta__* 	__get_meta__(any ptr);
 	public bool 		is_ptr_valid(ptr p);
-
-	#define AUTOF __attribute__((cleanup(_pfree)))
 #endif
 
 /*
@@ -460,13 +461,24 @@ int 	get_args(char* argv[]);
 	[ src/stdlib/string.c ]
 */
 #ifdef _FSL_STR_H
+	typedef struct __attribute__((packed))
+	{
+		i64 len;
+		char data[];
+	} _string;
 
-	typedef struct {
-		string p;
-		len_t len;
-	} _str;
+	typedef _string *string_t;
+	#define _STRING_META_SZ_ sizeof(_string)
+	#define __macros_mem_cpy(dest, src, size) 	\
+		register void *rdi asm("rdi") = dest;	\
+		register void *rsi asm("rsi") = src;	\
+		register long rcx asm("rcx") = size;	\
+		asm("1:\n\t" 							\
+			"lodsb\n\t" 						\
+			"stosb\n\t" 						\
+			"dec %rcx\n\t" 						\
+			"jnz 1b\n\t");
 
-	typedef _str str_t;
 	#define __sprintf(dest, format, ...) \
 			_sprintf(dest, format, (void *[]){__VA_ARGS__, 0});
 

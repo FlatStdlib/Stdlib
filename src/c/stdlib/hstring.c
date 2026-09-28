@@ -1,19 +1,27 @@
-#include <fsl.h>
-
-typedef struct __attribute__((packed))
-{
-	i64 len;
-	char data[];
-} _string;
-
-typedef _string *string_t;
-#define _STRING_META_SZ_ sizeof(_string)
+#include "../../../headers/fsl.h"
 
 public i64 get_string_size(string buffer)
 { return *(i64 *)(buffer - sizeof(i64)); }
 
-string_t get_original_string_pointer(string p)
+string_t get_original_ptr(string p)
 { return (string_t)(p - sizeof(i64)); }
+
+public string string_to_heap(string p)
+{
+	string_t original = get_original_ptr(p);
+	string_t heap = to_heap(original, original->len);
+
+	return heap->data;
+}
+
+public string _init_string(i32 len)
+{
+	u8 block[sizeof(_string) + len + 1];
+	memzero(block, sizeof(_string) + len + 1);
+	string_t p = (string_t)block;
+
+	return p->data;
+}
 
 public string init_string(int len)
 {
@@ -28,12 +36,12 @@ public bool increase_buffer(string buffer, i64 more)
 	if(!buffer || !more)
 		return false;
 
-	string_t original = get_original_string_pointer(buffer);
+	string_t original = get_original_ptr(buffer);
 	i64 len = get_string_size(buffer);
 
 	string_t p = to_heap(original, sizeof(_string) + len + more + 1);
 	_pfree(p);
-	
+
 	return true;
 }
 
@@ -49,21 +57,38 @@ public string create_string(string q)
 	return p->data;
 }
 
+public bool string_clear(string p)
+{
+	if(!p) return false;
+
+	string_t original = get_original_ptr(p);
+	if(!original)
+		return false;
+
+	if(original->len > 0) {
+		memzero(original->data, original->len);
+		return true;
+	}
+
+	return false;
+}
+
 public bool string_append(string *buffer, string sub)
 {
 	if(!buffer || !sub)
 		return false;
 
-	string_t p = get_original_string_pointer(*buffer);
+	string_t p = get_original_ptr(*buffer);
 	i64 len = p->len;
 	i64 slen = _str_len(sub);
 	i64 new_len = len + slen;
-	
+
 	string_t new_p = to_heap(p, sizeof(_string) + new_len + 1);
 	new_p->len = new_len;
 
 	_pfree(p);
 	mem_cpy(new_p->data + len, sub, slen);
+	new_p->data[new_len] = '\0';
 	*buffer = new_p->data;
 	return true;
 }
@@ -73,7 +98,7 @@ public bool string_replace(string *buffer, string find, string replacement)
 	if(!buffer || !find)
 		return false;
 
-	string_t original = get_original_string_pointer(*buffer);
+	string_t original = get_original_ptr(*buffer);
 	i64 len = original->len;
 	i64 slen = _str_len(find);
 	i64 vlen = _str_len(replacement);
@@ -150,52 +175,45 @@ public bool is_string_uppercase(string buffer)
 	return true;
 }
 
-#define __macros_mem_cpy(dest, src, size) 	\
-	register void *rdi asm("rdi") = dest;	\
-	register void *rsi asm("rsi") = src;	\
-	register long rcx asm("rcx") = size;	\
-	asm("1:\n\t" 							\
-        "lodsb\n\t" 						\
-        "stosb\n\t" 						\
-        "dec %rcx\n\t" 						\
-        "jnz 1b\n\t");
+// int entry()
+// {
+// 	int old_size = used_mem;
+// 	// toggle_debug_mode();
+// 	string n = create_string("testing");
+// 	println(n);
 
-int entry()
-{
-	int old_size = used_mem;
-	// toggle_debug_mode();
-	string n = create_string("testing");
-	println(n);
+// 	string v = init_string(7);
+// 	mem_cpy(v, " this", 5);
 
-	string v = init_string(7);
-	mem_cpy(v, " this", 5);
+// 	if(!string_append(&n, v) || !string_append(&n, " string"))
+// 		fsl_warning("failed to append to string");
 
-	if(!string_append(&n, v) || !string_append(&n, " string"))
-		fsl_warning("failed to append to string");
+// 	println(n);
+// 	string_replace(&n, "string", "char ptr");
+// 	println(n);
 
-	println(n);
-	string_replace(&n, "string", "char ptr");
-	println(n);
+// 	int sz = get_string_size(n);
+// 	int len = _str_len(n);
 
-	int sz = get_string_size(n);
-	int len = _str_len(n);
-
-	print("Size: "), printi(sz), print(" '"), print_sz(n, sz - 1), println("'");
-	print("Actual Size: "), printi(len), print(" '"), print_sz(n, sz - 1), println("'");
-	print("Heap Used: "), printi(used_mem), print("/"), printi(_HEAP_PAGE_), println(NULL);
-	int new_size = used_mem;
-	print("Used: "), printi(new_size - old_size), println(NULL);
+// 	print("Size: "), printi(sz), print(" '"), print_sz(n, sz - 1), println("'");
+// 	print("Actual Size: "), printi(len), print(" '"), print_sz(n, sz - 1), println("'");
+// 	print("Heap Used: "), printi(used_mem), print("/"), printi(_HEAP_PAGE_), println(NULL);
+// 	int new_size = used_mem;
+// 	print("Used: "), printi(new_size - old_size), println(NULL);
 
 
-	string t = allocate(0, 14);
-	__macros_mem_cpy(t, n, sz);
+// 	string t = allocate(0, 14);
+// 	__macros_mem_cpy(t, n, sz);
 
-	println(t);
+// 	println(t);
 
-	int chk = is_string_lowercase(t + 9);
-	if(chk)
-		println("Lowercase");
+// 	int chk = is_string_lowercase(t + 9);
+// 	if(chk)
+// 		println("Lowercase");
 
+// 	_pfree(n);
+// 	_pfree(v);
+// 	_pfree(t);
 
-	return 0;
-}
+// 	return 0;
+// }

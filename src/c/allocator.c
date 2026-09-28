@@ -168,6 +168,13 @@ public fn pfree_array(array p)
 		    pfree(p[i], 1);
 }
 
+// for __attribute__((cleanup()))
+fn __auto_free__(ptr p)
+{
+	_printf("[AUTO] Freeing block: %p....\n", *(ptr *)p);
+	_pfree(*(void **)p);
+}
+
 public fn _pfree(any ptr) { pfree(ptr, 1); }
 public fn pfree(any ptr, int clean)
 {
