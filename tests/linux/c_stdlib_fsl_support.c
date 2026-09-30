@@ -63,7 +63,12 @@ int entry()
     return 0;
 }
 
-/* gcc */
+/* gcc - glibc support with FSL */
+#ifndef _STDINT_H
+    // The point of this is, just to ignore this entry point when using FSL
+    // which compiles with -nostdlib and -nostdinc and uses FSL runtime
+    #define printf println
+#endif
 int main()
 {
     printf("Compiled with GCC\n");

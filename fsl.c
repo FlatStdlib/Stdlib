@@ -1,6 +1,8 @@
 /* 
     fsl-gcc chain compiler v1.5 (Production Rewrite)
 
+    Supporting specifically x86 && x86_64 linux ubuntu
+
     Original repo; https://github.com/FlatStdlib/fsl
 */
 #include <fsl.h>
@@ -23,7 +25,6 @@ const string COMPILER_FLAGS[] = {
     "/usr/bin/gcc",
     "-ffunction-sections",
     "-fdata-sections",
-    "-Wl,--gc-sections",
     "-nostdlib",
     "-ffreestanding",
     "-c",
@@ -103,7 +104,7 @@ public int entry(int argc, string argv[])
         int len = __get_size__(argv[pos]) - 1;
 		mem_cpy(BUILD_COMMAND, argv[pos], len);
         BUILD_COMMAND[len] = ' ';
-		str_join(BUILD_COMMAND, (array)COMPILER_FLAGS + 1, ' ');
+		str_join(BUILD_COMMAND + 1, (array)COMPILER_FLAGS + 1, ' ');
 	}
 
     string executable[50];
@@ -149,13 +150,6 @@ public int entry(int argc, string argv[])
     /* Compilation Arguments */
     int cmd_argc = 0;
     sArr cmd_args = split_string(BUILD_COMMAND, ' ', &cmd_argc);
-
-    if(array_contains_str((array)argv, "-c") > -1)
-    {
-        println("[ + ] Compiling to object file(s)....");
-        __execute(cmd_args[0], cmd_args);
-        return 0;
-    }
     
     __execute(cmd_args[0], cmd_args);
 
@@ -171,7 +165,7 @@ public int entry(int argc, string argv[])
     }
 
     /* Exit Upon Object File Flag Request '-c' */
-    if(array_contains_str((array)argv, "-c") > -1 || array_contains_str((array)argv, "--cc") > -1)
+    if(array_contains_str((array)argv, "-obj") > -1)
     {
         println("[ + ] Object File Created");
         return 0;
