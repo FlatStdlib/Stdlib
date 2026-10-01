@@ -208,7 +208,7 @@ public bool str_cmp(const string src, const string needle)
 	return true;
 }
 
-public bool str_append_array(string buff, const array arr)
+public bool str_append_array(string buff, const sArr arr)
 {
 	if(!buff || !arr)
 		return false;

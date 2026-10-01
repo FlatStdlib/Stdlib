@@ -491,7 +491,7 @@ int 	get_args(char* argv[]);
 	public len_t 	_str_len(const string buffer);
 	public len_t 	str_len(string buffer);
 	public string 	str_dup(const string buffer);
-	public bool 	str_append_array(string buff, const array arr);
+	public bool 	str_append_array(string buff, const sArr arr);
 	public bool   	str_append(string src, const string sub);
 	public bool		str_cmp(const string src, const string needle);
 	public pos_t 	find_string(const string buff, const string needle);
