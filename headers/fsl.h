@@ -25,6 +25,7 @@ extern int __FSL_DEBUG__;
 		#define _FSL_INTERNAL_H
 		#define _FSL_ALLOCATOR_H
 
+		#define _FSL_SIGHANDLER_H
 	
 	#define _printf(format, ...) \
 			_sprintf(_OUTPUT_, format, (void *[]){__VA_ARGS__, 0}); \
@@ -749,4 +750,14 @@ int 	get_args(char* argv[]);
 #ifdef _FSL_OS
 	public fn _usleep(int usec);
 	public fn _sleep(int sec);
+#endif
+
+#ifdef _FSL_SIGHANDLER_H
+	#define recoverable(p) \
+		asm(".byte 0x90, 0x90, 0x90"); \
+		__LAST_RECOVERABLE_ADDRESS__ = p; 
+
+	extern ptr __LAST_RECOVERABLE_ADDRESS__;
+	extern int __SEGFAULT__;
+	public fn _enable_sig_handler(handler_t fnc);
 #endif
