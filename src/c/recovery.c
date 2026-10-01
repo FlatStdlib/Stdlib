@@ -130,10 +130,11 @@ private void fsl_handler(int sig, struct __fsl_siginfo *info, ptr ctx)
             _printf("AFTER RIP      = %p\n",(ptr)uc->uc_mcontext.gregs[REG_RIP]);
 
         return;
+    } else {
+        println("segfault")
     }
 
-    println("Done");
-    __syscall__(0, 0, 0, 0, 0, 0, _SYS_EXIT);
+    __syscall__(1, 0, 0, 0, 0, 0, _SYS_EXIT);
 }
 
 __attribute__((naked)) private void fsl_sigreturn(void)
