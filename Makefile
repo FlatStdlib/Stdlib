@@ -80,7 +80,7 @@ compile:
 cloader:
 	gcc ${FGCC_FLAGS} ${DEBUG} ../fsl/loader.c -o $(BUILD)/loader.o
 	gcc ${FGCC_FLAGS} ${DEBUG} ../fsl/fsl.c -o $(FGCC_OBJ)
-	ld ${LDFLAGS} -o $(FGCC) $(FGCC_OBJ) $(BUILD)/$(LIB) $(BUILD)/loader.o
+	ld ${LDFLAGS} -o $(FGCC) $(FGCC_OBJ) $(BUILD)/loader.o $(BUILD)/$(LIB)
 
 
 #
