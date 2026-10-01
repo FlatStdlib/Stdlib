@@ -86,7 +86,7 @@ private void fsl_handler(int sig, struct __fsl_siginfo *info, ptr ctx)
     if(__FSL_DEBUG__)
         _printf("[ + ] Crashed @ %p\n", p);
 
-    if(p)
+    if(p != NULL)
     {
         if(__FSL_DEBUG__)
             println("[ + ] Recovering");
@@ -125,15 +125,16 @@ private void fsl_handler(int sig, struct __fsl_siginfo *info, ptr ctx)
         }
 
         uc->uc_mcontext.gregs[REG_RIP] = (greg_t)__LAST_RECOVERABLE_ADDRESS__;
+        __LAST_RECOVERABLE_ADDRESS__ = NULL;
 
         if(__FSL_DEBUG__)
             _printf("AFTER RIP      = %p\n",(ptr)uc->uc_mcontext.gregs[REG_RIP]);
 
         return;
-    } else {
-        println("segfault")
     }
 
+    
+    println("segfault");
     __syscall__(1, 0, 0, 0, 0, 0, _SYS_EXIT);
 }
 

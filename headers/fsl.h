@@ -759,5 +759,6 @@ int 	get_args(char* argv[]);
 
 	extern ptr __LAST_RECOVERABLE_ADDRESS__;
 	extern int __SEGFAULT__;
+	extern int __CATCH__;
 	public fn _enable_sig_handler(handler_t fnc);
 #endif
