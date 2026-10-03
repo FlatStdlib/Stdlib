@@ -387,8 +387,7 @@ public bool trim_char(string buff, int ch)
 		if(i == ch)
 			continue;
 
-		char n = buff[i];
-		new_buff[idx++] = n;
+		new_buff[idx++] = buff[i];
 	}
 
 	new_buff[idx++] = '\0';
@@ -410,6 +409,7 @@ public bool trim_char_idx(string buff, int pos)
 		buff[idx++] = n;
 	}
 
+	buff[idx] = '\0';
 	return true;
 }
 

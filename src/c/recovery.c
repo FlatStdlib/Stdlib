@@ -8,6 +8,8 @@ struct __fsl_siginfo {
 };
 
 ptr __LAST_RECOVERABLE_ADDRESS__ = NULL;
+ptr _ONE_ARG_ = NULL;
+ptr _SEC_ARG_ = NULL;
 int __SEGFAULT__ = 0;
 
 struct __fsl_sigaction {
@@ -98,14 +100,13 @@ private void fsl_handler(int sig, struct __fsl_siginfo *info, ptr ctx)
         int count = 0;
         for(int i = 0; i < 120; i++)
         {
-            if(((unsigned char *)__LAST_RECOVERABLE_ADDRESS__)[i] == 0x90 && ((unsigned char *)__LAST_RECOVERABLE_ADDRESS__)[i + 1] && ((unsigned char *)__LAST_RECOVERABLE_ADDRESS__)[i + 2]) {
+            if(((unsigned char *)__LAST_RECOVERABLE_ADDRESS__)[i] == 0x90 && ((unsigned char *)__LAST_RECOVERABLE_ADDRESS__)[i + 1] == 0x90 && ((unsigned char *)__LAST_RECOVERABLE_ADDRESS__)[i + 2] == 0x90) {
 
                 if(__FSL_DEBUG__) {
                     _printf("NOP @ %p\n", ((char *)__LAST_RECOVERABLE_ADDRESS__) + i);
                 }
 
-                i += 3;
-                __LAST_RECOVERABLE_ADDRESS__ += i;
+                __LAST_RECOVERABLE_ADDRESS__ += i + 3;
 
                 if(__FSL_DEBUG__) {
                     _printf("Found Recovery @ %p\n\n", __LAST_RECOVERABLE_ADDRESS__);
@@ -130,6 +131,8 @@ private void fsl_handler(int sig, struct __fsl_siginfo *info, ptr ctx)
         if(__FSL_DEBUG__)
             _printf("AFTER RIP      = %p\n",(ptr)uc->uc_mcontext.gregs[REG_RIP]);
 
+        register long lul asm("rdi") = (long)_ONE_ARG_;
+        register long bum asm("rsi") = (long)_SEC_ARG_;
         return;
     }
 

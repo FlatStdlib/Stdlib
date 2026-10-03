@@ -753,12 +753,17 @@ int 	get_args(char* argv[]);
 #endif
 
 #ifdef _FSL_SIGHANDLER_H
-	#define recoverable(p) \
-		asm(".byte 0x90, 0x90, 0x90"); \
-		__LAST_RECOVERABLE_ADDRESS__ = p; 
-
 	extern ptr __LAST_RECOVERABLE_ADDRESS__;
 	extern int __SEGFAULT__;
+	extern ptr _ONE_ARG_;
+	extern ptr _SEC_ARG_;
 	extern int __CATCH__;
+
+	#define recoverable(p, arg, aarg) \
+		asm(".byte 0x90, 0x90, 0x90"); \
+		__LAST_RECOVERABLE_ADDRESS__ = p; \
+		_ONE_ARG_ = arg; \
+		_SEC_ARG_ = aarg;
+
 	public fn _enable_sig_handler(handler_t fnc);
 #endif
