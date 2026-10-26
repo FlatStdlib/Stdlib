@@ -48,11 +48,12 @@ setup:
 # Count Source Code Lines
 count:
 	wc -l \
-	tests/*.c \
 	src/c/*.c \
 	src/c/os/*.c \
 	src/c/stdlib/*.c \
 	headers/*.h \
+	tests/linux/*.c \
+	tests/windows/*.c \
 	src/asm/*.asm
 
 #
