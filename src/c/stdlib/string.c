@@ -506,14 +506,13 @@ public sArr split_string(const string buffer, const char ch, int* idx)
 
 		if (buffer[i] == ch)
 		{
-			int n = str_len(LINE);
-			if (n == 0)
+			if (_len == 0)
 			{
-				LINE[0] = ' ';
-				LINE[1] = '\0';
+				LINE[0] = '\0';
+				arr[(*idx)++] = NULL;
+			} else {
+				arr[(*idx)++] = str_dup(LINE);
 			}
-
-			arr[(*idx)++] = str_dup(LINE);
 
 			sArr new_arr = to_heap(arr, sizeof(string) * ((*idx) + 1));
 			pfree(arr, 1);

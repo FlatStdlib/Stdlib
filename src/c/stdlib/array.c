@@ -37,7 +37,7 @@ public array array_append(array arr, ptr p)
 	array new_arr = to_heap(arr, sizeof(void *) * (c + 1));
 	new_arr[c] = NULL;
 
-	pfree_array((array)arr);
+	pfree((array)arr, 0);
 	return new_arr;
 }
 

@@ -1,10 +1,10 @@
 #include "../../headers/fsl.h"
 
 struct __fsl_siginfo {
-    int si_signo;
-    int si_errno;
-    int si_code;
-    void *si_addr;
+    int                 si_signo;
+    int                 si_errno;
+    int                 si_code;
+    void                *si_addr;
 };
 
 ptr __LAST_RECOVERABLE_ADDRESS__ = NULL;
@@ -13,10 +13,10 @@ ptr _SEC_ARG_ = NULL;
 int __SEGFAULT__ = 0;
 
 struct __fsl_sigaction {
-    void    (*handler)(int, struct __fsl_siginfo *, ptr);
-    u64     flags;
-    void    (*restorer)(void);
-    u64     mask[1];
+    void                (*handler)(int, struct __fsl_siginfo *, ptr);
+    u64                 flags;
+    void                (*restorer)(void);
+    u64                 mask[1];
 };
 
 typedef unsigned long greg_t;
@@ -24,25 +24,22 @@ typedef greg_t gregset_t[23];
 
 typedef struct
 {
-    gregset_t gregs;
-    void *fpregs;
-    unsigned long long __reserved1[8];
+    gregset_t           gregs;
+    void                *fpregs;
+    unsigned long long  __reserved1[8];
 } mcontext_t;
 
 typedef struct
 {
-    unsigned long uc_flags;
-    void *uc_link;
+    unsigned long       uc_flags;
+    void                *uc_link;
 
-    void *ss_sp;
-    int ss_flags;
-    unsigned long ss_size;
-
-    mcontext_t uc_mcontext;
-
-    unsigned long uc_sigmask[2];
-
-    unsigned char __fpregs_mem[512] __attribute__((aligned(16)));
+    void                *ss_sp;
+    int                 ss_flags;
+    unsigned long       ss_size;
+    mcontext_t          uc_mcontext;
+    unsigned long       uc_sigmask[2];
+    unsigned char       __fpregs_mem[512] __attribute__((aligned(16)));
 } ucontext_t;
 
 enum v

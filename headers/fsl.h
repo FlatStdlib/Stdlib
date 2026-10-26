@@ -682,6 +682,7 @@ int 	get_args(char* argv[]);
 	typedef _sock_t sock;
 	typedef _sock_t *sock_t;
 
+	public int 			create_socket(int family, int type, int protocol);
 	public sock_t 		listen_tcp(const string ip, int port, int concurrent);
 	public sock_t 		sock_accept(sock_t sock, len_t len);
 	public int 			sock_write(sock_t sock, string buffer);
@@ -692,6 +693,7 @@ int 	get_args(char* argv[]);
 	public u32			_ntohl(unsigned int x);
 	public u16			_htons(u16 x);
 	public u32			_htonl(u32 x);
+	public bool 		validate_ip(string q);
 	public fn 			sock_close(sock_t);
 #endif
 

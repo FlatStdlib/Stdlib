@@ -14,6 +14,8 @@ public sock_t listen_tcp(const string ip, int port, int concurrent)
     int preuse = 1;
     long cc = __syscall__(sock, SOL_SOCKET, SO_REUSEADDR, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
     __syscall__(sock, SOL_SOCKET, 15, (long)&preuse, sizeof(preuse), 0, _SYS_SETSOCKOPT);
+
+    /* Disabled bc sometimes its wrong (Unconfirmed) */
     //if (cc < 0)
 	//	fsl_panic("unable to reuse addr...!");
 
@@ -167,3 +169,38 @@ public unsigned int _htonl(unsigned int x)
            ((x & 0x00FF0000) >> 8)  |
            ((x & 0xFF000000) >> 24);
 }
+
+public bool validate_ip(string q) 
+{ 
+	if(!q) 
+		return false; 
+ 
+	int len = _str_len(q); 
+	if(len == 0) 
+		return false; 
+ 
+	int min = _str_len("0.0.0.0"); 
+	int max = _str_len("255.255.255.255"); 
+ 
+	if(len < min || len > max) 
+		return false; 
+ 
+	int dots = count_char(q, '.'); 
+	if(dots != 3) 
+		return false; 
+ 
+	int argc = 0; 
+	sArr args = split_string(q, '.', &argc); 
+	if(!args) 
+		return false; 
+ 
+	for(int i = 0; i < argc; i++) 
+	{ 
+		u8 num = str_to_int(args[i]); 
+		if(num <= 0 || num > 255) 
+			return false; 
+	}
+ 
+	pfree_array((array)args); 
+	return true; 
+} 
