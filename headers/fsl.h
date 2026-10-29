@@ -750,14 +750,6 @@ int 	get_args(char* argv[]);
 	[ src/os/internal.c ]
 */
 #ifdef _FSL_OS
-	typedef struct
-	{
-		long pid;
-		long fd;
-	} popen_t;
-	
-	public bool popen(popen_t *p, string *app, sArr *args, int mode);
-	public bool pclose(popen_t *p);
 	public fn _usleep(int usec);
 	public fn _sleep(int sec);
 #endif

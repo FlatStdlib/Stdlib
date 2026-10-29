@@ -156,12 +156,12 @@ public fn pfree_array(array p)
     if(!p)
         return;
 
-    if(!is_ptr_valid(p))
+    if(!is_ptr_valid(p) && __FSL_DEBUG__)
         fsl_warning("Invalid heap pointer!");
 
     __meta__ *m = __get_meta__(p);
     if(m->id != 0x7C)
-        fsl_warning("Invalid heap pointer!");
+        return;
 
 	for(int i = 0; p[i] != NULL; i++)
         if(p[i])
@@ -180,7 +180,7 @@ public fn pfree(any ptr, int clean)
 {
     if (!ptr) return;
 
-    if(!is_ptr_valid(ptr))
+    if(!is_ptr_valid(ptr) && __FSL_DEBUG__)
         fsl_warning("Invalid heap pointer!");
 
     __meta__ *m = __get_meta__(ptr);
