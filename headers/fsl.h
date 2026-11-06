@@ -7,7 +7,7 @@
 */
 #pragma once
 
-extern char _OUTPUT_[1024], _EXTERNAL_[1024];
+extern char _OUTPUT_[4096], _EXTERNAL_[1024];
 extern int __FSL_DEBUG__;
 #ifndef __NO_FSL__
 	#define __FSL__
@@ -686,7 +686,7 @@ int 	get_args(char* argv[]);
 	public sock_t 		listen_tcp(const string ip, int port, int concurrent);
 	public sock_t 		sock_accept(sock_t sock, len_t len);
 	public int 			sock_write(sock_t sock, string buffer);
-	public string 		sock_read(sock_t sock);
+	public string 		sock_read(sock_t sock, string req);
 	public int 			parse_ipv4(const char* ip, u32 *out);
 	public string 		convert_ip(u32 ip);
 	public u8 			_ntohs(unsigned short x);

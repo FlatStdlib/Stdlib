@@ -71,8 +71,11 @@ public int sock_write(sock_t sock, string buffer)
 	return __syscall__(sock->fd, (long)buffer, str_len(buffer), -1, -1, -1, _SYS_WRITE);
 }
 
-public string sock_read(sock_t sock)
+public string sock_read(sock_t sock, string req)
 {
+    if(req && sock_write(sock, req) <= 0)
+        return NULL;
+
 	char BUFF[sock->buff_len];
 	long bytes = __syscall__(sock->fd, (long)BUFF, sock->buff_len, 0, 0, 0, _SYS_READ);
 	if(bytes > 0)

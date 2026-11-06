@@ -14,12 +14,10 @@
 Update as of 9-5-26
 
 - The navigation bar above is currently not working!
-
-- The project is on slow maintenance for the time being. Join the community @ https://discord.gg/XCKaU3UTDX
-
+- The project is on slow maintenance for the time being.
 - This project is specifically for/used-on linux, Support for windows has started with limited features and continue to be worked on.
+- v2 is already in the works so development here has slowed down!
 
-- Any script(s) in the root of the repo could be something under development.
 
 ### Supported OS(s)
 
