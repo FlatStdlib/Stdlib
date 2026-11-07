@@ -361,7 +361,7 @@ public int _find_char_at(const string buffer, const char ch, int match, int *sta
 public int replace_char(string buffer, const char find, const char replace)
 {
 	if(!buffer)
-		return 0;
+		return -1;
 
 	int count = 0;
 	for(int i = 0; buffer[i] != '\0'; i++)
@@ -374,6 +374,31 @@ public int replace_char(string buffer, const char find, const char replace)
 	}
 
 	return count;
+}
+
+public bool replace_char_string(string buffer, const char find, const string q)
+{
+	if(!buffer)
+		return false;
+
+	int qlen = _str_len(q);
+	string buff = allocate(0, _str_len(buffer) + qlen);
+	int idx = 0;
+	for(int i = 0; buffer[i] != '\0'; i++)
+	{
+		if(buffer[i] == find)
+		{
+			if(qlen == 1)
+			{
+				buff[idx++] = q[0];
+			} else {
+				str_append(buff, q);
+				i += qlen;
+			}
+		}
+	}
+
+	return true;
 }
 
 public bool trim_char(string buff, int ch)

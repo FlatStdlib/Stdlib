@@ -520,6 +520,7 @@ int 	get_args(char* argv[]);
 	public bool 	trim_char(string buff, int ch);
 	public bool		trim_char_idx(string buff, int pos);
 	public int 		replace_char(string buffer, const char find, const char replace);
+	public bool 	replace_char_string(string buffer, const char find, const string q);
 	public bool 	str_strip(string buffer);
 	public string 	float_to_str(double n, char *out, int precision);
 	public bool 	str_remove_substr_idx(string buffer, int start, int end);
@@ -643,6 +644,7 @@ int 	get_args(char* argv[]);
 	#define AF_INET         2
 	#define SOL_SOCKET      1
 	#define SO_REUSEADDR    2
+	#define SO_REUSEPORT	15
 	#define SO_RCVTIMEO 	20
 
 	typedef struct {
@@ -687,6 +689,7 @@ int 	get_args(char* argv[]);
 	public sock_t 		sock_accept(sock_t sock, len_t len);
 	public int 			sock_write(sock_t sock, string buffer);
 	public string 		sock_read(sock_t sock, string req);
+	public string 		get_socket_ip(sock_t sock);
 	public int 			parse_ipv4(const char* ip, u32 *out);
 	public string 		convert_ip(u32 ip);
 	public u8 			_ntohs(unsigned short x);

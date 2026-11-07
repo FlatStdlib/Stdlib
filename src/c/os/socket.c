@@ -1,4 +1,5 @@
 #include "../../../headers/fsl.h"
+#define _GNU_SOURCE
 
 public sock_t listen_tcp(const string ip, int port, int concurrent)
 {
@@ -13,11 +14,11 @@ public sock_t listen_tcp(const string ip, int port, int concurrent)
     int reuse = 1;
     int preuse = 1;
     long cc = __syscall__(sock, SOL_SOCKET, SO_REUSEADDR, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
-    __syscall__(sock, SOL_SOCKET, 15, (long)&preuse, sizeof(preuse), 0, _SYS_SETSOCKOPT);
+    long rc = __syscall__(sock, SOL_SOCKET, SO_REUSEPORT, (long)&preuse, sizeof(preuse), 0, _SYS_SETSOCKOPT);
 
     /* Disabled bc sometimes its wrong (Unconfirmed) */
-    //if (cc < 0)
-	//	fsl_panic("unable to reuse addr...!");
+    // if (cc < 0 || rc < 0)
+	// 	fsl_panic("unable to reuse addr...!");
 
     /* bind */
     _sockaddr_in addr = {0};
@@ -93,6 +94,43 @@ public fn sock_close(sock_t sock)
 {
 	__syscall__(sock->fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
 	pfree(sock, 1);
+}
+
+public string get_socket_ip(sock_t sock)
+{
+    u32 len     = sizeof(sock->addr);
+    char ip[20] = {0};
+
+    if (__syscall__(sock->fd, (long)&sock->addr, (long)&len, -1, -1, -1, _SYS_GETPEERNAME) == 0)
+    {
+        u8 *p = (u8 *)&sock->addr.sin_addr;
+        u32 pos = 0;
+
+        for (u32 i = 0; i < 4; i++)
+        {
+            u32 n = p[i];
+            u32 div = 100;
+
+            while (div)
+            {
+                u32 digit = n / div;
+
+                if (digit || div == 1 || n >= div)
+                    ip[pos++] = '0' + digit;
+
+                n %= div;
+                div /= 10;
+            }
+
+            if (i < 3)
+                ip[pos++] = '.';
+        }
+
+        ip[pos] = '\0';
+        return to_heap(&ip, sizeof(ip));
+    }
+
+    return NULL;
 }
 
 public int parse_ipv4(const char *ip, unsigned int *out)
