@@ -1,5 +1,5 @@
 #include "../../../headers/fsl.h"
-#define _GNU_SOURCE
+#define _BSD_SOURCE
 
 public sock_t listen_tcp(const string ip, int port, int concurrent)
 {
@@ -24,7 +24,7 @@ public sock_t listen_tcp(const string ip, int port, int concurrent)
     _sockaddr_in addr = {0};
     addr.sin_family = AF_INET;
     addr.sin_port = _htons((unsigned short)port);
-    addr.sin_addr.s_addr = 0;
+    addr.sin_addr.s_addr = ip_to_u32(ip);
 
     long ret = __syscall__(sock, (long)&addr, sizeof(addr), 0, 0, 0, _SYS_BIND);
     if (ret < 0)
@@ -41,6 +41,29 @@ public sock_t listen_tcp(const string ip, int port, int concurrent)
 	socket->addr = addr;
 
 	return socket;
+}
+
+public sock_t dial_tcp(string ip, int port)
+{
+    fd_t fd = __syscall__(AF_INET, 1, 0, -1, -1, -1, _SYS_SOCKET);
+    if(fd <= 0)
+        return NULL;
+
+    _sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_port = _htons((unsigned short)port);
+    addr.sin_addr.s_addr = ip_to_u32(ip);
+
+    int ret = __syscall__(fd, (long)&addr, sizeof(addr), -1, -1, -1, _SYS_CONNECT);
+    if(ret < 0)
+        return NULL;
+
+    sock_t s = allocate(0, sizeof(sock_t));
+    s->fd = fd;
+    s->addr = addr;
+    s->buff_len = 1024;
+
+    return s;
 }
 
 public sock_t sock_accept(sock_t server, len_t len)
@@ -95,6 +118,42 @@ public fn sock_close(sock_t sock)
 	__syscall__(sock->fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
 	pfree(sock, 1);
 }
+
+public int sock_set_read_timeout(sock_t s, int delay)
+{
+    if (!s || !s->fd)
+        return 0;
+
+    struct sleep_t t = { delay / 1000000, delay % 1000000 };
+    long ret = __syscall__((long)s->fd, 1, 21, (long)&t, sizeof(t), -1, _SYS_SETSOCKOPT);
+    if (ret < 0)
+        return 1;
+
+    return 0;
+}
+
+public public u32 ip_to_u32(string num)
+{
+    if(!num)
+        return 0;
+
+    u32 ip = 0;
+    int idx = 0;
+
+    for(int i = 0; num[i] != '\0'; i++)
+    {
+        if(num[i] == '.')
+        {
+            idx++;
+            continue;
+        }
+
+        ((u8 *)&ip)[idx] = ((u8 *)&ip)[idx] * 10 + (num[i] - '0');
+    }
+
+    return ip;
+}
+
 
 public string get_socket_ip(sock_t sock)
 {

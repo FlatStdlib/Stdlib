@@ -187,7 +187,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Enable debug mode, stdout
 	*/
-	public fn		toggle_debug_mode();
+	public fn			toggle_debug_mode();
 
 	/*
 		@DOC
@@ -196,7 +196,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Safety exit app
 	*/
-	public fn 		__exit(int code);
+	public fn 			__exit(int code);
 
 	/*
 		@DOC
@@ -206,7 +206,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Execute an application
 	*/
-	public fn 		execute(string app, sArr args);
+	public fn 			execute(string app, sArr args);
 
 	/*
 		@DOC
@@ -216,7 +216,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Output string to stdout
 	*/
-	public fn 		print_sz(const string buffer, int sz);
+	public fn 			print_sz(const string buffer, int sz);
 
 	/*
 		@DOC
@@ -225,10 +225,10 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Output char to stdout
 	*/
-	public fn		printc(const char ch);
+	public fn			printc(const char ch);
 
 
-	public fn _printi_(i32 num);
+	public fn 			_printi_(i32 num);
 
 	/*
 		@DOC
@@ -237,7 +237,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Output int to stdout. this is supports num > -1 && num < 10
 	*/
-	public fn 		printi(int num);
+	public fn 			printi(int num);
 
 	/*
 		@DOC
@@ -246,7 +246,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Output int to stdout. this is supports num > 9
 	*/
-	public fn 		_printi(int value);
+	public fn 			_printi(int value);
 
 	/*
 		@DOC
@@ -255,7 +255,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Output string to stdout
 	*/
-	public fn 		print(const string buff);
+	public fn 			print(const string buff);
 
 	/*
 		@DOC
@@ -263,7 +263,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Output string to stdout with a newline sequence
 	*/
-	public fn		println(const string buff);
+	public fn			println(const string buff);
 
 	/*
 		@DOC
@@ -272,7 +272,7 @@ int 	get_args(char* argv[]);
 		@return: n/a
 		@note: Output a buffer upto a size
 	*/
-	public fn 		printsz(const string buff, int sz);
+	public fn 			printsz(const string buff, int sz);
 
 	/*
 		@DOC
@@ -280,7 +280,7 @@ int 	get_args(char* argv[]);
 		@return: n/a
 		@note: Output an array of strings
 	*/
-	public fn 		print_args(sArr arr);
+	public fn 			print_args(sArr arr);
 
 	/*
 		@DOC
@@ -289,7 +289,7 @@ int 	get_args(char* argv[]);
 		@returns: new ptr
 		@note: Copy a `ory chunk to a new heap block
 	*/
-	public ptr		to_heap(ptr p, i32 sz);
+	public ptr			to_heap(ptr p, i32 sz);
 
 	/*
 		@DOC
@@ -300,7 +300,7 @@ int 	get_args(char* argv[]);
 		@note: Display a warning message
 					use marco: fsl_warning() instead
 	*/
-	public fn 		__fsl_warning(string msg, string file, int line);
+	public fn 			__fsl_warning(string msg, string file, int line);
 
 	/*
 		@DOC
@@ -311,7 +311,7 @@ int 	get_args(char* argv[]);
 		@note: Display a panic message and exit with code 1.
 					use marco: fsl_panic() instead
 	*/
-	public fn		__fsl_panic(string msg, string file, int line);
+	public fn			__fsl_panic(string msg, string file, int line);
 #endif
 
 /*
@@ -326,7 +326,7 @@ int 	get_args(char* argv[]);
 		@return: n/a
 		@note: Zero an entire memery block
 	*/
-	public fn 		memzero(any p, size_t size);
+	public fn 			memzero(any p, size_t size);
 
 	/*
 		@DOC
@@ -336,7 +336,7 @@ int 	get_args(char* argv[]);
 		@return: int
 		@note: Compare 2 memory block to match
 	*/
-	public int 		mem_cmp(any src, any p, size_t size);
+	public int 			mem_cmp(any src, any p, size_t size);
 
 	/*
 		@DOC
@@ -346,7 +346,7 @@ int 	get_args(char* argv[]);
 		@return: n/a
 		@note: Copy an entire memory block to another
 	*/
-	public fn 		mem_cpy(any dest, any src, size_t size);
+	public fn 			mem_cpy(any dest, any src, size_t size);
 
 	/*
 		@DOC
@@ -357,7 +357,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: Set a value to the whole memory block
 	*/
-	public fn 		mem_set(any p, char ch, size_t size);
+	public fn 			mem_set(any p, char ch, size_t size);
 
 	/*
 		@DOC
@@ -366,7 +366,7 @@ int 	get_args(char* argv[]);
 		@return: n/a
 		@note: Get user input
 	*/
-	public int 		get_input(string dest, len_t count);
+	public int 			get_input(string dest, len_t count);
 #endif
 
 /*
@@ -441,8 +441,8 @@ int 	get_args(char* argv[]);
 	[ src/stdlib/int.c ]
 */
 #ifdef _FSL_INT_H
-	public i32		count_int_digits(i32 num);
-	public int		str_to_int(const char *s);
+	public i32			count_int_digits(i32 num);
+	public int			str_to_int(const char *s);
 #endif
 
 /*
@@ -450,11 +450,11 @@ int 	get_args(char* argv[]);
 	[ src/stdlib/char.c ]
 */
 #ifdef _FSL_CHAR_H
-	public i32 		is_ascii(const char c);
-	public i32 		is_lowercase(char c);
-	public i32 		is_uppercase(char c);
-	public i32 		is_ascii_alpha(const char c);
-	public i32 		is_ascii_digit(char c);
+	public i32 			is_ascii(const char c);
+	public i32 			is_lowercase(char c);
+	public i32 			is_uppercase(char c);
+	public i32 			is_ascii_alpha(const char c);
+	public i32 			is_ascii_digit(char c);
 #endif
 
 /*
@@ -483,57 +483,57 @@ int 	get_args(char* argv[]);
 	#define __sprintf(dest, format, ...) \
 			_sprintf(dest, format, (void *[]){__VA_ARGS__, 0});
 
-	public fn 		ptr_to_str(ptr p, string out);
-	public string	int_to_str(int num);
-	public bool		is_str_ascii(string query);
-	public fn 		_sprintf(string buffer, string format, any* args);
-	public fn 		str_append_int(string dest, int num);
-	public len_t 	str_len(const string buffer);
-	public len_t 	_str_len(const string buffer);
-	public len_t 	str_len(string buffer);
-	public string 	str_dup(const string buffer);
-	public bool 	str_append_array(string buff, const sArr arr);
-	public bool   	str_append(string src, const string sub);
-	public bool		str_cmp(const string src, const string needle);
-	public pos_t 	find_string(const string buff, const string needle);
-	public sArr 	split_lines(const string buffer, int* idx);
-	public sArr 	split_string(const string buffer, const char ch, int* idx);
-	public bool 	get_sub_str(const string buffer, int start, int end, char *dest);
-	public bool 	get_substr_upto(const string buffer, char ch, char *dest);
-	public bool 	is_number(string buffer);
-	public bool 	is_empty(string buffer);
-	public bool 	str_startswith(string buffer, string needle);
-	public bool 	str_endswith(string buffer, string needle);
-	public bool 	str_strip_idx_to_end(string buff, int idx);
-	public bool 	str_strip_start_to_idx(string buff, int idx);
-	public fn 		byte_to_hex(u8 byte, string out);
-	public bool 	string_reverse(string buffer, char *dest);
-	public bool 	str_join(string buffer, array arr, const char delim);
-	public bool 	is_str_lowercase(string buffer);
-	public bool 	is_str_uppercase(string buffer);
-	public i32 		count_char(const string buffer, const char ch);
-	public i32 		find_char(const string buffer, const char ch);
-	public i32 		find_char_at(const string buffer, const char ch, int match);
-	public i32 		__find_char(const string buffer, const char ch, int sz);
-	public i32 		find_last_char_at(const string buffer, const char ch);
-	public i32 		_find_char_at(const string buffer, const char ch, int match, int *start);
-	public bool 	trim_char(string buff, int ch);
-	public bool		trim_char_idx(string buff, int pos);
-	public int 		replace_char(string buffer, const char find, const char replace);
-	public bool 	replace_char_string(string buffer, const char find, const string q);
-	public bool 	str_strip(string buffer);
-	public string 	float_to_str(double n, char *out, int precision);
-	public bool 	str_remove_substr_idx(string buffer, int start, int end);
+	public fn 			ptr_to_str(ptr p, string out);
+	public string		int_to_str(int num);
+	public bool			is_str_ascii(string query);
+	public fn 			_sprintf(string buffer, string format, any* args);
+	public fn 			str_append_int(string dest, int num);
+	public len_t 		str_len(const string buffer);
+	public len_t 		_str_len(const string buffer);
+	public len_t 		str_len(string buffer);
+	public string 		str_dup(const string buffer);
+	public bool 		str_append_array(string buff, const sArr arr);
+	public bool   		str_append(string src, const string sub);
+	public bool			str_cmp(const string src, const string needle);
+	public pos_t 		find_string(const string buff, const string needle);
+	public sArr 		split_lines(const string buffer, int* idx);
+	public sArr 		split_string(const string buffer, const char ch, int* idx);
+	public bool 		get_sub_str(const string buffer, int start, int end, char *dest);
+	public bool 		get_substr_upto(const string buffer, char ch, char *dest);
+	public bool 		is_number(string buffer);
+	public bool 		is_empty(string buffer);
+	public bool 		str_startswith(string buffer, string needle);
+	public bool 		str_endswith(string buffer, string needle);
+	public bool 		str_strip_idx_to_end(string buff, int idx);
+	public bool 		str_strip_start_to_idx(string buff, int idx);
+	public fn 			byte_to_hex(u8 byte, string out);
+	public bool 		string_reverse(string buffer, char *dest);
+	public bool 		str_join(string buffer, array arr, const char delim);
+	public bool 		is_str_lowercase(string buffer);
+	public bool 		is_str_uppercase(string buffer);
+	public i32 			count_char(const string buffer, const char ch);
+	public i32 			find_char(const string buffer, const char ch);
+	public i32 			find_char_at(const string buffer, const char ch, int match);
+	public i32 			__find_char(const string buffer, const char ch, int sz);
+	public i32 			find_last_char_at(const string buffer, const char ch);
+	public i32 			_find_char_at(const string buffer, const char ch, int match, int *start);
+	public bool 		trim_char(string buff, int ch);
+	public bool			trim_char_idx(string buff, int pos);
+	public int 			replace_char(string buffer, const char find, const char replace);
+	public bool 		replace_char_string(string buffer, const char find, const string q);
+	public bool 		str_strip(string buffer);
+	public string 		float_to_str(double n, char *out, int precision);
+	public bool 		str_remove_substr_idx(string buffer, int start, int end);
 #endif
 
 #ifdef _FSL_ARR_H
-	public array 	init_array(void);
-	public array 	array_merge(array arr, array sub);
-	public array	array_append(array arr, ptr p);
-	public array 	array_append_insert(array arr, ptr p, int idx);
-	public int 		array_contains_ptr(array arr, ptr p);
-	public int 		array_contains_str(array arr, string needle);
-	public array 	array_reverse(array arr);
+	public array 		init_array(void);
+	public array 		array_merge(array arr, array sub);
+	public array		array_append(array arr, ptr p);
+	public array 		array_append_insert(array arr, ptr p, int idx);
+	public int 			array_contains_ptr(array arr, ptr p);
+	public int 			array_contains_str(array arr, string needle);
+	public array 		array_reverse(array arr);
 #endif
 
 
@@ -559,12 +559,12 @@ int 	get_args(char* argv[]);
 	typedef _map map;
 	typedef _map *map_t;
 
-	public map_t 	init_map(void);
-	public bool 	map_append(map_t map, string key, string value);
-	public bool 	map_append_field(map_t map, field_t field);
-	public int 		find_key(map_t map, string key);
-	public fn 		field_destruct(field_t field);
-	public fn 		map_destruct(map_t map);
+	public map_t 		init_map(void);
+	public bool 		map_append(map_t map, string key, string value);
+	public bool 		map_append_field(map_t map, field_t field);
+	public int 			find_key(map_t map, string key);
+	public fn 			field_destruct(field_t field);
+	public fn 			map_destruct(map_t map);
 #endif
 
 /*
@@ -592,7 +592,7 @@ int 	get_args(char* argv[]);
 		@return: >0 on sucess, -1 on fail
 		@note: Open a file stream
 	*/
-	public fd_t		open_file(const string filename, FILE_MODE mode, int flags);
+	public fd_t			open_file(const string filename, FILE_MODE mode, int flags);
 
 	/*
 		@DOC
@@ -600,7 +600,7 @@ int 	get_args(char* argv[]);
 		@return: >0 on success, -1 on fail
 		@note: Retrieve file size
 	*/
-	public int		file_content_size(fd_t fd);
+	public int			file_content_size(fd_t fd);
 
 	/*
 		@DOC
@@ -610,7 +610,7 @@ int 	get_args(char* argv[]);
 		@return: >0 on scuess, <=0 on fail
 		@note: Read file content
 	*/
-	public int		file_read(fd_t fd, string buffer, int sz);
+	public int			file_read(fd_t fd, string buffer, int sz);
 
 	/* file_read for unsigned char / u8 */
 	#define file_uc_read(fd, buff, sz) file_read
@@ -624,7 +624,7 @@ int 	get_args(char* argv[]);
 			@return: >0 on success, -1 on fail
 			@note: Write to file
 	*/
-	public int		file_write(fd_t fd, const string buffer, len_t len);
+	public int			file_write(fd_t fd, const string buffer, len_t len);
 
 	/*
 		@DOC
@@ -633,7 +633,7 @@ int 	get_args(char* argv[]);
 			@return: n/a
 			@note: close file
 	*/
-	public fn		file_close(fd_t fd);
+	public fn			file_close(fd_t fd);
 #endif
 
 /*
@@ -678,6 +678,7 @@ int 	get_args(char* argv[]);
 		addr_in		addr;
 
 		int			buff_len;
+		int			listening;
 	} _sock_t;
 
 	typedef i32 __sock_t;
@@ -686,9 +687,11 @@ int 	get_args(char* argv[]);
 
 	public int 			create_socket(int family, int type, int protocol);
 	public sock_t 		listen_tcp(const string ip, int port, int concurrent);
+	public sock_t 		dial_tcp(string ip, int port);
 	public sock_t 		sock_accept(sock_t sock, len_t len);
 	public int 			sock_write(sock_t sock, string buffer);
 	public string 		sock_read(sock_t sock, string req);
+	public u32 			ip_to_u32(string num);
 	public string 		get_socket_ip(sock_t sock);
 	public int 			parse_ipv4(const char* ip, u32 *out);
 	public string 		convert_ip(u32 ip);
@@ -698,6 +701,7 @@ int 	get_args(char* argv[]);
 	public u32			_htonl(u32 x);
 	public bool 		validate_ip(string q);
 	public fn 			sock_close(sock_t);
+	public int 			sock_set_read_timeout(sock_t s, int delay);
 #endif
 
 /*
@@ -745,7 +749,7 @@ int 	get_args(char* argv[]);
 		i32 		pid;
 	} gthread;
 	
-	long run_thread(void *fnc, void *arg);
+	public long			run_thread(void *fnc, void *arg);
 #endif
 
 /*
@@ -753,8 +757,8 @@ int 	get_args(char* argv[]);
 	[ src/os/internal.c ]
 */
 #ifdef _FSL_OS
-	public fn _usleep(int usec);
-	public fn _sleep(int sec);
+	public fn 			_usleep(int usec);
+	public fn 			_sleep(int sec);
 #endif
 
 #ifdef _FSL_SIGHANDLER_H
@@ -770,5 +774,5 @@ int 	get_args(char* argv[]);
 		_ONE_ARG_ = arg; \
 		_SEC_ARG_ = aarg;
 
-	public fn _enable_sig_handler(handler_t fnc);
+	public fn 			_enable_sig_handler(handler_t fnc);
 #endif

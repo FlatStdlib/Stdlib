@@ -392,7 +392,7 @@ public bool replace_char_string(string buffer, const char find, const string q)
 			{
 				buff[idx++] = q[0];
 			} else {
-				str_append(buff, q);
+				str_append(buff + i, q);
 				i += qlen;
 			}
 		}

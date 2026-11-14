@@ -45,17 +45,27 @@ long long __moddi3(long long a, long long b)
 #if defined(__i386__)
 	__attribute__((optimize("omit-frame-pointer"))) long __syscall__(long a1, long a2, long a3, long a4, long a5, long a6, long sys)
 	{
-		register long syscall asm(__EAX__) = sys;
-		register long arg1 asm(__EBX__) = a1;
-		register long arg2 asm(__ECX__) = a2;
-		register long arg3 asm(__EDX__) = a3;
-		register long arg4 asm(__ESI__) = a4;
-		register long arg5 asm(__EDI__) = a5;
-		register long arg6 asm(__EBP__) = a6;
-		asm(EXECUTE_SYSCALL);
-        
         long ret;
-        register long check asm(__EAX__);
+
+        #if defined(x86)
+            register long syscall asm(__EAX__) = sys;
+            register long arg1 asm(__EBX__) = a1;
+            register long arg2 asm(__ECX__) = a2;
+            register long arg3 asm(__EDX__) = a3;
+            register long arg4 asm(__ESI__) = a4;
+            register long arg5 asm(__EDI__) = a5;
+            register long arg6 asm(__EBP__) = a6;
+            register long check asm(__EAX__);
+        #elif defined(__mips__)
+            register u32 v0 asm(_R2_) = sys;
+            register u32 r4 asm(_R4_) = a1;
+            register u32 r5 asm(_R5_) = a2;
+            register u32 r6 asm(_R6_) = a3;
+            register u32 r7 asm(_R7_) = a4;
+            register long check asm(_R0_);
+        #endif
+		asm(EXECUTE_SYSCALL);
+    
         ret = check;
         if(check < 0)
             _printi(ret);
