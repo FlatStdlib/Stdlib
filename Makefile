@@ -24,6 +24,7 @@ OBJ_PATH = $(BUILD)
 # Compilation flags and files
 FLAGS = -c -nostdlib -nostdinc -ffreestanding -static ${DEBUG} ${CFLAGS}
 LDFLAGS = --gc-sections
+AR_APP = "ar"
 FGCC_FLAGS = -c -nostdlib -ffunction-sections -fdata-sections ${DEBUG} ${CFLAGS}
 FILES = src/c/*.c src/c/os/*.c src/c/stdlib/*.c 		# OLD
 # FILES = $(shell find src/c src/c/os src/c/stdlib -name '*.c' ! -iname '*win*')
@@ -72,8 +73,8 @@ compile:
 	$(COMPILER) $(FLAGS) $(FILES)
 	rm -rf $(BUILD)/$(LIB)
 	rm -rf $(BUILD)/$(OBJ)
-	ar rcs $(BUILD)/$(LIB) *.o
-	ar rcs $(BUILD)/$(OBJ) *.o
+	$(AR_APP) rcs $(BUILD)/$(LIB) *.o
+	$(AR_APP) rcs $(BUILD)/$(OBJ) *.o
 
 #
 # Compile linker and loader for FSL
