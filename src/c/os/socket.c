@@ -46,10 +46,36 @@ public sock_t listen_tcp(const string ip, int port, int concurrent)
 public sock_t dial_tcp(string ip, int port)
 {
     fd_t fd = __syscall__(AF_INET, 1, 0, -1, -1, -1, _SYS_SOCKET);
-    if(fd <= 0)
+    if(fd < 0)
         return NULL;
 
     _sockaddr_in addr;
+    memzero(&addr, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = _htons((unsigned short)port);
+    addr.sin_addr.s_addr = ip_to_u32(ip);
+
+    int ret = __syscall__(fd, (long)&addr, sizeof(addr), -1, -1, -1, _SYS_CONNECT);
+    if(ret < 0)
+        return NULL;
+
+    sock_t s = allocate(0, sizeof(sock_t));
+    s->fd = fd;
+    s->addr = addr;
+    s->buff_len = 1024;
+
+    return s;
+}
+
+
+public sock_t dial_udp(string ip, int port)
+{
+    fd_t fd = __syscall__(AF_INET, 2, 0, -1, -1, -1, _SYS_SOCKET);
+    if(fd < 0)
+        return NULL;
+
+    _sockaddr_in addr;
+    memzero(&addr, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_port = _htons((unsigned short)port);
     addr.sin_addr.s_addr = ip_to_u32(ip);
