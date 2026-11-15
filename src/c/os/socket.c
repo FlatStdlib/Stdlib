@@ -67,6 +67,37 @@ public sock_t dial_tcp(string ip, int port)
     return s;
 }
 
+public sock_t listen_udp(const string ip, int port)
+{
+    long sock = __syscall__(AF_INET, 2, 0, 0, 0, 0, _SYS_SOCKET);
+    if (sock < 0)
+		fsl_panic("unable to create a socket...!");
+
+	if(__FSL_DEBUG__)
+		print("Socket successfully created: "), _printi(sock), print("\n");
+
+    /* reuse address */
+    int reuse = 1;
+    int preuse = 1;
+    long cc = __syscall__(sock, SOL_SOCKET, SO_REUSEADDR, (long)&reuse, sizeof(reuse), 0, _SYS_SETSOCKOPT);
+    long rc = __syscall__(sock, SOL_SOCKET, SO_REUSEPORT, (long)&preuse, sizeof(preuse), 0, _SYS_SETSOCKOPT);
+
+    /* bind */
+    _sockaddr_in addr = {0};
+    addr.sin_family = AF_INET;
+    addr.sin_port = _htons((unsigned short)port);
+    addr.sin_addr.s_addr = ip_to_u32(ip);
+
+    long ret = __syscall__(sock, (long)&addr, sizeof(addr), 0, 0, 0, _SYS_BIND);
+    if (ret < 0)
+		fsl_panic("unable to bind socket...!");
+
+	sock_t socket = allocate(0, sizeof(_sock_t));
+	socket->fd = sock;
+	socket->addr = addr;
+
+	return socket;
+}
 
 public sock_t dial_udp(string ip, int port)
 {
@@ -141,7 +172,8 @@ public string sock_read(sock_t sock, string req)
 
 public fn sock_close(sock_t sock)
 {
-	__syscall__(sock->fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
+    if(sock->fd >= 0)
+	    __syscall__(sock->fd, -1, -1, -1, -1, -1, _SYS_CLOSE);
 	pfree(sock, 1);
 }
 

@@ -688,6 +688,7 @@ int 	get_args(char* argv[]);
 	public int 			create_socket(int family, int type, int protocol);
 	public sock_t 		listen_tcp(const string ip, int port, int concurrent);
 	public sock_t 		dial_tcp(string ip, int port);
+	public sock_t 		listen_udp(const string ip, int port);
 	public sock_t 		dial_udp(string ip, int port);
 	public sock_t 		sock_accept(sock_t sock, len_t len);
 	public int 			sock_write(sock_t sock, string buffer);
