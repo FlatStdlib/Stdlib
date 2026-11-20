@@ -3,11 +3,7 @@
 #define _FSL_MEM_H
 #include <fsl.h>
 
-int WINAPI WinMain(
-    HINSTANCE hInstance,
-    HINSTANCE hPrevInstance,
-    LPSTR lpCmdLine,
-    int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     char buff[1024];
     mem_cpy(buff, "Hello from FSL!", 17);

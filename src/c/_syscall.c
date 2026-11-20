@@ -282,4 +282,40 @@ long long __moddi3(long long a, long long b)
         return ret;
 //        return __syscall__(arg1, arg2, arg3, arg4, arg5, arg6, _SYS_MMAP);
     }
+#elif defined(__arm__)
+    long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6)
+    {
+    	register long sys asm(SYSCALL_REG) = _SYS_MMAP2;
+        register long a6 asm("r5") = arg6;
+        register long a5 asm("r4") = arg5;
+        // register long a4 asm("r3") = arg4;
+        // register long a3 asm("r2") = arg3;
+        // register long a2 asm("r1") = arg2;
+        // register long a1 asm("r0") = arg1;
+        asm(EXECUTE_SYSCALL);
+
+        long ret;
+        register long check asm("r0");
+        ret = check;
+        if(check < 0)
+            _printi(ret);
+
+        return ret;
+    }
+
+    long __syscall_arm__(long a1, long a2, long a3, long sys)
+    {
+        asm volatile(
+            "mov r7, r3\n"
+            "svc #0\n"
+        );
+    }
+
+    __attribute__((naked)) void __syscall_arm_NR__(long a1, long a2, long a3, long sys)
+    {
+        asm volatile(
+            "mov r7, r3\n"
+            "svc #0\n"
+        );
+    }
 #endif

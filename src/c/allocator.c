@@ -46,7 +46,7 @@ public fn init_mem(void) {
             fsl_panic("mmap failed!");
     #elif defined(__arm__)
         #warning "Compiling for arm"
-        ret = __syscall__(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
+        ret = __sys_mmap(0, _HEAP_PAGE_, 0x1|0x2, 0x2|0x20, -1, 0);
         if (ret <= 0)
             fsl_panic("mmap failed!");
     #endif

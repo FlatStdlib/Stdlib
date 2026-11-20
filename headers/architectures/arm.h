@@ -77,7 +77,7 @@
 #define _SYS_uselib             86
 #define _SYS_swapon             87
 #define _SYS_reboot             88
-#define _SYS_munmap             91
+#define _SYS_MUNMAP             91
 #define _SYS_truncate           92
 #define _SYS_ftruncate          93
 #define _SYS_fchmod             94
@@ -93,12 +93,12 @@
 #define _SYS_lstat              107
 #define _SYS_fstat              108
 #define _SYS_vhangup            111
-#define _SYS_wait4              114
+#define _SYS_WAIT4              114
 #define _SYS_swapoff            115
 #define _SYS_sysinfo            116
 #define _SYS_fsync              118
 #define _SYS_sigreturn          119
-#define _SYS_clone              120
+#define _SYS_CLONE              120
 #define _SYS_setdomainname      121
 #define _SYS_uname              122
 #define _SYS_adjtimex           124
@@ -134,7 +134,7 @@
 #define _SYS_sched_get_priority_max 159
 #define _SYS_sched_get_priority_min 160
 #define _SYS_sched_rr_get_interval 161
-#define _SYS_nanosleep          162
+#define _SYS_NANOSLEEP          162
 #define _SYS_mremap             163
 #define _SYS_setresuid          164
 #define _SYS_getresuid          165
@@ -143,7 +143,7 @@
 #define _SYS_getresgid          171
 #define _SYS_prctl              172
 #define _SYS_rt_sigreturn       173
-#define _SYS_rt_sigaction       174
+#define _SYS_RT_SIGACTION       174
 #define _SYS_rt_sigprocmask     175
 #define _SYS_rt_sigpending      176
 #define _SYS_rt_sigtimedwait    177
@@ -249,7 +249,7 @@
 #define _SYS_LISTEN             284
 #define _SYS_ACCEPT             285
 #define _SYS_getsockname        286
-#define _SYS_getpeername        287
+#define _SYS_GETPEERNAME        287
 #define _SYS_socketpair         288
 #define _SYS_SEND               289
 #define _SYS_SENDTO             290

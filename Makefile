@@ -25,6 +25,7 @@ OBJ_PATH = $(BUILD)
 FLAGS = -c -nostdlib -nostdinc -ffreestanding -static ${DEBUG} ${CFLAGS}
 LDFLAGS = --gc-sections
 AR_APP = "ar"
+LINKER = "ld"
 FGCC_FLAGS = -c -nostdlib -ffunction-sections -fdata-sections ${DEBUG} ${CFLAGS}
 FILES = src/c/*.c src/c/os/*.c src/c/stdlib/*.c 		# OLD
 # FILES = $(shell find src/c src/c/os src/c/stdlib -name '*.c' ! -iname '*win*')
@@ -80,9 +81,11 @@ compile:
 # Compile linker and loader for FSL
 #
 cloader:
-	gcc ${FGCC_FLAGS} ${DEBUG} ../fsl/loader.c -o $(BUILD)/loader.o
-	gcc ${FGCC_FLAGS} ${DEBUG} ../fsl/fsl.c -o $(FGCC_OBJ)
-	ld ${LDFLAGS} -o $(FGCC) $(FGCC_OBJ) $(BUILD)/loader.o $(BUILD)/$(LIB)
+	$(COMPILER) ${FGCC_FLAGS} ${DEBUG} ../fsl/loader.c -o $(BUILD)/loader.o
+	$(COMPILER) ${FGCC_FLAGS} ${DEBUG} ../fsl/fsl.c -o $(FGCC_OBJ)
+# 	$(LINKER) ${LDFLAGS} -o $(FGCC) $(FGCC_OBJ) $(BUILD)/loader.o $(BUILD)/$(LIB)
+	$(LINKER) --gc-sections -o $(FGCC) fsl_gcc.o build/loader.o build/libfsl.a \
+		$(shell $(COMPILER) -print-libgcc-file-name)
 
 
 #

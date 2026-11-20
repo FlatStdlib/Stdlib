@@ -69,6 +69,7 @@ enum v
     REG_CR2
 };
 
+#if defined(__x86_64__)
 private void fsl_handler(int sig, struct __fsl_siginfo *info, ptr ctx)
 {
     (void)sig;
@@ -159,3 +160,4 @@ public fn _enable_sig_handler(handler_t fnc) {
 
     ___syscall__(11, (long)&s, 0, 8, -1, -1, _SYS_RT_SIGACTION);
 }
+#endif

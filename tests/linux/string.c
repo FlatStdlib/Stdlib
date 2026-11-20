@@ -4,7 +4,11 @@
 
 #define PRE_DATA "This is a test string...!"
 #define DATA_LEN str_len("This is a test string...!")
-
+int raise(int sig)
+{
+    // Your own signal handling implementation.
+    return 0;
+}
 int entry()
 {
     toggle_debug_mode();

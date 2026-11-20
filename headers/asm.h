@@ -39,6 +39,9 @@ struct _timeval {
 	#include "architectures/aarch64.h"
 #elif defined(__arm__)
 	#include "architectures/arm.h"
+	long __sys_mmap(long arg1, long arg2, long arg3, long arg4, long arg5, long arg6);
+	long __syscall_arm__(long a1, long a2, long a3, long sys);
+	__attribute__((naked)) void __syscall_arm_NR__(long a1, long a2, long a3, long sys);
 #elif defined(_WIN32) || defined(_WIN64)
 	#define NULL 	((void *)0)
 	#include "architectures/win64.h"

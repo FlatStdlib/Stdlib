@@ -190,7 +190,7 @@ public int sock_set_read_timeout(sock_t s, int delay)
     return 0;
 }
 
-public public u32 ip_to_u32(string num)
+public u32 ip_to_u32(string num)
 {
     if(!num)
         return 0;
